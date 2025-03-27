@@ -72,7 +72,12 @@ export default function TemporaryDrawer({ isOpen }) {
 
   return (
     <div>
-      <Drawer open={open} onClose={toggleDrawer(false)}>
+      <Drawer
+        variant="persistent"
+        ModalProps={{ keepMounted: true }} // Mantiene el componente montado sin bloquear el fondo
+        open={true}
+        onClose={toggleDrawer(false)}
+      >
         {DrawerList}
       </Drawer>
     </div>
