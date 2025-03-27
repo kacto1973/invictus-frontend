@@ -42,22 +42,9 @@ export default function TemporaryDrawer({ isOpen }) {
       role="presentation"
       onClick={toggleDrawer(false)}
     >
-      <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <DrawerButton></DrawerButton>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
+      <List className="w-full flex flex-col items-center">
+        {["Inbox", "Starred", "Send email", "Drafts"].map((text) => (
+          <DrawerButton buttonText={text}></DrawerButton>
         ))}
       </List>
     </Box>

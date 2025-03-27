@@ -1,9 +1,11 @@
 import React from "react";
 
-const DrawerButton = () => {
+const DrawerButton = ({ classNames, buttonText }) => {
   return (
-    <div className="rounded-lg bg-[#3F3F3F] text-white hover:bg-[#6E6D6D] h-[2rem] w-[80%] flex items-center justify-center">
-      DrawerButton
+    <div
+      className={`my-[.8rem] rounded-lg bg-[#3F3F3F] text-white hover:bg-[#6E6D6D] h-[2.5rem] w-[80%] flex items-center justify-center ${classNames}`}
+    >
+      {buttonText}
     </div>
   );
 };
