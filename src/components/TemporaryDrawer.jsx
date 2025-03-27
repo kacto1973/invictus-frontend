@@ -31,6 +31,10 @@ export default function TemporaryDrawer({ isOpen }) {
     setOpen(newOpen);
   };
 
+  React.useEffect(() => {
+    setOpen(isOpen);
+  }, [isOpen]);
+
   const DrawerList = (
     <Box
       sx={{
@@ -42,9 +46,25 @@ export default function TemporaryDrawer({ isOpen }) {
       role="presentation"
       onClick={toggleDrawer(false)}
     >
-      <List className="w-full flex flex-col items-center">
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text) => (
-          <DrawerButton buttonText={text}></DrawerButton>
+      {/*<img
+        src="svgs/arrow-left.svg"
+        alt=""
+        width={30}
+        className="absolute right-2 top-2"
+      /> */}
+      <div className="w-[80%] h-[5rem] bg-gray-200 mx-auto mb-5 mt-15"></div>
+      <List className="w-full flex flex-col items-center ">
+        {[
+          { text: "Home", img: "/svgs/home.svg" },
+          { text: "Inventario", img: "/svgs/box.svg" },
+          { text: "Reportes", img: "/svgs/document.svg" },
+          { text: "Configuración", img: "/svgs/gear.svg" },
+        ].map((object) => (
+          <DrawerButton
+            buttonIcon={object.img}
+            buttonText={object.text}
+            classNames="justify-start"
+          ></DrawerButton>
         ))}
       </List>
     </Box>
