@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import Dashboard from "./views/Dashboard";
 import Equipment from "./views/Equipment";
+import Inventory from "./views/Inventory";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Dashboard />} />
+          <Route path="/inventory" element={<Inventory />} />
           <Route path="/equipment" element={<Equipment />} />
         </Routes>
       </Router>
