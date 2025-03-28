@@ -35,6 +35,18 @@ const Dashboard = () => {
               classNames=" mt-10"
             />
           </div>
+          <div className="flex flex-row w-full justify-around">
+            <Card
+              label="Card 1"
+              icon={"svgs/flask-stripe-defect-ahh.svg"}
+              classNames=" mt-10 w-[50%] h-[300px]"
+            />
+            <Card
+              label="Card 1"
+              icon={"svgs/flask-stripe-defect-ahh.svg"}
+              classNames=" mt-10 w-[35%] h-[300px]"
+            />
+          </div>
         </div>
       </div>
     </>
