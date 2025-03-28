@@ -12,21 +12,43 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="bg-[#EDEDED] w-screen h-screen">
-        <Card></Card>
+      <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
         <TemporaryDrawer isOpen={true}></TemporaryDrawer>
         <Header label="Home"></Header>
-        {/*
-      <img
-        src="svgs/arrow-right-black.svg"
-        alt="arrow icon"
-        width={30}
-        className="absolute left-4 top-4 cursor-pointer"
-        onClick={() => setDrawerOpened(!drawerOpened)}
-      />
-      */}
+
+        {/* aqui vamos a meter todos los demas componentes q no son el header ni el drawer */}
+        <div className="ml-[250px] mt-[5rem]">
+          <div className="flex flex-row w-full justify-around">
+            <Card
+              label="Card 1"
+              icon="svgs/flask-blue.svg"
+              classNames=" mt-10"
+            />
+            <Card
+              label="Card 1"
+              icon={"svgs/cube-add-green.svg"}
+              classNames=" mt-10"
+            />
+            <Card
+              label="Card 1"
+              icon={"svgs/flask-stripe-defect-ahh.svg"}
+              classNames=" mt-10"
+            />
+          </div>
+          <div className="flex flex-row w-full justify-around">
+            <Card
+              label="Card 1"
+              icon={"svgs/flask-stripe-defect-ahh.svg"}
+              classNames=" mt-10 w-[50%] h-[300px]"
+            />
+            <Card
+              label="Card 1"
+              icon={"svgs/flask-stripe-defect-ahh.svg"}
+              classNames=" mt-10 w-[35%] h-[300px]"
+            />
+          </div>
+        </div>
       </div>
-      ;
     </>
   );
 };
