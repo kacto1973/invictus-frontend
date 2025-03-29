@@ -52,7 +52,13 @@ export default function TemporaryDrawer({ isOpen }) {
         width={30}
         className="absolute right-2 top-2"
       /> */}
-      <div className="w-[80%] h-[5rem] bg-gray-200 mx-auto mb-5 mt-15"></div>
+      <div className="w-full h-[10rem] mt-5 flex items-center justify-center">
+        <img
+          src="images/DICTUS-logo.png"
+          width={120}
+          alt="logo de departamento"
+        />
+      </div>
       <List className="w-full flex flex-col items-center ">
         {[
           { text: "Home", img: "/svgs/home.svg" },

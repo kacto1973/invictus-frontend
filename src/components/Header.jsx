@@ -1,6 +1,20 @@
 import React from "react";
+import { useState } from "react";
+import { DateTime } from "luxon";
 
 const Header = ({ label }) => {
+  //STATES
+  const [currentTime, setCurrentTime] = useState("");
+
+  //FUNCTIONS
+
+  function updateClock() {
+    const now = DateTime.now().setZone("America/Hermosillo");
+    setCurrentTime(now.toFormat("EEE, h:mm a"));
+  }
+
+  setInterval(updateClock, 1000);
+
   return (
     <div className="w-full h-[5rem] bg-[#E2BDFD] mb-5 absolute top-0 left-0 flex items-center">
       <span className=" ml-[280px] font-bold text-xl">{label}</span>
@@ -13,7 +27,7 @@ const Header = ({ label }) => {
             className="mr-[5px]"
             onClick={() => setDrawerOpened(!drawerOpened)}
           />
-          <p>Tue, 3:40 pm</p>
+          <p>{currentTime}</p>
         </div>
         <div className="bg-white p-2 ml-8 rounded-md">
           <img

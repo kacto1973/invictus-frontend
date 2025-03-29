@@ -17,7 +17,9 @@ const Dashboard = () => {
         <Header label="Home"></Header>
 
         {/* aqui vamos a meter todos los demas componentes q no son el header ni el drawer */}
-        <div className="ml-[250px] mt-[5rem]">
+        <div
+          className={`ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden`}
+        >
           <div className="flex flex-row w-full justify-around">
             <Card
               label="Card 1"
