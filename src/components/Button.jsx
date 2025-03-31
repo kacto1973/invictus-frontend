@@ -13,6 +13,8 @@ const Button = ({ type, onClick }) => {
     "delete-equipment": { text: "Delete Equipment", icon: "../svgs/minus-sign.svg", style: buttonStyles.delete },
     "add-reactive": { text: "Add Reactive", icon: "../svgs/plus-sign.svg", style: buttonStyles.add },
     "delete-reactive": { text: "Delete Reactive", icon: "../svgs/minus-sign.svg", style: buttonStyles.delete },
+    "reset-db": {text: "Restablecer", icon: "../svgs/restore-sign.svg", style: buttonStyles.delete }
+
   };
 
   // Get the appropriate config based on the type

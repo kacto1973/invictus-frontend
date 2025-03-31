@@ -11,6 +11,7 @@ import {
 import Dashboard from "./views/Dashboard";
 import Equipment from "./views/Equipment";
 import Inventory from "./views/Inventory";
+import Configuration from "./views/Configuration";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/equipment" element={<Equipment />} />
+          <Route path="/configuration" element={<Configuration />} />
         </Routes>
       </Router>
     </>
