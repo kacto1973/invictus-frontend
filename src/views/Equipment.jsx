@@ -2,7 +2,7 @@ import React from "react";
 import Header from "../components/Header";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import Card from "../components/Card";
-import SearchEquipment from "../components/SearchEquipment";
+import SearchBox from "../components/SearchBox.jsx";
 import Button from "../components/Button";
 
 const Equipment = () => {
@@ -13,26 +13,20 @@ const Equipment = () => {
       <div
         className={`ml-[250px] mt-[5rem] w-[calc(100vw-250px)]
            h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden`} >{/* this is pushing everything else below the header */}
-           <div className="w-[100%] h-[30%] flex flex-row items-center p-5">
-          {/* Search Equipment in its own div */}
-          <div className="w-[40%] h-[3rem] flex flex-row pl-10">
-          <SearchEquipment classNames="w-[400px] h-[3rem] mb-5 " />
-          </div>
-          {/* Button in its own div */}
-          <div className="w-[20%] flex ml-30">
-            <Button
-            type="add-equipment"
+          <div className="flex flex-row w-[100%] h-[12%] ml-5 mt-5 ">
+           <SearchBox classNames="w-[400px] h-[3rem] mb-5" />
+            <Button 
+            icon = "/svgs/plus-sign.svg"
+            label= "Add Equipment"
             onClick={() => alert("Added Equipment!")}
-            classNames="w-[20%] h-[3rem] mb-5"
+            classNames="hover:bg-[#6FB847] bg-[#79CB4C] w-[20%] h-[3rem] mb-5 ml-25"
           />
-         </div>
-         <div className="w-[20%] flex ml-10">
-            <Button
-            type="delete-equipment"
+           <Button
+            icon = "svgs/minus-sign.svg"
+            label = "Delete Equipment"
             onClick={() => alert("Deleted Equipment!")}
-            classNames="w-[20%] h-[3rem] mb-5"
+            classNames="hover:bg-[#CA5E5E] bg-[#E96D6D]  w-[20%] h-[3rem] mb-5 ml-15"
           />
-          </div>
          </div>
       </div>
     </div>
