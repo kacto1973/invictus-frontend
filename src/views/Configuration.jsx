@@ -20,8 +20,8 @@ const Configuration = () => {
           icon="svgs/gear.svg"
           classNames="w-[40%] h-[700px] flex flex-col justify-between p-5"
         >
-          <InputBox label="Cambiar contraseña de administrador" placeholder="Ingrese la nueva contraseña" />
-          <InputBox label="URL de la Base de datos" placeholder="Ingrese la URL" />
+          <InputBox label="Cambiar contraseña de administrador" placeholder="Ingrese la nueva contraseña" secondIconSrc="svgs/save.svg"/>
+          <InputBox label="URL de la Base de datos" placeholder="Ingrese la URL" iconSrc="svgs/eye.svg" secondIconSrc="svgs/save.svg"/>
 
           <div className="flex items-center justify-between mt-5">
             <label className="text-red-600 font-semibold">Restablecer base de datos</label>
