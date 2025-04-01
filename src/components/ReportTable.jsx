@@ -52,7 +52,7 @@ const reports = [
   { id: "RP005", 
     nombre: "Reporte 18-03-25", 
     fecha: "18/03/25", 
-    estado: "Completado" },
+    estado: "En progreso" },
 
   { id: "RP006", 
     nombre: "Reporte 19-03-25", 
@@ -70,6 +70,37 @@ const reports = [
     estado: "Error" }
 
 ];
+
+
+const getEstadoEstilo = (estado) => {
+  let backgroundColor = "inherit";
+  switch (estado) {
+    case "Completado":
+      backgroundColor = "#d8ecdc"; // Verde claro
+      break;
+    case "Error":
+      backgroundColor = "#ffd4dc"; // Rojo claro
+      break;
+    case "En progreso":
+      backgroundColor = "#fcf4cc"; // Amarillo claro
+      break;
+    default:
+      backgroundColor = "inherit";
+  }
+
+  return {
+    backgroundColor,
+    color: "black",
+    padding: "4px 10px",
+    borderRadius: "15px",
+    display: "inline-flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minWidth: "100px", // Todos los estados tienen el mismo tamaño
+    textAlign: "center",
+    fontWeight: "normal",
+  };
+};
 
 export default function CustomizedTables({ onReportClick }) {
   return (
@@ -97,24 +128,10 @@ export default function CustomizedTables({ onReportClick }) {
               <StyledTableCell>{report.nombre}</StyledTableCell>
               <StyledTableCell>{report.fecha}</StyledTableCell>
               <StyledTableCell>
-                <span
-                  style={{
-                    backgroundColor: report.estado === "Completado" ? "#d8ecdc" : "#ffd4dc",
-                    color: "black",
-                    padding: "4px 10px",
-                    borderRadius: "15px",
-                    display: "inline-flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    minWidth: "100px",
-                    textAlign: "center",
-                    fontWeight: "normal",
-                  }}
-                >
+                <span style={getEstadoEstilo(report.estado)}>
                   {report.estado}
                 </span>
               </StyledTableCell>
-
               <StyledTableCell>
                 <img
                   src="svgs/options-vertical.svg"
