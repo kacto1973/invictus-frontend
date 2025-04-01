@@ -76,13 +76,13 @@ const getEstadoEstilo = (estado) => {
   let backgroundColor = "inherit";
   switch (estado) {
     case "Completado":
-      backgroundColor = "#d8ecdc"; // Verde claro
+      backgroundColor = "#d8ecdc"; // verde del figma
       break;
     case "Error":
-      backgroundColor = "#ffd4dc"; // Rojo claro
+      backgroundColor = "#ffd4dc"; // rojo del figma
       break;
     case "En progreso":
-      backgroundColor = "#fcf4cc"; // Amarillo claro
+      backgroundColor = "#fcf4cc"; // amarillo figma
       break;
     default:
       backgroundColor = "inherit";
@@ -96,7 +96,7 @@ const getEstadoEstilo = (estado) => {
     display: "inline-flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: "100px", // Todos los estados tienen el mismo tamaño
+    minWidth: "100px", 
     textAlign: "center",
     fontWeight: "normal",
   };
