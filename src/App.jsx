@@ -12,6 +12,7 @@ import Dashboard from "./views/Dashboard";
 import Equipment from "./views/Equipment";
 import Inventory from "./views/Inventory";
 import Configuration from "./views/Configuration";
+import Reports from "./views/Reports";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/equipment" element={<Equipment />} />
           <Route path="/configuration" element={<Configuration />} />
+          <Route path="/reports" element={<Reports />} />
+          
         </Routes>
       </Router>
     </>
