@@ -23,7 +23,9 @@ const Dashboard = () => {
               label="Card 1"
               icon="svgs/flask-blue.svg"
               classNames=" mt-10"
+              
             />
+            
             <Card
               label="Card 1"
               icon={"svgs/cube-add-green.svg"}
