@@ -258,7 +258,10 @@ export default function CustomizedTables({ onReactantClick }) {
                   alt="icon"
                   width={25}
                   className="m-auto cursor-pointer"
-                  onClick={() => onReactantClick(reactant)}
+                  onClick={() => {
+                    onReactantClick(reactant);
+                    console.log(reactant);
+                  }}
                 />
               </StyledTableCell>
             </StyledTableRow>
