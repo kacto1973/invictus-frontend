@@ -27,62 +27,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-/* Dummy data */
-const reports = [
-  { id: "RP001",
-    nombre: "Reporte 11-03-25", 
-    fecha: "11/03/25", 
-    estado: "Completado" },
-
-  { id: "RP002", 
-    nombre: "Hola", 
-    fecha: "10/03/25", 
-    estado: "Completado" },
-
-  { id: "RP003", 
-    nombre: "Este no se puede leer", 
-    fecha: "10/03/25", 
-    estado: "Error" },
-
-  { id: "RP004", 
-    nombre: "Reporte 12-03-25", 
-    fecha: "02/02/25", 
-    estado: "Completado" },
-
-  { id: "RP005", 
-    nombre: "Reporte 18-03-25", 
-    fecha: "18/03/25", 
-    estado: "En progreso" },
-
-  { id: "RP006", 
-    nombre: "Reporte 19-03-25", 
-    fecha: "19/03/25", 
-    estado: "Completado" },
-
-  { id: "RP007", 
-    nombre: "Reporte 20-03-25", 
-    fecha: "20/03/25", 
-    estado: "Completado" },
-
-  { id: "RP008", 
-    nombre: "Reporte 20-03-25", 
-    fecha: "20/03/25", 
-    estado: "Error" }
-
-];
-
 
 const getEstadoEstilo = (estado) => {
   let backgroundColor = "inherit";
   switch (estado) {
     case "Completado":
-      backgroundColor = "#d8ecdc"; // verde del figma
+      backgroundColor = "#d8ecdc";
       break;
     case "Error":
-      backgroundColor = "#ffd4dc"; // rojo del figma
+      backgroundColor = "#ffd4dc";
       break;
     case "En progreso":
-      backgroundColor = "#fcf4cc"; // amarillo figma
+      backgroundColor = "#fcf4cc";
       break;
     default:
       backgroundColor = "inherit";
@@ -96,13 +52,13 @@ const getEstadoEstilo = (estado) => {
     display: "inline-flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: "100px", 
+    minWidth: "100px",
     textAlign: "center",
     fontWeight: "normal",
   };
 };
 
-export default function CustomizedTables({ onReportClick }) {
+export default function CustomizedTables({ onReportClick, reports}) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 300 }} aria-label="customized table">
@@ -112,13 +68,13 @@ export default function CustomizedTables({ onReportClick }) {
             <StyledTableCell>Fecha</StyledTableCell>
             <StyledTableCell>Estado</StyledTableCell>
             <StyledTableCell>
-            <img
-                  src="svgs/plus-green.svg"
-                  alt="icon"
-                  width={25}
-                  className="m-auto cursor-pointer"
-                  onClick={() => onReportClick()}
-                />
+              <img
+                src="svgs/plus-green.svg"
+                alt="Agregar"
+                width={25}
+                className="m-auto cursor-pointer"
+                onClick={() => onReportClick()}
+              />
             </StyledTableCell>
           </TableRow>
         </TableHead>
@@ -128,17 +84,15 @@ export default function CustomizedTables({ onReportClick }) {
               <StyledTableCell>{report.nombre}</StyledTableCell>
               <StyledTableCell>{report.fecha}</StyledTableCell>
               <StyledTableCell>
-                <span style={getEstadoEstilo(report.estado)}>
-                  {report.estado}
-                </span>
+                <span style={getEstadoEstilo(report.estado)}>{report.estado}</span>
               </StyledTableCell>
               <StyledTableCell>
                 <img
                   src="svgs/options-vertical.svg"
-                  alt="icon"
+                  alt="Opciones"
                   width={25}
                   className="m-auto cursor-pointer"
-                  onClick={() => onReportClick(report)}
+                  onClick={() => onReportClick(report)} 
                 />
               </StyledTableCell>
             </StyledTableRow>
