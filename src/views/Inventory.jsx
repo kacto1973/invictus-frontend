@@ -5,9 +5,20 @@ import Header from "../components/Header";
 import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
 import Button from "../components/Button";
+import TextField from "@mui/material/TextField";
 
 const Inventory = () => {
   const [selectedReactant, setSelectedReactant] = useState(null);
+  const [activeModal, setActiveModal] = useState(null);
+
+  const MODAL_TYPE = {
+    AGREGAR_REACTIVO: "agregarReactivo",
+    AGREGAR_DEFECTUOSO: "agregarDefectuoso",
+    CONSULTAR_DEFECTUOSOS: "consultarDefectuosos",
+    CONSULTAR_ENTRADAS: "consultarEntradas",
+    CONSULTAR_SALIDAS: "consultarSalidas",
+    BORRAR_REACTIVO: "borrarReactivo",
+  };
 
   const handleReactantSelection = (reactant) => {
     setSelectedReactant(reactant);
@@ -19,7 +30,7 @@ const Inventory = () => {
       <Header label="Reactivos"></Header>
       {/*div padre de todo lo demas */}
       <div
-        className={`ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
+        className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
       >
         <p className=" absolute top-[37%] text-gray-600 right-[20%] text-regular w-[15rem] text-center font-bold">
           Haga click sobre un reactivo para ver su información
@@ -45,14 +56,14 @@ const Inventory = () => {
               classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-xl"
               icon="svgs/plus-sign.svg"
               label="Añadir"
-              onClick={() => console.log("Añadir")}
+              onClick={() => setActiveModal(MODAL_TYPE.AGREGAR_REACTIVO)}
             ></Button>
           </div>
 
           {/* pestaña que se despliega al seleccionar un reactivo */}
           <div
             className={`bg-white  h-full w-[94%] rounded-r-lg shadow-md ${
-              selectedReactant === null ? "hidden" : "relative z-50"
+              selectedReactant === null ? "hidden" : "relative"
             }`}
           >
             <div
@@ -77,7 +88,8 @@ const Inventory = () => {
               src="svgs/trash-red.svg"
               alt="icon"
               width={45}
-              className="absolute top-[2.5rem] right-[6rem]"
+              className="absolute top-[2.5rem] right-[6rem] cursor-pointer"
+              onClick={() => setActiveModal(MODAL_TYPE.BORRAR_REACTIVO)}
             />
 
             {/*div padre */}
@@ -205,6 +217,97 @@ const Inventory = () => {
             </div>
           </div>
         </div>
+
+        {/* pantalla opaca del fondo */}
+        {activeModal !== null && (
+          <div className="absolute top-0 left-0 w-full h-full bg-black z-40 opacity-40"></div>
+        )}
+        {/*modales*/}
+        {activeModal === MODAL_TYPE.BORRAR_REACTIVO && (
+          <div className=" flex justify-center w-[30%] h-[35%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50">
+            <p className="text-2xl font-bold text-left w-[80%] mt-[4rem]">
+              ¿Desea usted eliminar el reactivo: {selectedReactant?.nombre}?
+            </p>
+            <Button
+              onClick={() => {
+                console.log("Eliminando Reactivo..");
+                setActiveModal(null);
+              }}
+              classNames="absolute cursor-pointer hover:bg-[#CD1C1C] mx-auto bg-[#D41D1D] w-[12rem] h-[3rem] mt-5 shadow-md rounded-md text-bold text-white text-xl"
+              icon="svgs/minus-sign.svg"
+              label="Eliminar"
+            ></Button>
+          </div>
+        )}
+
+        {activeModal === MODAL_TYPE.AGREGAR_REACTIVO && (
+          <div className="w-[30%] h-[80%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10 z-50 flex justify-center">
+            <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
+              <p className="text-xl font-bold flex-start ml-5">
+                Agregar Reactivo
+              </p>
+              <div
+                onClick={() => {
+                  setActiveModal(null);
+                }}
+                className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              >
+                X
+              </div>
+            </div>
+            <div className="flex flex-col w-[70%] h-[100%-4rem] mt-[5.5rem]">
+              <TextField
+                id="outlined-basic"
+                label="Nombre"
+                variant="outlined"
+                margin="normal"
+              />
+              <TextField
+                id="outlined-basic"
+                label="Cantidad"
+                variant="outlined"
+                margin="normal"
+              />
+              <TextField
+                id="outlined-basic"
+                label="Marca"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Gabinete"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Presentación"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Código / Catálogo"
+                variant="outlined"
+                margin="normal"
+              />
+
+              <Button
+                onClick={() => {
+                  console.log("Agregando Reactivo nuevo..");
+                  setActiveModal(null);
+                }}
+                classNames="cursor-pointer hover:bg-[#6DBA43] mx-auto bg-[#79CB4C] w-[10rem] h-[3rem] mt-5 shadow-md rounded-md text-bold text-white text-xl"
+                icon="svgs/plus-sign.svg"
+                label="Añadir"
+              ></Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
