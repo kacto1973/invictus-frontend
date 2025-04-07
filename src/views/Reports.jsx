@@ -16,7 +16,8 @@ const reports = [
   { id: "RP007", nombre: "Reporte 20-03-25", fecha: "20/03/25", estado: "Completado" },
   { id: "RP008", nombre: "Reporte 20-03-25", fecha: "20/03/25", estado: "Error" },
   { id: "RP009", nombre: "Reporte 22-03-25", fecha: "22/03/25", estado: "Completado" },
-  { id: "RP010", nombre: "añoña", fecha: "24/03/25", estado: "Completado" }
+  { id: "RP010", nombre: "añoña", fecha: "24/03/25", estado: "Completado" },
+  { id: "RP011", nombre: "Reporte 28-03-25", fecha: "28/03/25", estado: "Completado" }
 ];
 
 const getFechaMasReciente = (reports) => {
