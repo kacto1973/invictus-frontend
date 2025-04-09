@@ -8,18 +8,26 @@ import Button from "../components/Button";
 import TextField from "@mui/material/TextField";
 
 const Inventory = () => {
+  /* STATES */
   const [selectedReactant, setSelectedReactant] = useState(null);
+  const [editReactant, setEditReactant] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
 
+  /* USE EFFECTS */
+  useEffect(() => {
+    if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
+      setEditReactant(selectedReactant);
+    }
+  }, [activeModal]);
+
+  /* CONSTANTS */
   const MODAL_TYPE = {
     AGREGAR_REACTIVO: "agregarReactivo",
-    AGREGAR_DEFECTUOSO: "agregarDefectuoso",
-    CONSULTAR_DEFECTUOSOS: "consultarDefectuosos",
-    CONSULTAR_ENTRADAS: "consultarEntradas",
-    CONSULTAR_SALIDAS: "consultarSalidas",
+    EDITAR_REACTIVO: "editarReactivo",
     BORRAR_REACTIVO: "borrarReactivo",
   };
 
+  /* METHODS */
   const handleReactantSelection = (reactant) => {
     setSelectedReactant(reactant);
   };
@@ -48,9 +56,18 @@ const Inventory = () => {
         </div>
         <div className="w-[65%] h-full flex flex-col pb-5 pr-5">
           <div className=" w-full h-[6.1rem] flex items-center">
-            <div className="bg-white w-[30%] h-[3rem] rounded-md shadow-md ml-5 flex items-center ">
-              <p className="ml-4">Seleccione Categoría</p>
-            </div>
+            <TextField
+              id="outlined-basic"
+              label="Marca"
+              variant="outlined"
+              select
+            />
+            <TextField
+              id="outlined-basic"
+              label="Categoría"
+              variant="outlined"
+              select
+            />
 
             <Button
               classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-xl"
@@ -72,18 +89,12 @@ const Inventory = () => {
             >
               {selectedReactant?.nombre}
             </div>
-            <img
-              src="svgs/edit-black.svg"
-              alt="icon"
-              width={45}
-              className="absolute top-[2.5rem] left-[5rem]"
-            />
-            <img
-              src="svgs/save-black.svg"
-              alt="icon"
-              width={45}
-              className="absolute top-[2.5rem] left-[12rem]"
-            />
+            <Button
+              label="Editar"
+              classNames="!absolute cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] left-10 top-10 shadow-md rounded-md text-bold text-white text-xl"
+              icon="svgs/edit-white.svg"
+              onClick={() => setActiveModal(MODAL_TYPE.EDITAR_REACTIVO)}
+            ></Button>
             <img
               src="svgs/trash-red.svg"
               alt="icon"
@@ -113,19 +124,6 @@ const Inventory = () => {
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <img
-                    src="svgs/plus-sign.svg"
-                    alt="plus icon"
-                    width={40}
-                    className="p-2 bg-[#79CB4C] rounded-md bottom-8 right-18 absolute"
-                  />
-                  <img
-                    src="svgs/minus-sign.svg"
-                    alt="minus icon"
-                    width={40}
-                    className="p-2 bg-[#79CB4C] rounded-md bottom-8 left-18 absolute"
-                  />
-
                   <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[12rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
                     Cantidad
                   </p>
@@ -165,37 +163,6 @@ const Inventory = () => {
               </div>
             </div>
 
-            {/*div de opciones defecto, salidas, entradas, etc. */}
-            <div className=" w-[25%] h-[15rem] flex flex-col absolute bottom-5 items-center justify-around ">
-              <Button
-                classNames="hover:bg-[#312FC2] bg-[#5553D0] w-[80%] ml-4
-                 shadow-md rounded-md text-bold text-white text-xl"
-                icon="svgs/plus-sign.svg"
-                label="Defecto"
-                onClick={() => console.log("Añadir")}
-              ></Button>
-              <Button
-                classNames="hover:bg-[#312FC2] w-[80%] bg-[#5553D0]  ml-4
-                 shadow-md rounded-md text-bold text-white text-xl"
-                icon="svgs/book-white.svg"
-                label="Defecto"
-                onClick={() => console.log("Añadir")}
-              ></Button>
-              <Button
-                classNames="hover:bg-[#EAB905] w-[80%] bg-[#FFC800]  ml-4
-                 shadow-md rounded-md text-bold text-white text-xl"
-                icon="svgs/arrow-right-black.svg"
-                label="Salidas"
-                onClick={() => console.log("Añadir")}
-              ></Button>
-              <Button
-                classNames="hover:bg-[#EAB905] w-[80%] bg-[#FFC800]  ml-4
-                 shadow-md rounded-md text-bold text-white text-xl"
-                icon="svgs/arrow-left-good.svg"
-                label="Entradas"
-                onClick={() => console.log("Añadir")}
-              ></Button>
-            </div>
             <div
               className="w-[65%] h-[15rem] bg-[#DBE1DA] 
               rounded-4xl flex flex-col absolute bottom-5 left-[18rem] 
@@ -224,8 +191,8 @@ const Inventory = () => {
         )}
         {/*modales*/}
         {activeModal === MODAL_TYPE.BORRAR_REACTIVO && (
-          <div className=" flex justify-center w-[30%] h-[35%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50">
-            <p className="text-2xl font-bold text-left w-[80%] mt-[4rem]">
+          <div className=" flex justify-center w-[30%] h-[30%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50">
+            <p className="text-2xl font-bold text-left w-[80%] top-[4rem] left-1/2 bottom-0 -translate-x-1/2 absolute ">
               ¿Desea usted eliminar el reactivo: {selectedReactant?.nombre}?
             </p>
             <Button
@@ -233,10 +200,108 @@ const Inventory = () => {
                 console.log("Eliminando Reactivo..");
                 setActiveModal(null);
               }}
-              classNames="absolute cursor-pointer hover:bg-[#CD1C1C] mx-auto bg-[#D41D1D] w-[12rem] h-[3rem] mt-5 shadow-md rounded-md text-bold text-white text-xl"
+              classNames="!absolute cursor-pointer hover  :bg-[#CD1C1C] bg-[#D41D1D] w-[12rem] h-[3rem] left-1/2 -translate-x-1/2 bottom-10 shadow-md rounded-md text-bold text-white text-xl"
               icon="svgs/minus-sign.svg"
               label="Eliminar"
             ></Button>
+            <span
+              onClick={() => {
+                setActiveModal(null);
+              }}
+              className="absolute right-4 top-4 font-bold text-2xl cursor-pointer"
+            >
+              X
+            </span>
+          </div>
+        )}
+
+        {activeModal === MODAL_TYPE.EDITAR_REACTIVO && (
+          <div className="w-[30%] h-[80%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10 z-50 flex justify-center">
+            <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
+              <p className="text-xl font-bold flex-start ml-5">
+                Editar {selectedReactant?.nombre}
+              </p>
+              <div
+                onClick={() => {
+                  setActiveModal(null);
+                }}
+                className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              >
+                X
+              </div>
+            </div>
+            <div className="flex flex-col w-[70%] h-[100%-4rem] mt-[5.5rem]">
+              <TextField
+                id="outlined-basic"
+                label="Nombre"
+                variant="outlined"
+                margin="normal"
+                value={editReactant?.nombre}
+                onChange={(e) => {
+                  setEditReactant({
+                    ...editReactant,
+                    nombre: e.target.value,
+                  });
+                }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Cantidad"
+                variant="outlined"
+                margin="normal"
+                value={editReactant?.cantidad}
+                onChange={(e) => {
+                  setEditReactant({
+                    ...editReactant,
+                    cantidad: e.target.value,
+                  });
+                }}
+              />
+              <TextField
+                id="outlined-basic"
+                label="Marca"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Gabinete"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Presentación"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Código / Catálogo"
+                variant="outlined"
+                margin="normal"
+                value={editReactant?.id}
+                onChange={(e) => {
+                  setEditReactant({
+                    ...editReactant,
+                    id: e.target.value,
+                  });
+                }}
+              />
+
+              <Button
+                onClick={() => {
+                  console.log("Agregando Reactivo nuevo..");
+                  setActiveModal(null);
+                }}
+                classNames="cursor-pointer hover:bg-[#6DBA43] mx-auto bg-[#79CB4C] w-[12rem] h-[3rem] mt-5 shadow-md rounded-md text-bold text-white text-xl"
+                icon="svgs/plus-sign.svg"
+                label="Confirmar"
+              ></Button>
+            </div>
           </div>
         )}
 

@@ -63,6 +63,8 @@ export default function TemporaryDrawer({ isOpen }) {
         {[
           { text: "Home", img: "/svgs/home.svg" },
           { text: "Inventario", img: "/svgs/box.svg" },
+          { text: "Movimientos", img: "/svgs/arrows-white.svg" },
+          { text: "Defectuosos", img: "/svgs/broken-white.svg" },
           { text: "Reportes", img: "/svgs/document.svg" },
           { text: "Configuración", img: "/svgs/gear.svg" },
         ].map((object) => (
