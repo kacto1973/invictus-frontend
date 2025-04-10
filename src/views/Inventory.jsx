@@ -61,12 +61,22 @@ const Inventory = () => {
               label="Marca"
               variant="outlined"
               select
+              sx={{
+                width: "16rem",
+                marginLeft: "2rem",
+                backgroundColor: "white",
+              }}
             />
             <TextField
               id="outlined-basic"
               label="Categoría"
               variant="outlined"
               select
+              sx={{
+                width: "16rem",
+                marginLeft: "2rem",
+                backgroundColor: "white",
+              }}
             />
 
             <Button
