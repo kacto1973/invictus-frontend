@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import Header from "../components/Header";
 import Card from "../components/Card";
-import BarChart from "../components/BarChart_home.jsx";
+import BarChart from "../components/BarChart.jsx";
 
 const Dashboard = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
@@ -54,7 +54,7 @@ const Dashboard = () => {
               classNames=" mt-10 w-[50%] h-[80%]"
               subClassNames="flex items-center justify-center"
             >
-              <BarChart></BarChart>
+              <BarChart />
             </Card>
             <Card
               label="Distribución de Reactivos"
