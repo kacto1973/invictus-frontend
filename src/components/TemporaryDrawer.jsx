@@ -11,6 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import DrawerButton from "./DrawerButton";
+import { useNavigate } from "react-router-dom";
 
 {
   /*<ListItem key={text} disablePadding>
@@ -26,6 +27,7 @@ import DrawerButton from "./DrawerButton";
 
 export default function TemporaryDrawer({ isOpen }) {
   const [open, setOpen] = React.useState(isOpen);
+  const navigator = useNavigate();
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -61,17 +63,33 @@ export default function TemporaryDrawer({ isOpen }) {
       </div>
       <List className="w-full flex flex-col items-center ">
         {[
-          { text: "Home", img: "/svgs/home.svg" },
-          { text: "Inventario", img: "/svgs/box.svg" },
-          { text: "Movimientos", img: "/svgs/arrows-white.svg" },
-          { text: "Defectuosos", img: "/svgs/broken-white.svg" },
-          { text: "Reportes", img: "/svgs/document.svg" },
-          { text: "Configuración", img: "/svgs/gear.svg" },
+          { text: "Menú Principal", img: "/svgs/home.svg", route: "" },
+          { text: "Inventario", img: "/svgs/box.svg", route: "inventory" },
+          {
+            text: "Movimientos",
+            img: "/svgs/arrows-white.svg",
+            route: "transactions",
+          },
+          {
+            text: "Equipo",
+            img: "/svgs/lab-machine-white.svg",
+            route: "equipment",
+          },
+
+          { text: "Reportes", img: "/svgs/document.svg", route: "reports" },
+          {
+            text: "Configuración",
+            img: "/svgs/gear.svg",
+            route: "settings",
+          },
         ].map((object) => (
           <DrawerButton
             buttonIcon={object.img}
             buttonText={object.text}
-            classNames="justify-start"
+            classNames="justify-start cursor-pointer "
+            onClick={() => {
+              navigator("/" + object.route);
+            }}
           ></DrawerButton>
         ))}
       </List>

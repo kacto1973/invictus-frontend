@@ -4,6 +4,7 @@ import TemporaryDrawer from "../components/TemporaryDrawer";
 import Header from "../components/Header";
 import Card from "../components/Card";
 import BarChart from "../components/BarChart.jsx";
+import PieChart from "../components/PieChart.jsx";
 
 const Dashboard = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
@@ -60,7 +61,12 @@ const Dashboard = () => {
               label="Distribución de Reactivos"
               icon={"svgs/flask-stripe-defect-ahh.svg"}
               classNames=" mt-10 w-[40%] h-[80%]"
-            ></Card>
+              subClassNames="flex items-center justify-center"
+            >
+              <div className="h-[90%] w-full flex justify-center">
+                <PieChart></PieChart>
+              </div>
+            </Card>
           </div>
         </div>
       </div>

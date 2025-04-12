@@ -11,7 +11,7 @@ const Card = ({ icon, label, children, classNames, subClassNames }) => {
       </div>
 
       <div
-        className={`w-full h-[calc(100%-3.5rem)] mt-[3.5rem]  ${subClassNames}`}
+        className={`w-full h-[calc(100%-3.5rem)] mt-[3.5rem] ${subClassNames}`}
       >
         {children}
       </div>

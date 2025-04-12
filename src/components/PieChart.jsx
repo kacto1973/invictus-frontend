@@ -23,7 +23,20 @@ const PieChart = () => {
     ],
   };
 
-  return <Pie data={data} />;
+  const options = {
+    plugins: {
+      legend: {
+        position: "bottom", // <- esto mueve las etiquetas al fondo
+        labels: {
+          font: {
+            size: 18,
+          },
+        },
+      },
+    },
+  };
+
+  return <Pie data={data} options={options} />;
 };
 
 export default PieChart;
