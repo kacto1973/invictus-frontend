@@ -20,30 +20,7 @@ ChartJS.register(
   Legend
 );
 
-const BarChart = () => {
-  const data = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
-    datasets: [
-      {
-        label: "Reactivos",
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
-      },
-    ],
-  };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      title: {
-        display: true,
-        text: "Distribución de Stock",
-      },
-    },
-  };
-
+const BarChart = ({ data, options }) => {
   return <Bar data={data} options={options} />;
 };
 

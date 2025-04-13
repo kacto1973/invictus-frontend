@@ -5,6 +5,8 @@ import Header from "../components/Header";
 import Card from "../components/Card";
 import BarChart from "../components/BarChart.jsx";
 import PieChart from "../components/PieChart.jsx";
+import { useQuery } from "@tanstack/react-query";
+import { fetchDashboard } from "../services/fetchers.js";
 
 const Dashboard = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
@@ -12,6 +14,59 @@ const Dashboard = () => {
   useEffect(() => {
     console.log(drawerOpened);
   }, [drawerOpened]);
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchDashboard,
+  });
+
+  /* configuraciones para gráficos */
+
+  const dataBarChart = {
+    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+    datasets: [
+      {
+        label: "Reactivos",
+        data: [12, 19, 3, 5, 2],
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const optionsBarChart = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "Distribución de Stock",
+      },
+    },
+  };
+
+  const dataPieChart = {
+    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+    datasets: [
+      {
+        label: "Reactivos",
+        data: [12, 19, 3, 5, 2],
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const optionsPieChart = {
+    responsive: true,
+    plugins: {
+      title: {
+        display: true,
+        text: "Distribución de Stock",
+      },
+    },
+  };
 
   return (
     <>
@@ -28,7 +83,9 @@ const Dashboard = () => {
               classNames=" mt-10 h-[80%] w-[25%]"
               subClassNames="flex items-center justify-center"
             >
-              <span className="text-[50px] font-semibold">1000</span>
+              <span className="text-[50px] font-semibold">
+                {data?.TotalReactivos}
+              </span>
             </Card>
 
             <Card
@@ -37,7 +94,10 @@ const Dashboard = () => {
               classNames=" mt-10 h-[80%] w-[25%]"
               subClassNames="flex items-center justify-center"
             >
-              <span className="text-[50px] font-semibold">1000</span>
+              <span className="text-[50px] font-semibold">
+                {" "}
+                {data?.TotalReactivosAdquiridos}
+              </span>
             </Card>
             <Card
               label="Reactivos Agotados"
@@ -45,7 +105,9 @@ const Dashboard = () => {
               classNames=" mt-10 h-[80%] w-[25%]"
               subClassNames="flex items-center justify-center"
             >
-              <span className="text-[50px] font-semibold">1000</span>
+              <span className="text-[50px] font-semibold">
+                {data?.TotalReactivosAgotados}
+              </span>
             </Card>
           </div>
           <div className="flex flex-row w-full justify-around h-[65%]">
@@ -55,7 +117,7 @@ const Dashboard = () => {
               classNames=" mt-10 w-[50%] h-[80%]"
               subClassNames="flex items-center justify-center"
             >
-              <BarChart />
+              <BarChart data={dataBarChart} options={optionsBarChart} />
             </Card>
             <Card
               label="Distribución de Reactivos"
