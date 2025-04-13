@@ -23,11 +23,23 @@ const Dashboard = () => {
   /* configuraciones para gráficos */
 
   const dataBarChart = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+    labels: [
+      data?.datosGraficaUnidadMedida[0]._id,
+      data?.datosGraficaUnidadMedida[2]._id,
+      data?.datosGraficaUnidadMedida[3]._id,
+      data?.datosGraficaUnidadMedida[1]._id,
+      data?.datosGraficaUnidadMedida[4]._id,
+    ],
     datasets: [
       {
         label: "Reactivos",
-        data: [12, 19, 3, 5, 2],
+        data: [
+          data?.datosGraficaUnidadMedida[0].totalCantidad,
+          data?.datosGraficaUnidadMedida[2].totalCantidad,
+          data?.datosGraficaUnidadMedida[3].totalCantidad,
+          data?.datosGraficaUnidadMedida[1].totalCantidad,
+          data?.datosGraficaUnidadMedida[4].totalCantidad,
+        ],
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -38,9 +50,36 @@ const Dashboard = () => {
   const optionsBarChart = {
     responsive: true,
     plugins: {
+      legend: {
+        position: "bottom",
+        labels: {
+          font: {
+            size: 18,
+          },
+        },
+      },
       title: {
         display: true,
         text: "Distribución de Stock",
+        font: {
+          size: 20,
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: {
+          font: {
+            size: 16,
+          },
+        },
+      },
+      y: {
+        ticks: {
+          font: {
+            size: 16,
+          },
+        },
       },
     },
   };
