@@ -24,9 +24,9 @@ const Dashboard = () => {
     ?.slice()
     ?.sort((a, b) => a._id.localeCompare(b._id));
 
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
+  const orderedDataPieChart = data?.datosGraficaEstadoFisico
+    ?.slice()
+    ?.sort((a, b) => a._id.localeCompare(b._id));
 
   const dataBarChart = {
     labels: orderedDataBarChart?.map((item) => item._id),
@@ -78,18 +78,12 @@ const Dashboard = () => {
     },
   };
 
-  /*const dataPieChart = {
-    labels: [
-      data?.datosGraficaEstadoFisico[0]._id,
-      data?.datosGraficaEstadoFisico[1]._id,
-    ],
+  const dataPieChart = {
+    labels: orderedDataPieChart?.map((item) => item._id),
     datasets: [
       {
         label: "Reactivos por Estado Físico",
-        data: [
-          data?.datosGraficaEstadoFisico[0].totalCantidad,
-          data?.datosGraficaEstadoFisico[1].totalCantidad,
-        ],
+        data: orderedDataPieChart?.map((item) => item.totalCantidad),
         backgroundColor: ["red", "blue"],
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -105,7 +99,7 @@ const Dashboard = () => {
         text: "Distribución de Stock",
       },
     },
-  }; */
+  };
 
   return (
     <>
@@ -165,10 +159,10 @@ const Dashboard = () => {
               subClassNames="flex items-center justify-center"
             >
               <div className="h-[90%] w-full flex justify-center">
-                {/* <PieChart
+                <PieChart
                   data={dataPieChart}
                   options={optionsPieChart}
-                ></PieChart> */}
+                ></PieChart>
               </div>
             </Card>
           </div>

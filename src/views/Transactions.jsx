@@ -28,6 +28,7 @@ const Transactions = () => {
                 backgroundColor: "white",
               }}
             />
+
             <Button
               classNames="bg-[#6DBA43] text-white w-[10rem] h-[3rem] ml-5"
               label="Añadir"
