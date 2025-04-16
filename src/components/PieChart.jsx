@@ -11,8 +11,8 @@ import {
 // Registrar los elementos necesarios de Chart.js
 ChartJS.register(ArcElement, CategoryScale, Tooltip, Legend);
 
-const PieChart = () => {
-  const data = {
+const PieChart = ({ data, options }) => {
+  /* const data = {
     labels: ["Red", "Blue", "Yellow"],
     datasets: [
       {
@@ -35,6 +35,7 @@ const PieChart = () => {
       },
     },
   };
+ */
 
   return <Pie data={data} options={options} />;
 };

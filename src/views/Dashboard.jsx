@@ -20,26 +20,20 @@ const Dashboard = () => {
     queryFn: fetchDashboard,
   });
 
-  /* configuraciones para gráficos */
+  const orderedDataBarChart = data?.datosGraficaUnidadMedida
+    ?.slice()
+    ?.sort((a, b) => a._id.localeCompare(b._id));
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const dataBarChart = {
-    labels: [
-      data?.datosGraficaUnidadMedida[0]._id,
-      data?.datosGraficaUnidadMedida[2]._id,
-      data?.datosGraficaUnidadMedida[3]._id,
-      data?.datosGraficaUnidadMedida[1]._id,
-      data?.datosGraficaUnidadMedida[4]._id,
-    ],
+    labels: orderedDataBarChart?.map((item) => item._id),
     datasets: [
       {
         label: "Reactivos",
-        data: [
-          data?.datosGraficaUnidadMedida[0].totalCantidad,
-          data?.datosGraficaUnidadMedida[2].totalCantidad,
-          data?.datosGraficaUnidadMedida[3].totalCantidad,
-          data?.datosGraficaUnidadMedida[1].totalCantidad,
-          data?.datosGraficaUnidadMedida[4].totalCantidad,
-        ],
+        data: orderedDataBarChart?.map((item) => item.totalCantidad),
         backgroundColor: "rgba(75, 192, 192, 0.2)",
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
@@ -84,13 +78,19 @@ const Dashboard = () => {
     },
   };
 
-  const dataPieChart = {
-    labels: ["Enero", "Febrero", "Marzo", "Abril", "Mayo"],
+  /*const dataPieChart = {
+    labels: [
+      data?.datosGraficaEstadoFisico[0]._id,
+      data?.datosGraficaEstadoFisico[1]._id,
+    ],
     datasets: [
       {
-        label: "Reactivos",
-        data: [12, 19, 3, 5, 2],
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        label: "Reactivos por Estado Físico",
+        data: [
+          data?.datosGraficaEstadoFisico[0].totalCantidad,
+          data?.datosGraficaEstadoFisico[1].totalCantidad,
+        ],
+        backgroundColor: ["red", "blue"],
         borderColor: "rgba(75, 192, 192, 1)",
         borderWidth: 1,
       },
@@ -105,7 +105,7 @@ const Dashboard = () => {
         text: "Distribución de Stock",
       },
     },
-  };
+  }; */
 
   return (
     <>
@@ -165,7 +165,10 @@ const Dashboard = () => {
               subClassNames="flex items-center justify-center"
             >
               <div className="h-[90%] w-full flex justify-center">
-                <PieChart></PieChart>
+                {/* <PieChart
+                  data={dataPieChart}
+                  options={optionsPieChart}
+                ></PieChart> */}
               </div>
             </Card>
           </div>

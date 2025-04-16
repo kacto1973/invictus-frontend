@@ -8,8 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target:
-          "https://4000-kacto1973-invictusbacke-ixur9tgp4m8.ws-us118.gitpod.io",
+        target: "https://prueba-invictus-vww8.vercel.app",
         changeOrigin: true,
         secure: false,
       },
