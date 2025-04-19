@@ -8,9 +8,6 @@ import { useState } from "react";
 
 const Equipment = () => {
 
- 
-   
-
     const equiposLaboratorio = [
       {
         nombre: "Microscopio Óptico",
@@ -68,10 +65,10 @@ const Equipment = () => {
           />
          </div>
          
-         <div className="w-[40%] h-[80%] mt-5 flex   ">
-            <div className="relative w-full h-full bg-white shadow-md rounded-md overflow-hidden">
+         <div className="w-[40%] h-[80%] mt-5 flex flex-col ">
+            <div className="relative w-full h-full  bg-white shadow-md rounded-md overflow-hidden">
               <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center "><p className="ml-5 *:">Equipo de Laboratorio</p></div>
-              <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col items-center overflow-y-auto">
+              <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col   items-center overflow-y-auto">
               {equiposLaboratorio.map((equipo, index) => (
                 <div className="w-[80%]  bg-white shadow-md border-2     rounded-md relative mt-4 mb-2 ">
                       <img className="" width={130} src="images/machine-sample.png" alt="machine image" />
@@ -84,6 +81,32 @@ const Equipment = () => {
               </div>
             </div>
          </div>
+         <div className="w-[23.5%] h-[32%] absolute top-[12.75rem] ml-[45rem] flex-col">
+         <div className="relative w-full h-full  bg-white shadow-md rounded-md overflow-hidden">
+              <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center "><p className="ml-5 *:">Calendarización de Uso de Equipo</p></div>
+              <div className="w-full mt-[3rem] h-[100%] flex flex-col  items-center overflow-y-auto">
+              <img
+            src="svgs/calendar-black.svg"
+            alt="clock icon"
+            className="hover:bg-[#C0BEBE] bg-[#E0DFDF] w-[70%] h-[70%] border-8 border-[#E0DFDF] mt-3 mb-3 ml-2 rounded-md"
+          />
+              </div>
+            </div>
+         </div>
+
+         <div className="w-[23.5%] h-[32%] absolute top-[30.75rem] ml-[45rem] flex-col ">
+         <div className="relative w-full h-full bg-white shadow-md rounded-md overflow-hidden">
+              <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center "><p className="ml-5 *:">Calendarización de Servicio de Equipo</p></div>
+              <div className="w-full mt-[3rem] h-[100%] flex flex-col items-center overflow-y-auto">
+              <img
+            src="svgs/tools-icon.svg"
+            alt="clock icon"
+            className="hover:bg-[#C0BEBE] bg-[#E0DFDF] w-[70%] h-[70%] border-8 border-[#E0DFDF] mt-3 mb-3 ml-2 rounded-md"
+          />
+            </div>
+            </div>
+         </div>        
+
       </div>
     </div>
   );
