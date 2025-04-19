@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useEffect, useState } from "react";
 import { rgbToHex, styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,6 +8,10 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { useQuery } from "@tanstack/react-query";
+import { fetchInventory } from "../services/fetchers.js";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,217 +33,37 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-/*dummy data */
-const reactants = [
-  {
-    id: "R001",
-    gabinete: "A1",
-    marca: "Sigma",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Ácido Sulfúrico",
-    esPeligroso: true,
-    cantidad: 500,
-  },
-  {
-    id: "R002",
-    gabinete: "B2",
-    marca: "Merck",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Sulfato de Cobre",
-    esPeligroso: false,
-    cantidad: 250,
-  },
-  {
-    id: "R003",
-    gabinete: "C3",
-    marca: "Fisher",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Ethanol",
-    esPeligroso: true,
-    cantidad: 1000,
-  },
-  {
-    id: "R004",
-    gabinete: "D4",
-    marca: "PanReac",
-    unidadMedida: "g",
-    estadoFisico: "Polvo",
-    nombre: "Nitrato de Plata",
-    esPeligroso: true,
-    cantidad: 100,
-  },
-  {
-    id: "R005",
-    gabinete: "E5",
-    marca: "J.T. Baker",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Acetona",
-    esPeligroso: true,
-    cantidad: 750,
-  },
-  {
-    id: "R006",
-    gabinete: "F6",
-    marca: "Sigma",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Cloruro de Sodio",
-    esPeligroso: false,
-    cantidad: 500,
-  },
-  {
-    id: "R007",
-    gabinete: "G7",
-    marca: "Merck",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Ácido Clorhídrico",
-    esPeligroso: true,
-    cantidad: 1000,
-  },
-  {
-    id: "R008",
-    gabinete: "H8",
-    marca: "Fisher",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Óxido de Calcio",
-    esPeligroso: false,
-    cantidad: 300,
-  },
-  {
-    id: "R009",
-    gabinete: "I9",
-    marca: "PanReac",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Glicerina",
-    esPeligroso: false,
-    cantidad: 500,
-  },
-  {
-    id: "R010",
-    gabinete: "J10",
-    marca: "J.T. Baker",
-    unidadMedida: "g",
-    estadoFisico: "Polvo",
-    nombre: "Óxido de Zinc",
-    esPeligroso: false,
-    cantidad: 400,
-  },
-  {
-    id: "R011",
-    gabinete: "K11",
-    marca: "Sigma",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Tolueno",
-    esPeligroso: true,
-    cantidad: 600,
-  },
-  {
-    id: "R012",
-    gabinete: "L12",
-    marca: "Merck",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Carbonato de Sodio",
-    esPeligroso: false,
-    cantidad: 700,
-  },
-  {
-    id: "R013",
-    gabinete: "M13",
-    marca: "Fisher",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Metanol",
-    esPeligroso: true,
-    cantidad: 850,
-  },
-  {
-    id: "R014",
-    gabinete: "N14",
-    marca: "PanReac",
-    unidadMedida: "g",
-    estadoFisico: "Polvo",
-    nombre: "Sulfato de Aluminio",
-    esPeligroso: false,
-    cantidad: 500,
-  },
-  {
-    id: "R015",
-    gabinete: "O15",
-    marca: "J.T. Baker",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Benceno",
-    esPeligroso: true,
-    cantidad: 450,
-  },
-  {
-    id: "R016",
-    gabinete: "P16",
-    marca: "Sigma",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Óxido de Hierro",
-    esPeligroso: false,
-    cantidad: 550,
-  },
-  {
-    id: "R017",
-    gabinete: "Q17",
-    marca: "Merck",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Cloroformo",
-    esPeligroso: true,
-    cantidad: 300,
-  },
-  {
-    id: "R018",
-    gabinete: "R18",
-    marca: "Fisher",
-    unidadMedida: "g",
-    estadoFisico: "Polvo",
-    nombre: "Fosfato de Calcio",
-    esPeligroso: false,
-    cantidad: 200,
-  },
-  {
-    id: "R019",
-    gabinete: "S19",
-    marca: "PanReac",
-    unidadMedida: "ml",
-    estadoFisico: "Líquido",
-    nombre: "Ácido Nítrico",
-    esPeligroso: true,
-    cantidad: 700,
-  },
-  {
-    id: "R020",
-    gabinete: "T20",
-    marca: "J.T. Baker",
-    unidadMedida: "g",
-    estadoFisico: "Sólido",
-    nombre: "Permanganato de Potasio",
-    esPeligroso: true,
-    cantidad: 250,
-  },
-];
-
 function openDetails(reactant) {
   console.log(reactant);
 }
 
-export default function CustomizedTables({ onReactantClick }) {
+export default function CustomizedTables({ onReactantClick, filter }) {
+  /* useStates */
+  const [showAlert, setShowAlert] = useState(false);
+
+  /* tanstack */
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchInventory,
+  });
+
+  /*filtro */
+  const newData = data?.filter((reactant) =>
+    reactant?.nombre?.toLowerCase().includes(filter?.toLowerCase())
+  );
+
+  /*useEffect */
+  useEffect(() => {
+    if (newData?.length === 0) {
+      setShowAlert(true);
+      console.log("No hay resultados");
+    } else {
+      setShowAlert(false);
+    }
+  }, [newData]);
+
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
       <Table sx={{ minWidth: 300 }} aria-label="customized table">
         <TableHead>
           <TableRow>
@@ -248,10 +73,10 @@ export default function CustomizedTables({ onReactantClick }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {reactants.map((reactant) => (
-            <StyledTableRow key={reactant.nombre}>
-              <StyledTableCell>{reactant.nombre}</StyledTableCell>
-              <StyledTableCell>{reactant.gabinete}</StyledTableCell>
+          {newData?.map((reactant) => (
+            <StyledTableRow key={reactant?.nombre}>
+              <StyledTableCell>{reactant?.nombre}</StyledTableCell>
+              <StyledTableCell>{reactant?.idGabinete?.nombre}</StyledTableCell>
               <StyledTableCell>
                 <img
                   src="svgs/details.svg"
@@ -260,7 +85,6 @@ export default function CustomizedTables({ onReactantClick }) {
                   className="m-auto cursor-pointer"
                   onClick={() => {
                     onReactantClick(reactant);
-                    console.log(reactant);
                   }}
                 />
               </StyledTableCell>
@@ -268,6 +92,13 @@ export default function CustomizedTables({ onReactantClick }) {
           ))}
         </TableBody>
       </Table>
+      {showAlert && (
+        <div className="pt-3 bg-[#EDEDED]">
+          <Alert variant="filled" severity="info">
+            No hay resultados con el nombre escrito.
+          </Alert>
+        </div>
+      )}
     </TableContainer>
   );
 }

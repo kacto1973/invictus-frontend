@@ -6,19 +6,16 @@ import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
 import Button from "../components/Button";
 import TextField from "@mui/material/TextField";
+import { fetchCategories, fetchBranches } from "../services/fetchers";
+import { useQuery } from "@tanstack/react-query";
+import MenuItem from "@mui/material/MenuItem";
 
 const Inventory = () => {
   /* STATES */
   const [selectedReactant, setSelectedReactant] = useState(null);
   const [editReactant, setEditReactant] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
-
-  /* USE EFFECTS */
-  useEffect(() => {
-    if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
-      setEditReactant(selectedReactant);
-    }
-  }, [activeModal]);
+  const [search, setSearch] = useState("");
 
   /* CONSTANTS */
   const MODAL_TYPE = {
@@ -31,6 +28,29 @@ const Inventory = () => {
   const handleReactantSelection = (reactant) => {
     setSelectedReactant(reactant);
   };
+
+  /* tanstack */
+  const { data: marcas } = useQuery({
+    queryKey: ["marcas"],
+    queryFn: fetchBranches,
+  });
+
+  const { data: categorias } = useQuery({
+    queryKey: ["categorias"],
+    queryFn: fetchCategories,
+  });
+
+  /* USE EFFECTS */
+  useEffect(() => {
+    if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
+      setEditReactant(selectedReactant);
+    }
+  }, [activeModal]);
+
+  /*  useEffect(() => {
+    console.log("Marcas: ", marcas);
+    console.log("Categorias: ", categorias);
+  }, [categorias, marcas]); */
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
@@ -49,8 +69,12 @@ const Inventory = () => {
           className="absolute top-[45%] right-[20%]"
         />
         <div className="w-[35%] h-full flex flex-col p-5 pr-0">
-          <SearchBox classNames="w-full h-[3rem] mb-5"></SearchBox>
+          <SearchBox
+            onChange={(e) => setSearch(e.target.value)}
+            classNames="w-full h-[3rem] mb-5"
+          ></SearchBox>
           <ReactantTable
+            filter={search}
             onReactantClick={handleReactantSelection}
           ></ReactantTable>
         </div>
@@ -66,7 +90,13 @@ const Inventory = () => {
                 marginLeft: "2rem",
                 backgroundColor: "white",
               }}
-            />
+            >
+              {marcas?.map((marca) => (
+                <MenuItem key={marca.nombre} value={marca.nombre}>
+                  {marca.nombre}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
               id="outlined-basic"
               label="Categoría"
@@ -77,7 +107,13 @@ const Inventory = () => {
                 marginLeft: "2rem",
                 backgroundColor: "white",
               }}
-            />
+            >
+              {categorias?.map((categoria) => (
+                <MenuItem key={categoria.nombre} value={categoria.nombre}>
+                  {categoria.nombre}
+                </MenuItem>
+              ))}
+            </TextField>
 
             <Button
               classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-xl"
@@ -122,7 +158,7 @@ const Inventory = () => {
                     Marca
                   </p>
                   <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
-                    {selectedReactant?.marca}
+                    {selectedReactant?.idMarca?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
@@ -130,7 +166,7 @@ const Inventory = () => {
                     Presentación
                   </p>
                   <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
-                    {selectedReactant?.unidadMedida}
+                    {selectedReactant?.idUnidadMedida?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
@@ -150,24 +186,23 @@ const Inventory = () => {
                     Código/ID
                   </p>
                   <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
-                    {selectedReactant?.id}
+                    {selectedReactant?.codigoCatalogo}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[12rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
-                    Categoría
+                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[14rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                    Estado Físico
                   </p>
                   <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
-                    {selectedReactant?.estadoFisico}
+                    {selectedReactant?.idEstadoFisico?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
                   <p className="bg-[#C796EB] py-2 text-center px-8 rounded-full w-[16rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
-                    Ult. Movimiento
+                    Categoría
                   </p>
                   <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
-                    {/*selectedReactant?.lastSeen */}
-                    Ayer
+                    {selectedReactant?.idCategoria?.nombre}
                   </span>
                 </div>
               </div>
