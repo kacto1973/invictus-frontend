@@ -17,7 +17,7 @@ const Transactions = () => {
       >
         <div className="w-1/2 h-full flex flex-col p-5">
           <div className="w-full flex flex-row">
-            <SearchBox classNames="w-[25rem] h-[3rem] mb-5 mr-5"></SearchBox>
+            <SearchBox classNames="w-[18rem] h-[3rem] mb-5 mr-5"></SearchBox>
             <TextField
               id="outlined-basic"
               label="Movimiento"
@@ -32,7 +32,6 @@ const Transactions = () => {
             <Button
               classNames="bg-[#6DBA43] text-white w-[10rem] h-[3rem] ml-5"
               label="Añadir"
-              icon="svgs/plus-sign.svg"
               onClick={() => {}}
             ></Button>
           </div>
