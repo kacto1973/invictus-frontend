@@ -48,9 +48,21 @@ export default function CustomizedTables({ onReactantClick, filter }) {
   });
 
   /*filtro */
-  const newData = data?.filter((reactant) =>
-    reactant?.nombre?.toLowerCase().includes(filter?.toLowerCase())
-  );
+  const newData = data?.filter((reactant) => {
+    const nameMatch = reactant?.nombre
+      ?.toLowerCase()
+      .includes(filter?.nameFilter?.toLowerCase() || "");
+
+    const brandMatch = reactant?.idMarca?.nombre
+      ?.toLowerCase()
+      .includes(filter?.brandFilter?.toLowerCase() || "");
+
+    const categoryMatch = reactant?.idCategoria?.nombre
+      ?.toLowerCase()
+      .includes(filter?.categoryFilter?.toLowerCase() || "");
+
+    return nameMatch && brandMatch && categoryMatch;
+  });
 
   /*useEffect */
   useEffect(() => {
@@ -65,7 +77,7 @@ export default function CustomizedTables({ onReactantClick, filter }) {
   return (
     <TableContainer component={Paper} sx={{ boxShadow: "none" }}>
       <Table sx={{ minWidth: 300 }} aria-label="customized table">
-        <TableHead>
+        <TableHead sx={{ position: "sticky", top: 0, zIndex: 1 }}>
           <TableRow>
             <StyledTableCell>Nombre</StyledTableCell>
             <StyledTableCell>Gabinete</StyledTableCell>

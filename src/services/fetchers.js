@@ -16,7 +16,7 @@ export const fetchCategories = async () => {
   return res.json();
 };
 
-export const fetchBranches = async () => {
+export const fetchBrands = async () => {
   const res = await fetch(`${BASE_URL}/marcas`);
   return res.json();
 };

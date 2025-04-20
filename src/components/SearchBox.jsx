@@ -1,7 +1,7 @@
 import { ClassNames } from "@emotion/react";
 import React from "react";
 
-const SearchBox = ({ classNames, onChange }) => {
+const SearchBox = ({ classNames, onChange, value }) => {
   return (
     <div className="relative">
       <img
@@ -11,6 +11,7 @@ const SearchBox = ({ classNames, onChange }) => {
         className="absolute left-3 top-3"
       />
       <input
+        value={value}
         type="text"
         placeholder="Buscar..."
         onChange={onChange}

@@ -6,7 +6,7 @@ import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
 import Button from "../components/Button";
 import TextField from "@mui/material/TextField";
-import { fetchCategories, fetchBranches } from "../services/fetchers";
+import { fetchCategories, fetchBrands } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -15,7 +15,11 @@ const Inventory = () => {
   const [selectedReactant, setSelectedReactant] = useState(null);
   const [editReactant, setEditReactant] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
-  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState({
+    nameFilter: "",
+    brandFilter: "",
+    categoryFilter: "",
+  });
 
   /* CONSTANTS */
   const MODAL_TYPE = {
@@ -32,7 +36,7 @@ const Inventory = () => {
   /* tanstack */
   const { data: marcas } = useQuery({
     queryKey: ["marcas"],
-    queryFn: fetchBranches,
+    queryFn: fetchBrands,
   });
 
   const { data: categorias } = useQuery({
@@ -46,6 +50,11 @@ const Inventory = () => {
       setEditReactant(selectedReactant);
     }
   }, [activeModal]);
+
+  /* USE EFFECTS */
+  useEffect(() => {
+    console.log("Filter: ", filter);
+  }, [filter]);
 
   /*  useEffect(() => {
     console.log("Marcas: ", marcas);
@@ -70,11 +79,14 @@ const Inventory = () => {
         />
         <div className="w-[35%] h-full flex flex-col p-5 pr-0">
           <SearchBox
-            onChange={(e) => setSearch(e.target.value)}
+            value={filter?.nameFilter}
+            onChange={(e) =>
+              setFilter({ ...filter, nameFilter: e.target.value })
+            }
             classNames="w-full h-[3rem] mb-5"
           ></SearchBox>
           <ReactantTable
-            filter={search}
+            filter={filter}
             onReactantClick={handleReactantSelection}
           ></ReactantTable>
         </div>
@@ -85,12 +97,26 @@ const Inventory = () => {
               label="Marca"
               variant="outlined"
               select
+              value={filter?.brandFilter}
+              onChange={(e) => {
+                setFilter({ ...filter, brandFilter: e.target.value });
+              }}
               sx={{
-                width: "16rem",
+                width: "10rem",
                 marginLeft: "2rem",
                 backgroundColor: "white",
               }}
+              SelectProps={{
+                MenuProps: {
+                  PaperProps: {
+                    style: {
+                      maxHeight: 200,
+                    },
+                  },
+                },
+              }}
             >
+              <MenuItem value="">Ninguna</MenuItem>
               {marcas?.map((marca) => (
                 <MenuItem key={marca.nombre} value={marca.nombre}>
                   {marca.nombre}
@@ -102,12 +128,26 @@ const Inventory = () => {
               label="Categoría"
               variant="outlined"
               select
+              value={filter?.categoryFilter}
+              onChange={(e) => {
+                setFilter({ ...filter, categoryFilter: e.target.value });
+              }}
               sx={{
-                width: "16rem",
+                width: "10rem",
                 marginLeft: "2rem",
                 backgroundColor: "white",
               }}
+              SelectProps={{
+                MenuProps: {
+                  PaperProps: {
+                    style: {
+                      maxHeight: 200,
+                    },
+                  },
+                },
+              }}
             >
+              <MenuItem value="">Ninguna</MenuItem>
               {categorias?.map((categoria) => (
                 <MenuItem key={categoria.nombre} value={categoria.nombre}>
                   {categoria.nombre}
@@ -116,7 +156,19 @@ const Inventory = () => {
             </TextField>
 
             <Button
-              classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-xl"
+              classNames="hover:bg-[#1a94c7] bg-[#1ba2db] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
+              label="Limpiar Filtros"
+              onClick={() => {
+                setFilter({
+                  nameFilter: "",
+                  brandFilter: "",
+                  categoryFilter: "",
+                });
+              }}
+            ></Button>
+
+            <Button
+              classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
               icon="svgs/plus-sign.svg"
               label="Añadir"
               onClick={() => setActiveModal(MODAL_TYPE.AGREGAR_REACTIVO)}
@@ -125,55 +177,54 @@ const Inventory = () => {
 
           {/* pestaña que se despliega al seleccionar un reactivo */}
           <div
-            className={`bg-white  h-full w-[94%] rounded-r-lg shadow-md ${
+            className={`bg-white  h-full w-[95%] rounded-r-lg shadow-md ${
               selectedReactant === null ? "hidden" : "relative"
             }`}
           >
             <div
-              className="w-[30%] bg-[#FFBB00] h-[4rem] absolute left-1/2 -translate-1/2 top-[4rem] 
-            text-3xl font-bold rounded-md text-center items-center flex justify-center"
+              className="w-[40%] bg-[#FFBB00] h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
+            text-2xl font-bold rounded-md text-center items-center flex justify-center"
             >
               {selectedReactant?.nombre}
             </div>
             <Button
               label="Editar"
-              classNames="!absolute cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] left-10 top-10 shadow-md rounded-md text-bold text-white text-xl"
-              icon="svgs/edit-white.svg"
+              classNames="!absolute cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[5rem] h-[2.5rem] left-10 top-5 shadow-md rounded-md text-bold text-white text-lg"
               onClick={() => setActiveModal(MODAL_TYPE.EDITAR_REACTIVO)}
             ></Button>
             <img
               src="svgs/trash-red.svg"
               alt="icon"
-              width={45}
-              className="absolute top-[2.5rem] right-[6rem] cursor-pointer"
+              width={30}
+              className="absolute top-5 right-5 cursor-pointer"
               onClick={() => setActiveModal(MODAL_TYPE.BORRAR_REACTIVO)}
             />
 
             {/*div padre */}
-            <div className="absolute w-full h-[47%] top-[15%] flex flex-col">
+            <div className="absolute w-full h-[45%] top-[15%] flex flex-col">
               {/*una mitad la de arriba */}
               <div className="w-full h-[50%] flex">
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[12rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Marca
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.idMarca?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[14rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Presentación
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.idUnidadMedida?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[12rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Cantidad
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.cantidad}
                   </span>
                 </div>
@@ -182,26 +233,26 @@ const Inventory = () => {
               {/*una mitad la de arriba */}
               <div className="w-full h-[50%]  flex relative">
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[12rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Código/ID
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.codigoCatalogo}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB]  py-2 text-center px-8 rounded-full w-[14rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Estado Físico
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.idEstadoFisico?.nombre}
                   </span>
                 </div>
                 <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                  <p className="bg-[#C796EB] py-2 text-center px-8 rounded-full w-[16rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-2xl">
+                  <p className="bg-[#C796EB] py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                     Categoría
                   </p>
-                  <span className="absolute bottom-10 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                  <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
                     {selectedReactant?.idCategoria?.nombre}
                   </span>
                 </div>
@@ -209,21 +260,21 @@ const Inventory = () => {
             </div>
 
             <div
-              className="w-[65%] h-[15rem] bg-[#DBE1DA] 
-              rounded-4xl flex flex-col absolute bottom-5 left-[18rem] 
+              className="w-[60%] h-[10rem] bg-[#DBE1DA] 
+              rounded-4xl flex flex-col absolute bottom-5 left-1/2 -translate-x-1/2
              justify-around  "
             >
               <img
                 src="svgs/EPP.svg"
-                width={230}
+                width={150}
                 className="p-3  top-2  left-0 absolute"
               />
-              <p className="text-2xl absolute w-[70%] font-[20px] right-0 top-10  z-50">
-                Recuerda hacer uso del equipo de protección:
+              <p className="text-xl absolute w-[60%] text-[18px] right-10 top-5  z-50">
+                <span className="font-bold">Equipo de protección:</span>
                 <ul>
-                  <li>-Bata de laboratorio </li>
-                  <li>-Guantes de nitrilo/látex</li>
-                  <li>-Gafas de protección</li>
+                  <li>•Bata de laboratorio </li>
+                  <li>•Guantes de nitrilo/látex</li>
+                  <li>•Gafas de protección</li>
                 </ul>
               </p>
             </div>
