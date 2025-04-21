@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import Header from "../components/Header";
-import SearchBox from "../components/SearchBox";
+import UnifiedSearchBox from "../components/UnifiedSearchBox";
 import ReportTable from "../components/ReportTable";
 import CardReport from "../components/CardReport";
 import Button from "../components/Button";
@@ -33,17 +33,29 @@ const getFechaMasReciente = (reports) => {
 };
 
 const Reports = () => {
+  const [searchValue, setSearchValue] = useState("");
   const fechaMasReciente = getFechaMasReciente(reports);
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
       <TemporaryDrawer />
       <Header label="Reportes" />
+
       <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex">
         <div className="w-[50%] h-full flex flex-col p-5 pr-0">
-          <SearchBox classNames="w-full h-[3rem] mb-5" />
+          {/* Nuevo SearchBox */}
+          <UnifiedSearchBox
+  classNames="mb-5"
+  value={searchValue}
+  onChange={(e) => setSearchValue(e.target.value)}
+  endIcon={
+    <img src="/svgs/Frame.svg" alt="Calendario" className="w-8 h-8" />
+  }
+/>
+
           <ReportTable onReportsClick={() => {}} reports={reports} />
         </div>
+
 
         <div className="w-[50%] h-[400px] flex flex-col p-10 pr-0">
           <CardReport
