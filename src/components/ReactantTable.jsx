@@ -86,7 +86,7 @@ export default function CustomizedTables({ onReactantClick, filter }) {
         </TableHead>
         <TableBody>
           {newData?.map((reactant) => (
-            <StyledTableRow key={reactant?.nombre}>
+            <StyledTableRow key={reactant?._id}>
               <StyledTableCell>{reactant?.nombre}</StyledTableCell>
               <StyledTableCell>{reactant?.idGabinete?.nombre}</StyledTableCell>
               <StyledTableCell>

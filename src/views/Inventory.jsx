@@ -9,13 +9,32 @@ import TextField from "@mui/material/TextField";
 import { fetchCategories, fetchBrands } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import MenuItem from "@mui/material/MenuItem";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 const Inventory = () => {
   /* STATES */
   const [selectedReactant, setSelectedReactant] = useState(null);
   const [editReactant, setEditReactant] = useState(null);
   const [newReactant, setNewReactant] = useState({
-    props: "props",
+    //OBLIGATORIO, EJ: anduaga, lo  mete el usuario
+    nombre: "",
+    //OPCIONAL, EJ: 1, lo mete el usuario (no se tiene que enviar al back)
+    cantidad: 0,
+    //OBLIGATORIO, lo fetcheas del back y lo selecciona de un dropdown el user
+    idMarca: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idGabinete: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idUnidadMedida: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idEstadoFisico: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idCategoria: "",
+    //OBLIGATORIO, se selecciona del dropdown por parte del usuario
+    esPeligroso: false,
+    //OBLIGATORIO, lo pone el usuario
+    codigoCatalogo: "",
   });
   const [activeModal, setActiveModal] = useState(null);
   const [filter, setFilter] = useState({
@@ -38,6 +57,14 @@ const Inventory = () => {
 
   const addReactant = (properties) => {
     console.log("adding reactant..");
+  };
+
+  const updateReactant = (id) => {
+    console.log("editing reactant..");
+  };
+
+  const deleteReactant = (id) => {
+    console.log("deleting reactant..");
   };
 
   /* tanstack */
@@ -303,6 +330,7 @@ const Inventory = () => {
           <Button
             onClick={() => {
               console.log("Eliminando Reactivo..");
+              deleteReactant(selectedReactant?.id);
               setActiveModal(null);
             }}
             classNames="!absolute cursor-pointer hover  :bg-[#CD1C1C] bg-[#D41D1D] w-[8rem] h-[2rem] left-1/2 -translate-x-1/2 bottom-8 shadow-md rounded-md text-bold text-white text-LG"
@@ -447,9 +475,40 @@ const Inventory = () => {
                 variant="outlined"
                 margin="normal"
               />
+
+              <TextField
+                id="outlined-basic"
+                label="Código / Catálogo"
+                variant="outlined"
+                margin="normal"
+              />
+
               <TextField
                 id="outlined-basic"
                 label="Marca"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+            </div>
+            <div className="flex flex-col w-[45%] h-full">
+              <TextField
+                id="outlined-basic"
+                label="Unidad Medida"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Estado Físico"
+                variant="outlined"
+                margin="normal"
+                select
+              />
+              <TextField
+                id="outlined-basic"
+                label="Categoría"
                 variant="outlined"
                 margin="normal"
                 select
@@ -462,35 +521,21 @@ const Inventory = () => {
                 select
               />
             </div>
-            <div className="flex flex-col w-[45%] h-full">
-              <TextField
-                id="outlined-basic"
-                label="Presentación"
-                variant="outlined"
-                margin="normal"
-                select
-              />
-              <TextField
-                id="outlined-basic"
-                label="Código / Catálogo"
-                variant="outlined"
-                margin="normal"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Presentación"
-                variant="outlined"
-                margin="normal"
-                select
-              />
-              <TextField
-                id="outlined-basic"
-                label="Código / Catálogo"
-                variant="outlined"
-                margin="normal"
-              />
-            </div>
           </div>
+          <div className="absolute right-25 bottom-15">
+            <Checkbox
+              checked={newReactant.esPeligroso}
+              onChange={(e) =>
+                setNewReactant({
+                  ...newReactant,
+                  esPeligroso: e.target.checked,
+                })
+              }
+              color="primary"
+            />
+            ¿Es Peligroso?
+          </div>
+
           <Button
             onClick={() => {
               console.log(
@@ -498,7 +543,7 @@ const Inventory = () => {
               );
               setActiveModal(null);
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
             icon="svgs/plus-sign.svg"
             label="Añadir"
           ></Button>
