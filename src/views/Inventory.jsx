@@ -12,11 +12,14 @@ import {
   fetchDrawers,
   fetchMeasurements,
   fetchPhysicalStates,
+  fetchNewReactant,
 } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { useQueryClient } from "@tanstack/react-query";
+import { fetchInventory } from "../services/fetchers";
 
 const Inventory = () => {
   /* STATES */
@@ -61,24 +64,57 @@ const Inventory = () => {
     setSelectedReactant(reactant);
   };
 
+  const checkEntries = (reactantObject) => {
+    if (reactantObject.nombre === "") {
+      alert("El nombre del reactivo es obligatorio");
+      return false;
+    }
+    if (reactantObject.cantidad < 0) {
+      alert("La cantidad no puede ser negativa");
+      return false;
+    }
+    if (reactantObject.codigoCatalogo === "") {
+      alert("El código de catálogo es obligatorio");
+      return false;
+    }
+    if (reactantObject.idMarca === "") {
+      alert("La marca es obligatoria");
+      return false;
+    }
+    if (reactantObject.idUnidadMedida === "") {
+      alert("La unidad de medida es obligatoria");
+      return false;
+    }
+    if (reactantObject.idEstadoFisico === "") {
+      alert("El estado físico es obligatorio");
+      return false;
+    }
+    if (reactantObject.idCategoria === "") {
+      alert("La categoría es obligatoria");
+      return false;
+    }
+    if (reactantObject.idGabinete === "") {
+      alert("El gabinete es obligatorio");
+      return false;
+    }
+
+    return true;
+  };
+
   const addReactant = async (reactantObject) => {
     console.log(
       "adding reactant with following props and sending post req: ",
       reactantObject
     );
 
-    const response = await fetch("http://localhost:3000/api/reactivos/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(reactantObject),
-    });
+    const response = await fetchNewReactant(reactantObject);
     const data = await response.json();
-    console.log("Response from server: ", data);
+
     if (response.ok) {
+      console.log("Reactivo agregado correctamente: ", data);
       alert("Reactivo agregado correctamente");
     } else {
+      console.log("Error al agregar reactivo: ", data);
       throw new Error("Error adding reactant");
     }
   };
@@ -92,6 +128,15 @@ const Inventory = () => {
   };
 
   /* tanstack */
+
+  const queryClient = useQueryClient();
+
+  /* tanstack */
+  const { data } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchInventory,
+  });
+
   const { data: marcas } = useQuery({
     queryKey: ["marcas"],
     queryFn: fetchBrands,
@@ -162,6 +207,7 @@ const Inventory = () => {
             <ReactantTable
               filter={filter}
               onReactantClick={handleReactantSelection}
+              data={data}
             ></ReactantTable>
           </div>
           <div className="w-[65%] h-full flex flex-col pb-5 pr-5">
@@ -256,7 +302,7 @@ const Inventory = () => {
               }`}
             >
               <div
-                className="w-[40%] bg-[#FFBB00] h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
+                className="w-[45%] bg-[#FFBB00] h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
             text-2xl font-bold rounded-md text-center items-center flex justify-center"
               >
                 {selectedReactant?.nombre}
@@ -282,7 +328,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Marca
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
                       {selectedReactant?.idMarca?.nombre}
                     </span>
                   </div>
@@ -290,7 +336,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Presentación
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
                       {selectedReactant?.idUnidadMedida?.nombre}
                     </span>
                   </div>
@@ -298,7 +344,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Cantidad
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
                       {selectedReactant?.cantidad}
                     </span>
                   </div>
@@ -310,7 +356,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Código/ID
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
                       {selectedReactant?.codigoCatalogo}
                     </span>
                   </div>
@@ -318,7 +364,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Estado Físico
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
                       {selectedReactant?.idEstadoFisico?.nombre}
                     </span>
                   </div>
@@ -326,7 +372,7 @@ const Inventory = () => {
                     <p className="bg-[#C796EB] py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Categoría
                     </p>
-                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-2xl font-bold text-center">
+                    <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg w-[12rem] font-bold text-center">
                       {selectedReactant?.idCategoria?.nombre}
                     </span>
                   </div>
@@ -707,6 +753,11 @@ const Inventory = () => {
                 "Verificando entradas, Agregando Reactivo nuevo y sanitizando entradas del modal.. y cerrando modal"
               );
 
+              if (!checkEntries(newReactant)) {
+                alert("Por favor complete todos los campos obligatorios.");
+                return;
+              }
+
               try {
                 await addReactant(newReactant);
 
@@ -722,9 +773,11 @@ const Inventory = () => {
                   codigoCatalogo: "",
                 });
 
+                queryClient.invalidateQueries(["data"]);
+
                 setActiveModal(null);
               } catch (error) {
-                alert("Error al agregar reactivo, detalles en consola ");
+                alert("Error al agregar reactivo, por favor intente de nuevo.");
                 console.log("Error al agregar reactivo, detalles: ", error);
               }
             }}

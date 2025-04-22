@@ -8,8 +8,6 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { useQuery } from "@tanstack/react-query";
-import { fetchInventory } from "../services/fetchers.js";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 
@@ -37,15 +35,9 @@ function openDetails(reactant) {
   console.log(reactant);
 }
 
-export default function CustomizedTables({ onReactantClick, filter }) {
+export default function CustomizedTables({ onReactantClick, filter, data }) {
   /* useStates */
   const [showAlert, setShowAlert] = useState(false);
-
-  /* tanstack */
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["data"],
-    queryFn: fetchInventory,
-  });
 
   /*filtro */
   const newData = data?.filter((reactant) => {

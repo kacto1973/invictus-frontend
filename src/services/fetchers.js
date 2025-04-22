@@ -35,3 +35,13 @@ export const fetchDrawers = async () => {
   const res = await fetch(`${BASE_URL}/gabinetes`);
   return res.json();
 };
+
+export const fetchNewReactant = async (newReactant) => {
+  return await fetch(`${BASE_URL}/reactivos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newReactant),
+  });
+};
