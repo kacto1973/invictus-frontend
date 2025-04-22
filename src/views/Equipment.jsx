@@ -89,6 +89,7 @@ const Equipment = () => {
             src="svgs/calendar-black.svg"
             alt="clock icon"
             className="hover:bg-[#C0BEBE] bg-[#E0DFDF] w-[70%] h-[70%] border-8 border-[#E0DFDF] mt-3 mb-3 ml-2 rounded-md"
+            onClick={() => alert("Abrir calendario")}
           />
               </div>
             </div>
@@ -101,6 +102,7 @@ const Equipment = () => {
               <img
             src="svgs/tools-icon.svg"
             alt="clock icon"
+            onClick={() => alert("Abrir calendario")}
             className="hover:bg-[#C0BEBE] bg-[#E0DFDF] w-[70%] h-[70%] border-8 border-[#E0DFDF] mt-3 mb-3 ml-2 rounded-md"
           />
             </div>
