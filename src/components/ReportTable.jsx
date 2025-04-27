@@ -9,6 +9,8 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Popover from "@mui/material/Popover";
 import Button from "@mui/material/Button";
+import { useState } from "react";
+import { fetchRemoveReport } from "../services/fetchers";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -73,9 +75,12 @@ const buttonStyle = {
   justifyContent: "flex-start",
 };
 
-export default function CustomizedTables({ onReportClick, reports }) {
+export default function CustomizedTables({ onReportClick, reports, setReports }) {
+  const [openModal, setOpenModal] = useState(false);
   const [addAnchorEl, setAddAnchorEl] = React.useState(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState({});
+  const [newReportName, setNewReportName] = useState("");
+  const [selectedItems, setSelectedItems] = useState({}); // controlamos el estado de cada ícono
 
   const handleAddOpen = (event) => setAddAnchorEl(event.currentTarget);
   const handleAddClose = () => setAddAnchorEl(null);
@@ -85,9 +90,38 @@ export default function CustomizedTables({ onReportClick, reports }) {
     setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: event.currentTarget }));
   };
 
+  const handleIconClick = (index) => {
+    // Alternamos entre los dos iconos al hacer clic
+    setSelectedItems((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
+
   const handleOptionsClose = (reportId) => {
     setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: null }));
   };
+
+  const handleRenameReport = (reportId) => {
+    const currentReport = reports.find(r => r._id === reportId);
+    const newName = prompt("Nuevo nombre del reporte:", currentReport.nombre);
+    if (newName !== null) {
+      const updatedReports = reports.map(report =>
+        report._id === reportId ? { ...report, nombre: newName } : report
+      );
+      setReports(updatedReports);
+    }
+  };
+
+  const handleModalOpen = () => setOpenModal(true);
+  const handleModalClose = () => setOpenModal(false);
+
+  const handleCreateReport = () => {
+    alert("Se ha guardado el reporte");
+  
+    handleModalClose();
+  };
+  
 
   return (
     <TableContainer component={Paper}>
@@ -109,8 +143,8 @@ export default function CustomizedTables({ onReportClick, reports }) {
                 open={addOpen}
                 anchorEl={addAnchorEl}
                 onClose={handleAddClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
                 PaperProps={{
                   sx: {
                     boxShadow: 2,
@@ -121,17 +155,8 @@ export default function CustomizedTables({ onReportClick, reports }) {
                 }}
               >
                 <Button
-                  onClick={() => {
-                    onReportClick();
-                    handleAddClose();
-                  }}
-                  startIcon={
-                    <img
-                      src="svgs/plus-sign.svg"
-                      alt="icono"
-                      width={16}
-                    />
-                  }
+                  onClick={handleModalOpen}
+                  startIcon={<img src="svgs/plus-sign.svg" alt="icono" width={16} />}
                   sx={buttonStyle}
                 >
                   Crear reporte
@@ -142,13 +167,15 @@ export default function CustomizedTables({ onReportClick, reports }) {
         </TableHead>
         <TableBody>
           {reports.map((report) => {
-            const open = Boolean(optionsAnchorEl[report.id]);
+            const open = Boolean(optionsAnchorEl[report._id]);
             return (
-              <StyledTableRow key={report.id}>
+              <StyledTableRow key={report._id}>
                 <StyledTableCell>{report.nombre}</StyledTableCell>
-                <StyledTableCell>{report.fecha}</StyledTableCell>
+                <StyledTableCell>{report.fechaGeneracion}</StyledTableCell>
                 <StyledTableCell>
-                  <span style={getEstadoEstilo(report.estado)}>{report.estado}</span>
+                  <span style={getEstadoEstilo(report.idEstadoReporte.nombre)}>
+                    {report.idEstadoReporte.nombre}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell>
                   <img
@@ -156,14 +183,14 @@ export default function CustomizedTables({ onReportClick, reports }) {
                     alt="Opciones"
                     width={25}
                     className="m-auto cursor-pointer"
-                    onClick={(e) => handleOptionsOpen(e, report.id)}
+                    onClick={(e) => handleOptionsOpen(e, report._id)}
                   />
                   <Popover
                     open={open}
-                    anchorEl={optionsAnchorEl[report.id]}
-                    onClose={() => handleOptionsClose(report.id)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    anchorEl={optionsAnchorEl[report._id]}
+                    onClose={() => handleOptionsClose(report._id)}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    transformOrigin={{ vertical: "top", horizontal: "center" }}
                     PaperProps={{
                       sx: {
                         boxShadow: 2,
@@ -176,63 +203,37 @@ export default function CustomizedTables({ onReportClick, reports }) {
                       },
                     }}
                   >
-                <Button
-                  startIcon={
-                  <img
-                  src="svgs/eye-gray.svg"
-                  alt="Vista previa"
-                  width={16}
-                  height={16}
-                />
-               }
-              sx={buttonStyle}
-              onClick={() => {
-                console.log("Vista previa:", report);
-                handleOptionsClose(report.id);
-              }}
-            >
-              Vista previa
-            </Button>
-
-            <Button
-              startIcon={
-                <img
-                  src="svgs/regenerate.svg"
-                  alt="Regenerar"
-                  width={16}
-                  height={16}
-                />
-              }
-              sx={buttonStyle}
-              onClick={() => {
-                console.log("Regenerar:", report);
-                handleOptionsClose(report.id);
-              }}
-            >
-              Regenerar
-            </Button>
-
-              <Button
-                startIcon={
-                  <img
-                    src="svgs/trash-red2.svg"
-                    alt="Eliminar"
-                    width={16}
-                    height={16}
-                  />
-                }
-                sx={{
-                  ...buttonStyle,
-                  color: "#b00020",
-                }}
-                onClick={() => {
-                  console.log("Eliminar:", report);
-                  handleOptionsClose(report.id);
-                }}
-              >
-                Eliminar
-              </Button>
-
+                    <Button
+                      startIcon={<img src="svgs/download copy.svg" alt="Descargar" width={16} />}
+                      sx={buttonStyle}
+                      onClick={() => handleOptionsClose(report._id)}
+                    >
+                      Descargar
+                    </Button>
+                    <Button
+                      startIcon={<img src="svgs/eye-gray.svg" alt="Vista previa" width={16} />}
+                      sx={buttonStyle}
+                      onClick={() => handleOptionsClose(report._id)}
+                    >
+                      Vista previa
+                    </Button>
+                    <Button
+                      startIcon={<img src="svgs/rename.svg" alt="Renombrar" width={20} />}
+                      sx={buttonStyle}
+                      onClick={() => handleRenameReport(report._id)}
+                    >
+                      Renombrar
+                    </Button>
+                    <Button
+                      startIcon={<img src="svgs/trash-red2.svg" alt="Eliminar" width={16} />}
+                      sx={{ ...buttonStyle, color: "#b00020" }}
+                      onClick={async () => {
+                        await fetchRemoveReport(report._id);
+                        handleOptionsClose(report._id);
+                      }}
+                    >
+                      Eliminar
+                    </Button>
                   </Popover>
                 </StyledTableCell>
               </StyledTableRow>
@@ -240,6 +241,104 @@ export default function CustomizedTables({ onReportClick, reports }) {
           })}
         </TableBody>
       </Table>
+
+      {openModal && (
+        <div style={modalBackdropStyle}>
+          <div style={modalContentStyle}>
+            <h2 style={{ marginBottom: "20px", fontWeight: "bold" }}>Contenido del reporte</h2>
+            <div style={{ textAlign: "left", marginBottom: "30px" }}>
+              {[
+                "Listado completo de reactivos",
+                "Listado de entradas y salidas en los últimos 30 días",
+                "Listado completo de equipos de laboratorio",
+                "Listado de servicios a equipos en los últimos 30 días",
+                "Listado de uso de equipos en los últimos 30 días",
+                "Gráfica de porcentaje de reactivos por categoría",
+                "Gráfica de entradas vs salidas de los últimos 30 días",
+                "Gráfica de porcentaje de reactivos agotados",
+                "Gráfica de tendencia de uso de equipo en los últimos 30 días",
+                "Gráfica de tendencia de servicio de equipo en los últimos 30 días",
+              ].map((item, index) => (
+                <div
+                  key={index}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    marginBottom: "10px",
+                  }}
+                >
+                  <img
+                    src={selectedItems[index] ? "svgs/rectangle-X.svg" : "svgs/rectangle.svg"}
+                    alt="icon"
+                    width={15}
+                    height={15}
+                    style={{ marginRight: "10px", marginTop: "5px" }}
+                    onClick={() => handleIconClick(index)}
+                  />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
+            <Button
+            onClick={handleModalClose}
+            sx={{
+              backgroundColor: "white",
+              color: "black", 
+              fontWeight: "bold",
+              border: "1px solid black", 
+              "&:hover": {
+                backgroundColor: "#f5f5f5",
+              },
+              borderRadius: "8px",
+              padding: "8px 20px",
+            }}
+          >
+            Cancelar
+          </Button>
+              <Button
+                onClick={handleCreateReport}
+                sx={{
+                  backgroundColor: "#4CAF50",
+                  color: "#fff",
+                  fontWeight: "bold",
+                  "&:hover": { backgroundColor: "#43A047" },
+                  borderRadius: "8px",
+                  padding: "8px 20px",
+                }}
+              >
+                Guardar
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </TableContainer>
   );
 }
+
+const modalBackdropStyle = {
+  position: "fixed",
+  top: 0,
+  left: 0,
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  paddingTop: "72px"
+};
+
+const modalContentStyle = {
+  backgroundColor: "#fff",
+  padding: "20px",
+  borderRadius: "8px",
+  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+  textAlign: "center",
+  width: "377px",
+  height: "691px",
+};
+
+

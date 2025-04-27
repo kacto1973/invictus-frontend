@@ -45,3 +45,20 @@ export const fetchNewReactant = async (newReactant) => {
     body: JSON.stringify(newReactant),
   });
 };
+
+export const fetchReports = async () => {
+  const res = await fetch(`${BASE_URL}/reportes`);
+  return res.json();
+}
+
+export const fetchRemoveReport = async (idReport) => {
+  return await fetch(`${BASE_URL}/reportes/eliminar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "id": idReport
+    }),
+  });
+};

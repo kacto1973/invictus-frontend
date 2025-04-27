@@ -5,9 +5,11 @@ import UnifiedSearchBox from "../components/UnifiedSearchBox";
 import ReportTable from "../components/ReportTable";
 import CardReport from "../components/CardReport";
 import Button from "../components/Button";
+import { fetchReports } from "../services/fetchers";
+import { useQuery } from "@tanstack/react-query";
 
-const reports = [
-  { id: "RP001", nombre: "Reporte 11-03-25", fecha: "11/03/25", estado: "Completado" },
+const hola = [
+  { _id: "RP001", nombre: "Reporte 11-03-25", fechaGeneracion: "11/03/25", estado: "Completado" },
   { id: "RP002", nombre: "Hola", fecha: "10/03/25", estado: "Completado" },
   { id: "RP003", nombre: "Este no se puede leer", fecha: "10/03/25", estado: "Error" },
   { id: "RP004", nombre: "Reporte 12-03-25", fecha: "02/02/25", estado: "Completado" },
@@ -17,24 +19,42 @@ const reports = [
   { id: "RP008", nombre: "Reporte 20-03-25", fecha: "20/03/25", estado: "Error" },
   { id: "RP009", nombre: "Reporte 22-03-25", fecha: "22/03/25", estado: "Completado" },
   { id: "RP010", nombre: "añoña", fecha: "24/03/25", estado: "Completado" },
-  { id: "RP011", nombre: "Reporte 28-03-25", fecha: "28/03/25", estado: "Completado" }
+  { id: "RP011", nombre: "Reporte 28-03-25", fecha: "28/03/25", estado: "Completado" },
+  { id: "RP012", nombre: "hola", fecha: "28/03/25", estado: "Error" }
 ];
 
 const getFechaMasReciente = (reports) => {
   const fechasOrdenadas = [...reports].sort((a, b) => {
-    const [d1, m1, y1] = a.fecha.split("/").map(Number);
-    const [d2, m2, y2] = b.fecha.split("/").map(Number);
-    const fechaA = new Date(2000 + y1, m1 - 1, d1);
-    const fechaB = new Date(2000 + y2, m2 - 1, d2);
+    const fechaA = new Date(a.fechaGeneracion); // o a.fechaGeneracion si usas esa propiedad
+    const fechaB = new Date(b.fechaGeneracion);
     return fechaB - fechaA;
   });
 
-  return fechasOrdenadas[0]?.fecha;
+  const fechaReciente = fechasOrdenadas[0]?.fechaGeneracion;
+
+  // Formateamos a "dd/mm/aa"
+  const fecha = new Date(fechaReciente);
+  const dia = String(fecha.getDate()).padStart(2, "0");
+  const mes = String(fecha.getMonth() + 1).padStart(2, "0");
+  const anio = String(fecha.getFullYear()).slice(2);
+
+  return `${dia}/${mes}/${anio}`;
 };
 
 const Reports = () => {
+
+  const { data: reports = [], isLoading, error } = useQuery({
+    queryKey: ["reports"],
+    queryFn: fetchReports,
+  });
+  
+  console.log(reports);
+
   const [searchValue, setSearchValue] = useState("");
   const fechaMasReciente = getFechaMasReciente(reports);
+
+  if (isLoading) return <div>Cargando reportes...</div>;
+  if (error) return <div>Error al cargar reportes</div>;
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
@@ -82,8 +102,8 @@ const Reports = () => {
               <button onClick={() => alert("Eliminar reporte")} className="hover:scale-110 transition-transform">
                 <img src="svgs/trash-redbox.svg" alt="Eliminar reporte" className="w-8 h-8" />
               </button>
-              <button onClick={() => alert("Regenerar reporte")} className="hover:scale-110 transition-transform">
-                <img src="svgs/restart.svg" alt="Regenerar reporte" className="w-8 h-8" />
+              <button onClick={() => alert("Renombrar reporte")} className="hover:scale-110 transition-transform">
+                <img src="svgs/rename-blue.svg" alt="Renombrar reporte" className="w-8 h-8" />
               </button>
             </div>
           </CardReport>
