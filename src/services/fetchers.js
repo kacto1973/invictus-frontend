@@ -45,3 +45,12 @@ export const fetchNewReactant = async (newReactant) => {
     body: JSON.stringify(newReactant),
   });
 };
+
+export const fetchDeleteReactantById = async (reactantId) => {
+  return await fetch(`${BASE_URL}/reactivos/${reactantId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};

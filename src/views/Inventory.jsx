@@ -13,120 +13,17 @@ import {
   fetchMeasurements,
   fetchPhysicalStates,
   fetchNewReactant,
+  fetchDeleteReactantById,
 } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import MenuItem from "@mui/material/MenuItem";
 import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { useQueryClient } from "@tanstack/react-query";
 import { fetchInventory } from "../services/fetchers";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Inventory = () => {
-  /* STATES */
-  const [selectedReactant, setSelectedReactant] = useState(null);
-  const [editReactant, setEditReactant] = useState(null);
-  const [newReactant, setNewReactant] = useState({
-    //OBLIGATORIO, EJ: anduaga, lo  mete el usuario
-    nombre: "",
-    //OPCIONAL, EJ: 1, lo mete el usuario (no se tiene que enviar al back)
-    cantidad: 0,
-    //OBLIGATORIO, lo fetcheas del back y lo selecciona de un dropdown el user
-    idMarca: "",
-    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idGabinete: "",
-    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idUnidadMedida: "",
-    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idEstadoFisico: "",
-    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idCategoria: "",
-    //OBLIGATORIO, se selecciona del dropdown por parte del usuario
-    esPeligroso: false,
-    //OBLIGATORIO, lo pone el usuario
-    codigoCatalogo: "",
-  });
-  const [activeModal, setActiveModal] = useState(null);
-  const [filter, setFilter] = useState({
-    nameFilter: "",
-    brandFilter: "",
-    categoryFilter: "",
-  });
-
-  /* CONSTANTS */
-  const MODAL_TYPE = {
-    AGREGAR_REACTIVO: "agregarReactivo",
-    EDITAR_REACTIVO: "editarReactivo",
-    BORRAR_REACTIVO: "borrarReactivo",
-  };
-
-  /* functions */
-  const handleReactantSelection = (reactant) => {
-    setSelectedReactant(reactant);
-  };
-
-  const checkEntries = (reactantObject) => {
-    if (reactantObject.nombre === "") {
-      alert("El nombre del reactivo es obligatorio");
-      return false;
-    }
-    if (reactantObject.cantidad < 0) {
-      alert("La cantidad no puede ser negativa");
-      return false;
-    }
-    if (reactantObject.codigoCatalogo === "") {
-      alert("El código de catálogo es obligatorio");
-      return false;
-    }
-    if (reactantObject.idMarca === "") {
-      alert("La marca es obligatoria");
-      return false;
-    }
-    if (reactantObject.idUnidadMedida === "") {
-      alert("La unidad de medida es obligatoria");
-      return false;
-    }
-    if (reactantObject.idEstadoFisico === "") {
-      alert("El estado físico es obligatorio");
-      return false;
-    }
-    if (reactantObject.idCategoria === "") {
-      alert("La categoría es obligatoria");
-      return false;
-    }
-    if (reactantObject.idGabinete === "") {
-      alert("El gabinete es obligatorio");
-      return false;
-    }
-
-    return true;
-  };
-
-  const addReactant = async (reactantObject) => {
-    console.log(
-      "adding reactant with following props and sending post req: ",
-      reactantObject
-    );
-
-    const response = await fetchNewReactant(reactantObject);
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log("Reactivo agregado correctamente: ", data);
-      alert("Reactivo agregado correctamente");
-    } else {
-      console.log("Error al agregar reactivo: ", data);
-      throw new Error("Error adding reactant");
-    }
-  };
-
-  const updateReactant = (id) => {
-    console.log("editing reactant..");
-  };
-
-  const deleteReactant = (id) => {
-    console.log("deleting reactant..");
-  };
-
   /* tanstack */
 
   const queryClient = useQueryClient();
@@ -162,12 +59,176 @@ const Inventory = () => {
     queryFn: fetchDrawers,
   });
 
+  /* functions */
+
+  const getNoDataBrandObject = (brandsArray) => {
+    if (!brandsArray) {
+      return null;
+    }
+
+    for (const brand of brandsArray) {
+      if (brand.nombre === "N/D") {
+        return brand;
+      }
+    }
+    return null;
+  };
+
+  const handleReactantSelection = (reactant) => {
+    setSelectedReactant(reactant);
+  };
+
+  const checkEntries = (reactantObject) => {
+    if (reactantObject.nombre === "") {
+      toast.warning("El nombre del reactivo es obligatorio");
+      return false;
+    }
+    if (reactantObject.codigoCatalogo === "") {
+      toast.warning("El código de catálogo es obligatorio o como N/D");
+      return false;
+    }
+    if (reactantObject.idMarca === "") {
+      toast.warning("La marca es obligatoria");
+      return false;
+    }
+    if (!reactantObject.unidadMedida.valor) {
+      toast.warning("La notacion de  la unidad medida es obligatoria");
+      return false;
+    }
+    if (reactantObject.unidadMedida.idUnidadMedida === "") {
+      toast.warning("La unidad de medida es obligatoria");
+      return false;
+    }
+    if (reactantObject.idEstadoFisico === "") {
+      toast.warning("El estado físico es obligatorio");
+      return false;
+    }
+    if (reactantObject.idCategoria === "") {
+      toast.warning("La categoría es obligatoria");
+      return false;
+    }
+    if (reactantObject.idGabinete === "") {
+      toast.warning("El gabinete es obligatorio");
+      return false;
+    }
+
+    return true;
+  };
+
+  const addReactant = async (reactantObject) => {
+    const response = await fetchNewReactant(reactantObject);
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Reactivo agregado correctamente: ", data);
+      toast.success("Reactivo agregado correctamente");
+    } else {
+      console.log("Error al agregar reactivo: ", data);
+      toast.error("Error al agregar reactivo");
+      throw new Error("Error adding reactant");
+    }
+  };
+
+  const updateReactant = (id) => {
+    console.log("editing reactant..");
+  };
+
+  const deleteReactant = async (id) => {
+    console.log("deleting reactant..");
+    const response = await fetchDeleteReactantById(id);
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log("Reactivo eliminado correctamente: ", data);
+      toast.success("Reactivo eliminado correctamente");
+    } else {
+      console.log("Error al eliminar reactivo: ", data);
+      toast.error("Error al eliminar reactivo, por favor intente de nuevo.");
+    }
+  };
+
+  /* STATES */
+  const [selectedReactant, setSelectedReactant] = useState(null);
+  //copia de selectedReactant para editarlo que cuenta con la estructura de newReactant
+  const [editReactant, setEditReactant] = useState(null);
+  const [newReactant, setNewReactant] = useState({
+    //OBLIGATORIO, EJ: anduaga, lo  mete el usuario
+    nombre: "",
+    //OPCIONAL, EJ: 1, lo mete el usuario (no se tiene que enviar al back)
+    cantidad: 0,
+    //OBLIGATORIO, lo fetcheas del back y lo selecciona de un dropdown el user
+    idMarca: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idGabinete: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+
+    unidadMedida: {
+      valor: 0,
+      idUnidadMedida: "",
+    },
+
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idEstadoFisico: "",
+    //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
+    idCategoria: "",
+    //OBLIGATORIO, se selecciona del dropdown por parte del usuario
+    esPeligroso: false,
+    //OBLIGATORIO, lo pone el usuario
+    codigoCatalogo: "",
+  });
+  const [activeModal, setActiveModal] = useState(null);
+  const [filter, setFilter] = useState({
+    nameFilter: "",
+    brandFilter: "",
+    categoryFilter: "",
+  });
+  const [codigoCatalogoEnabled, setCodigoCatalogoEnabled] = useState(false);
+
+  /* CONSTANTS */
+  const MODAL_TYPE = {
+    AGREGAR_REACTIVO: "agregarReactivo",
+    EDITAR_REACTIVO: "editarReactivo",
+    BORRAR_REACTIVO: "borrarReactivo",
+  };
+
   /* USE EFFECTS */
   useEffect(() => {
     if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
       setEditReactant(selectedReactant);
     }
   }, [activeModal]);
+
+  useEffect(() => {
+    setEditReactant(JSON.parse(JSON.stringify(selectedReactant)));
+  }, [selectedReactant]);
+
+  useEffect(() => {
+    console.log(editReactant);
+  }, [editReactant]);
+
+  useEffect(() => {
+    if (!codigoCatalogoEnabled) {
+      setNewReactant((prevState) => ({ ...prevState, codigoCatalogo: "N/D" }));
+    } else {
+      setNewReactant((prevState) => ({ ...prevState, codigoCatalogo: "" }));
+    }
+  }, [codigoCatalogoEnabled]);
+
+  useEffect(() => {
+    console.log("Nuevo valor de newReactant:", newReactant);
+  }, [newReactant]);
+
+  useEffect(() => {
+    if (marcas && marcas.length > 0) {
+      const noBrandId = getNoDataBrandObject(marcas)?._id;
+      if (noBrandId) {
+        setNewReactant((prevState) => ({
+          ...prevState,
+          idMarca: noBrandId,
+        }));
+      }
+    }
+  }, [marcas]);
 
   /* USE EFFECTS */
   useEffect(() => {
@@ -184,6 +245,8 @@ const Inventory = () => {
       <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
         <TemporaryDrawer></TemporaryDrawer>
         <Header label="Reactivos"></Header>
+        <ToastContainer position="bottom-right" autoClose={2500} />
+
         {/*div padre de todo lo demas */}
         <div
           className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
@@ -291,7 +354,9 @@ const Inventory = () => {
                 classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
                 icon="svgs/plus-sign.svg"
                 label="Añadir"
-                onClick={() => setActiveModal(MODAL_TYPE.AGREGAR_REACTIVO)}
+                onClick={() => {
+                  setActiveModal(MODAL_TYPE.AGREGAR_REACTIVO);
+                }}
               ></Button>
             </div>
 
@@ -337,7 +402,7 @@ const Inventory = () => {
                       Presentación
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
-                      {selectedReactant?.idUnidadMedida?.nombre}
+                      {selectedReactant?.unidadMedida?.idUnidadMedida?.nombre}
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
@@ -413,9 +478,11 @@ const Inventory = () => {
             ¿Desea usted eliminar el reactivo: {selectedReactant?.nombre}?
           </p>
           <Button
-            onClick={() => {
-              console.log("Eliminando Reactivo..");
-              deleteReactant(selectedReactant?.id);
+            onClick={async () => {
+              await deleteReactant(selectedReactant?._id);
+
+              queryClient.invalidateQueries(["data"]);
+              setSelectedReactant(null);
               setActiveModal(null);
             }}
             classNames="!absolute cursor-pointer hover  :bg-[#CD1C1C] bg-[#D41D1D] w-[8rem] h-[2rem] left-1/2 -translate-x-1/2 bottom-8 shadow-md rounded-md text-bold text-white text-LG"
@@ -452,73 +519,293 @@ const Inventory = () => {
           </div>
           <div className="flex flex-row justify-around  w-[90%] h-[100%-4rem] mt-[5rem]">
             <div className="flex flex-col w-[45%] h-full">
-              <TextField
-                id="outlined-basic"
-                label="Nombre"
-                variant="outlined"
-                margin="normal"
-                value={editReactant?.nombre}
-                onChange={(e) => {
-                  setEditReactant({
-                    ...editReactant,
-                    nombre: e.target.value,
-                  });
-                }}
-              />
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Nombre"
+                  variant="outlined"
+                  margin="normal"
+                  value={editReactant?.nombre}
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      nombre: e.target.value,
+                    });
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
               <TextField
                 id="outlined-basic"
                 label="Cantidad"
                 variant="outlined"
                 margin="normal"
+                value={editReactant?.cantidad}
+                onChange={(e) => {
+                  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                  setEditReactant({
+                    ...editReactant,
+                    cantidad: onlyNumbers,
+                  });
+                }}
               />
-              <TextField
-                id="outlined-basic"
-                label="Marca"
-                variant="outlined"
-                margin="normal"
-                select
-              />
-              <TextField
-                id="outlined-basic"
-                label="Gabinete"
-                variant="outlined"
-                margin="normal"
-                select
-              />
+
+              <div className="w-full flex flex-row justify-between">
+                <TextField
+                  disabled={!codigoCatalogoEnabled}
+                  id="outlined-basic"
+                  label="Código / Catálogo"
+                  variant="outlined"
+                  margin="normal"
+                  value={
+                    codigoCatalogoEnabled ? editReactant?.codigoCatalogo : "N/D"
+                  }
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      codigoCatalogo: e.target.value,
+                    });
+                  }}
+                  sx={{
+                    width: "90%",
+                  }}
+                />
+                <Checkbox
+                  checked={codigoCatalogoEnabled}
+                  onChange={(e) => setCodigoCatalogoEnabled((prev) => !prev)}
+                  color="primary"
+                />
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Marca"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={editReactant?.idMarca}
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      idMarca: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {marcas.map((marca) => (
+                    <MenuItem key={marca._id} value={marca._id}>
+                      {marca.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
             </div>
             <div className="flex flex-col w-[45%] h-full">
-              <TextField
-                id="outlined-basic"
-                label="Presentación"
-                variant="outlined"
-                margin="normal"
-                select
-              />
-              <TextField
-                id="outlined-basic"
-                label="Código / Catálogo"
-                variant="outlined"
-                margin="normal"
-              />
-              <TextField
-                id="outlined-basic"
-                label="Presentación"
-                variant="outlined"
-                margin="normal"
-                select
-              />
-              <TextField
-                id="outlined-basic"
-                label="Código / Catálogo"
-                variant="outlined"
-                margin="normal"
-              />
+              <div className="w-full flex flex-row justify-between">
+                <div className="relative w-[55%]">
+                  <TextField
+                    id="outlined-basic"
+                    label="Notación"
+                    variant="outlined"
+                    margin="normal"
+                    value={editReactant?.unidadMedida?.valor}
+                    onChange={(e) => {
+                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      setEditReactant({
+                        ...editReactant,
+                        unidadMedida: {
+                          ...editReactant.unidadMedida,
+                          valor: onlyNumbers,
+                        },
+                      });
+                    }}
+                  />
+                  <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                    *
+                  </span>
+                </div>
+                <div className="relative w-[40%]">
+                  <TextField
+                    id="outlined-basic"
+                    label="Unidad"
+                    variant="outlined"
+                    margin="normal"
+                    select
+                    value={editReactant?.unidadMedida?.idUnidadMedida}
+                    onChange={(e) => {
+                      setEditReactant({
+                        ...editReactant,
+                        unidadMedida: {
+                          ...editReactant.unidadMedida,
+                          idUnidadMedida: e.target.value,
+                        },
+                      });
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200,
+                          },
+                        },
+                      },
+                    }}
+                    sx={{
+                      width: "100%",
+                    }}
+                  >
+                    {unidadesMedidas.map((unidadMedida) => (
+                      <MenuItem key={unidadMedida._id} value={unidadMedida._id}>
+                        {unidadMedida.nombre}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                    *
+                  </span>
+                </div>
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Estado Físico"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={editReactant?.idEstadoFisico}
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      idEstadoFisico: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {estadosFisicos.map((estadoFisico) => (
+                    <MenuItem key={estadoFisico._id} value={estadoFisico._id}>
+                      {estadoFisico.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Categoría"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={editReactant?.idCategoria}
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      idCategoria: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {categorias.map((categoria) => (
+                    <MenuItem key={categoria._id} value={categoria._id}>
+                      {categoria.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Gabinete"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={editReactant?.idGabinete}
+                  onChange={(e) => {
+                    setEditReactant({
+                      ...editReactant,
+                      idGabinete: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {gabinetes.map((gabinete) => (
+                    <MenuItem key={gabinete._id} value={gabinete._id}>
+                      {gabinete.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
             </div>
           </div>
           <Button
             onClick={() => {
               console.log(
-                "Agregando Reactivo nuevo y sanitizando entradas del modal.."
+                "Editando Reactivo nuevo y sanitizando entradas del modal.."
               );
               setActiveModal(null);
             }}
@@ -548,16 +835,25 @@ const Inventory = () => {
           </div>
           <div className="flex flex-row justify-around  w-[90%] h-[100%-4rem] mt-[5rem]">
             <div className="flex flex-col w-[45%] h-full">
-              <TextField
-                id="outlined-basic"
-                label="Nombre"
-                variant="outlined"
-                margin="normal"
-                value={newReactant?.nombre}
-                onChange={(e) => {
-                  setNewReactant({ ...newReactant, nombre: e.target.value });
-                }}
-              />
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Nombre"
+                  variant="outlined"
+                  margin="normal"
+                  value={newReactant?.nombre}
+                  onChange={(e) => {
+                    setNewReactant({ ...newReactant, nombre: e.target.value });
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                />
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
               <TextField
                 id="outlined-basic"
                 label="Cantidad"
@@ -565,172 +861,255 @@ const Inventory = () => {
                 margin="normal"
                 value={newReactant?.cantidad}
                 onChange={(e) => {
+                  const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
                   setNewReactant({
                     ...newReactant,
-                    cantidad: e.target.value,
+                    cantidad: onlyNumbers,
                   });
                 }}
               />
 
-              <TextField
-                id="outlined-basic"
-                label="Código / Catálogo"
-                variant="outlined"
-                margin="normal"
-                value={newReactant?.codigoCatalogo}
-                onChange={(e) => {
-                  setNewReactant({
-                    ...newReactant,
-                    codigoCatalogo: e.target.value,
-                  });
-                }}
-              />
+              <div className="w-full flex flex-row justify-between">
+                <TextField
+                  disabled={!codigoCatalogoEnabled}
+                  id="outlined-basic"
+                  label="Código / Catálogo"
+                  variant="outlined"
+                  margin="normal"
+                  value={
+                    codigoCatalogoEnabled ? newReactant?.codigoCatalogo : "N/D"
+                  }
+                  onChange={(e) => {
+                    setNewReactant({
+                      ...newReactant,
+                      codigoCatalogo: e.target.value,
+                    });
+                  }}
+                  sx={{
+                    width: "90%",
+                  }}
+                />
+                <Checkbox
+                  checked={codigoCatalogoEnabled}
+                  onChange={(e) => setCodigoCatalogoEnabled((prev) => !prev)}
+                  color="primary"
+                />
+              </div>
 
-              <TextField
-                id="outlined-basic"
-                label="Marca"
-                variant="outlined"
-                margin="normal"
-                select
-                value={newReactant?.idMarca}
-                onChange={(e) => {
-                  setNewReactant({ ...newReactant, idMarca: e.target.value });
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    PaperProps: {
-                      style: {
-                        maxHeight: 200,
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Marca"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={newReactant?.idMarca}
+                  onChange={(e) => {
+                    setNewReactant({ ...newReactant, idMarca: e.target.value });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
                       },
                     },
-                  },
-                }}
-              >
-                {marcas.map((marca) => (
-                  <MenuItem key={marca._id} value={marca._id}>
-                    {marca.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {marcas.map((marca) => (
+                    <MenuItem key={marca._id} value={marca._id}>
+                      {marca.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
             </div>
             <div className="flex flex-col w-[45%] h-full">
-              <TextField
-                id="outlined-basic"
-                label="Unidad Medida"
-                variant="outlined"
-                margin="normal"
-                select
-                value={newReactant?.idUnidadMedida}
-                onChange={(e) => {
-                  setNewReactant({
-                    ...newReactant,
-                    idUnidadMedida: e.target.value,
-                  });
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    PaperProps: {
-                      style: {
-                        maxHeight: 200,
+              <div className="w-full flex flex-row justify-between">
+                <div className="relative w-[55%]">
+                  <TextField
+                    id="outlined-basic"
+                    label="Notación"
+                    variant="outlined"
+                    margin="normal"
+                    value={newReactant?.unidadMedida?.valor}
+                    onChange={(e) => {
+                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      setNewReactant({
+                        ...newReactant,
+                        unidadMedida: {
+                          ...newReactant.unidadMedida,
+                          valor: onlyNumbers,
+                        },
+                      });
+                    }}
+                  />
+                  <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                    *
+                  </span>
+                </div>
+                <div className="relative w-[40%]">
+                  <TextField
+                    id="outlined-basic"
+                    label="Unidad"
+                    variant="outlined"
+                    margin="normal"
+                    select
+                    value={newReactant?.unidadMedida?.idUnidadMedida}
+                    onChange={(e) => {
+                      setNewReactant({
+                        ...newReactant,
+                        unidadMedida: {
+                          ...newReactant.unidadMedida,
+                          idUnidadMedida: e.target.value,
+                        },
+                      });
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200,
+                          },
+                        },
                       },
-                    },
-                  },
-                }}
-              >
-                {unidadesMedidas.map((unidadMedida) => (
-                  <MenuItem key={unidadMedida._id} value={unidadMedida._id}>
-                    {unidadMedida.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                id="outlined-basic"
-                label="Estado Físico"
-                variant="outlined"
-                margin="normal"
-                select
-                value={newReactant?.idEstadoFisico}
-                onChange={(e) => {
-                  setNewReactant({
-                    ...newReactant,
-                    idEstadoFisico: e.target.value,
-                  });
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    PaperProps: {
-                      style: {
-                        maxHeight: 200,
-                      },
-                    },
-                  },
-                }}
-              >
-                {estadosFisicos.map((estadoFisico) => (
-                  <MenuItem key={estadoFisico._id} value={estadoFisico._id}>
-                    {estadoFisico.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
+                    }}
+                    sx={{
+                      width: "100%",
+                    }}
+                  >
+                    {unidadesMedidas.map((unidadMedida) => (
+                      <MenuItem key={unidadMedida._id} value={unidadMedida._id}>
+                        {unidadMedida.nombre}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                  <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                    *
+                  </span>
+                </div>
+              </div>
 
-              <TextField
-                id="outlined-basic"
-                label="Categoría"
-                variant="outlined"
-                margin="normal"
-                select
-                value={newReactant?.idCategoria}
-                onChange={(e) => {
-                  setNewReactant({
-                    ...newReactant,
-                    idCategoria: e.target.value,
-                  });
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    PaperProps: {
-                      style: {
-                        maxHeight: 200,
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Estado Físico"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={newReactant?.idEstadoFisico}
+                  onChange={(e) => {
+                    setNewReactant({
+                      ...newReactant,
+                      idEstadoFisico: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
                       },
                     },
-                  },
-                }}
-              >
-                {categorias.map((categoria) => (
-                  <MenuItem key={categoria._id} value={categoria._id}>
-                    {categoria.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <TextField
-                id="outlined-basic"
-                label="Gabinete"
-                variant="outlined"
-                margin="normal"
-                select
-                value={newReactant?.idGabinete}
-                onChange={(e) => {
-                  setNewReactant({
-                    ...newReactant,
-                    idGabinete: e.target.value,
-                  });
-                }}
-                SelectProps={{
-                  MenuProps: {
-                    PaperProps: {
-                      style: {
-                        maxHeight: 200,
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {estadosFisicos.map((estadoFisico) => (
+                    <MenuItem key={estadoFisico._id} value={estadoFisico._id}>
+                      {estadoFisico.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Categoría"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={newReactant?.idCategoria}
+                  onChange={(e) => {
+                    setNewReactant({
+                      ...newReactant,
+                      idCategoria: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
                       },
                     },
-                  },
-                }}
-              >
-                {gabinetes.map((gabinete) => (
-                  <MenuItem key={gabinete._id} value={gabinete._id}>
-                    {gabinete.nombre}
-                  </MenuItem>
-                ))}
-              </TextField>
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {categorias.map((categoria) => (
+                    <MenuItem key={categoria._id} value={categoria._id}>
+                      {categoria.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
+
+              <div className="relative w-full">
+                <TextField
+                  id="outlined-basic"
+                  label="Gabinete"
+                  variant="outlined"
+                  margin="normal"
+                  select
+                  value={newReactant?.idGabinete}
+                  onChange={(e) => {
+                    setNewReactant({
+                      ...newReactant,
+                      idGabinete: e.target.value,
+                    });
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      PaperProps: {
+                        style: {
+                          maxHeight: 200,
+                        },
+                      },
+                    },
+                  }}
+                  sx={{
+                    width: "100%",
+                  }}
+                >
+                  {gabinetes.map((gabinete) => (
+                    <MenuItem key={gabinete._id} value={gabinete._id}>
+                      {gabinete.nombre}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <span className="font-bold text-2xl text-red-500 absolute right-1 top-3">
+                  *
+                </span>
+              </div>
             </div>
           </div>
           <div className="absolute right-25 bottom-15">
@@ -754,7 +1133,6 @@ const Inventory = () => {
               );
 
               if (!checkEntries(newReactant)) {
-                alert("Por favor complete todos los campos obligatorios.");
                 return;
               }
 
@@ -764,9 +1142,13 @@ const Inventory = () => {
                 setNewReactant({
                   nombre: "",
                   cantidad: 0,
+                  notacion: 0,
                   idMarca: "",
                   idGabinete: "",
-                  idUnidadMedida: "",
+                  unidadMedida: {
+                    valor: 0,
+                    idUnidadMedida: "",
+                  },
                   idEstadoFisico: "",
                   idCategoria: "",
                   esPeligroso: false,
@@ -777,7 +1159,6 @@ const Inventory = () => {
 
                 setActiveModal(null);
               } catch (error) {
-                alert("Error al agregar reactivo, por favor intente de nuevo.");
                 console.log("Error al agregar reactivo, detalles: ", error);
               }
             }}
