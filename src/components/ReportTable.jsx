@@ -156,9 +156,9 @@ export default function CustomizedTables({ onReportClick, reports }) {
         </TableHead>
         <TableBody>
           {reports.map((report) => {
-            const open = Boolean(optionsAnchorEl[report.id]);
+            const open = Boolean(optionsAnchorEl[report._id]);
             return (
-              <StyledTableRow key={report.id}>
+              <StyledTableRow key={report._id}>
                 <StyledTableCell>{report.nombre}</StyledTableCell>
                 <StyledTableCell>{report.fecha}</StyledTableCell>
                 <StyledTableCell>
@@ -170,12 +170,12 @@ export default function CustomizedTables({ onReportClick, reports }) {
                     alt="Opciones"
                     width={25}
                     className="m-auto cursor-pointer"
-                    onClick={(e) => handleOptionsOpen(e, report.id)}
+                    onClick={(e) => handleOptionsOpen(e, report._id)}
                   />
                   <Popover
                     open={open}
-                    anchorEl={optionsAnchorEl[report.id]}
-                    onClose={() => handleOptionsClose(report.id)}
+                    anchorEl={optionsAnchorEl[report._id]}
+                    onClose={() => handleOptionsClose(report._id)}
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                     transformOrigin={{ vertical: 'top', horizontal: 'center' }}
                     PaperProps={{
@@ -209,7 +209,7 @@ export default function CustomizedTables({ onReportClick, reports }) {
               sx={buttonStyle}
               onClick={() => {
                 console.log("Vista previa:", report);
-                handleOptionsClose(report.id);
+                handleOptionsClose(report._id);
               }}
             >
               Vista previa
@@ -238,7 +238,7 @@ export default function CustomizedTables({ onReportClick, reports }) {
                 }}
                 onClick={() => {
                   console.log("Eliminar:", report);
-                  handleOptionsClose(report.id);
+                  handleOptionsClose(report._id);
                 }}
               >
                 Eliminar

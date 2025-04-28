@@ -3,7 +3,7 @@ import React from "react";
 const Card = ({ icon, label, children, classNames, subClassNames }) => {
   return (
     <div
-      className={`bg-white relative z-50 rounded-md shadow-md m-4 ${classNames}`}
+      className={`bg-white relative z-30 rounded-md shadow-md m-4 ${classNames}`}
     >
       <div className="absolute w-full rounded-t-md h-[3.5rem] top-0 left-0 bg-[#E2BDFD] flex items-center">
         <img src={icon} alt="icon" width={25} className="ml-4" />
