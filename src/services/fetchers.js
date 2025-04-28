@@ -62,3 +62,26 @@ export const fetchRemoveReport = async (idReport) => {
     }),
   });
 };
+
+export const fetchChangeReportName = async (idReport, newName) => {
+    return await fetch(`${BASE_URL}/reportes/cambiarNombre`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "id": idReport,
+          "nombre": newName
+        }),
+    });
+}
+
+export const fetchCreateReport = async (newReport) => {
+  return await fetch(`${BASE_URL}/reportes/crear`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newReport),
+  });
+}
