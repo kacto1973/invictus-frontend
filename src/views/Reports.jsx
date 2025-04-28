@@ -82,8 +82,8 @@ const Reports = () => {
               <button onClick={() => alert("Eliminar reporte")} className="hover:scale-110 transition-transform">
                 <img src="svgs/trash-redbox.svg" alt="Eliminar reporte" className="w-8 h-8" />
               </button>
-              <button onClick={() => alert("Regenerar reporte")} className="hover:scale-110 transition-transform">
-                <img src="svgs/restart.svg" alt="Regenerar reporte" className="w-8 h-8" />
+              <button onClick={() => alert("Renombrar reporte")} className="hover:scale-110 transition-transform">
+                <img src="svgs/rename-blue.svg" alt="Renombrar reporte" className="w-8 h-8" />
               </button>
             </div>
           </CardReport>
