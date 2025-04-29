@@ -185,7 +185,25 @@ const Header = ({ label }) => {
   </div>
 
 
-  <div style={{ height: "33px" }}></div>
+  <div style={{ height: "6px" }}></div>
+  {/* Botón para limpiar notificaciones */}
+<div
+  style={{
+    width: "330px",
+    height: "40px",
+    backgroundColor: "#D9D9D9",
+    borderRadius: "8px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontWeight: "bold",
+    fontSize: "14px",
+    cursor: "pointer",
+    marginBottom: "16px",
+  }}
+>
+  Vaciar notificaciones
+</div>
 
 <div
   className="w-full overflow-y-auto flex flex-col items-center gap-2 py-2"
