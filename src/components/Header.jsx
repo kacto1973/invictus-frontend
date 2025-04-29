@@ -110,6 +110,7 @@ const Header = ({ label }) => {
     boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
     zIndex: 40,
     overflow: "hidden",
+    display: showNotifications ? 'flex' : 'none',
   }}
 >
   <div
