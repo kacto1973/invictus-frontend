@@ -14,6 +14,7 @@ import {
   fetchPhysicalStates,
   fetchNewReactant,
   fetchDeleteReactantById,
+  fetchUpdateReactantById,
 } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import MenuItem from "@mui/material/MenuItem";
@@ -60,6 +61,50 @@ const Inventory = () => {
   });
 
   /* functions */
+
+  const isSame = (editReactant, originalReactant) => {
+    const value =
+      JSON.stringify(editReactant) === JSON.stringify(originalReactant);
+
+    return value;
+  };
+
+  const createObjectWithIdProps = (selectedReactant) => {
+    const gabinete = gabinetes?.find(
+      (gabinete) => gabinete?.nombre === selectedReactant?.idGabinete?.nombre
+    );
+
+    const estadoFisico = estadosFisicos?.find(
+      (estado) => estado?.nombre === selectedReactant?.idEstadoFisico?.nombre
+    );
+
+    const categoria = categorias?.find(
+      (categoria) => categoria?.nombre === selectedReactant?.idCategoria?.nombre
+    );
+
+    const unidadMedida = unidadesMedidas?.find(
+      (unidad) =>
+        unidad.nombre === selectedReactant?.unidadMedida?.idUnidadMedida?.nombre
+    );
+
+    const marca = marcas?.find(
+      (marca) => marca?.nombre === selectedReactant?.idMarca?.nombre
+    );
+
+    //creamos un nuevo objeto con todas las propiedades recolectadas
+
+    return {
+      ...selectedReactant,
+      idMarca: marca?._id,
+      idGabinete: gabinete?._id,
+      idEstadoFisico: estadoFisico?._id,
+      idCategoria: categoria?._id,
+      unidadMedida: {
+        ...selectedReactant?.unidadMedida,
+        idUnidadMedida: unidadMedida?._id,
+      },
+    };
+  };
 
   const getNoDataBrandObject = (brandsArray) => {
     if (!brandsArray) {
@@ -117,32 +162,35 @@ const Inventory = () => {
 
   const addReactant = async (reactantObject) => {
     const response = await fetchNewReactant(reactantObject);
-    const data = await response.json();
+    //const data = await response.json();
 
     if (response.ok) {
-      console.log("Reactivo agregado correctamente: ", data);
       toast.success("Reactivo agregado correctamente");
     } else {
-      console.log("Error al agregar reactivo: ", data);
       toast.error("Error al agregar reactivo");
       throw new Error("Error adding reactant");
     }
   };
 
-  const updateReactant = (id) => {
-    console.log("editing reactant..");
+  const updateReactant = async (id, editReactant) => {
+    const response = await fetchUpdateReactantById(id, editReactant);
+    //const data = await response.json();
+
+    if (response.ok) {
+      toast.success("Reactivo actualizado correctamente");
+    } else {
+      toast.error("Error al actualizar reactivo");
+      throw new Error("Error updating reactant");
+    }
   };
 
   const deleteReactant = async (id) => {
-    console.log("deleting reactant..");
     const response = await fetchDeleteReactantById(id);
     const data = await response.json();
 
     if (response.ok) {
-      console.log("Reactivo eliminado correctamente: ", data);
       toast.success("Reactivo eliminado correctamente");
     } else {
-      console.log("Error al eliminar reactivo: ", data);
       toast.error("Error al eliminar reactivo, por favor intente de nuevo.");
     }
   };
@@ -151,26 +199,32 @@ const Inventory = () => {
   const [selectedReactant, setSelectedReactant] = useState(null);
   //copia de selectedReactant para editarlo que cuenta con la estructura de newReactant
   const [editReactant, setEditReactant] = useState(null);
+  //copia de selectedReactant para compararlo con el editado
+  const [originalReactant, setOriginalReactant] = useState(null);
+
+  const [prevCodigoCatalogo, setPrevCodigoCatalogo] = useState(
+    editReactant?.codigoCatalogo
+  );
   const [newReactant, setNewReactant] = useState({
     //OBLIGATORIO, EJ: anduaga, lo  mete el usuario
-    nombre: "",
+    nombre: "", //
     //OPCIONAL, EJ: 1, lo mete el usuario (no se tiene que enviar al back)
-    cantidad: 0,
+    cantidad: 0, //
     //OBLIGATORIO, lo fetcheas del back y lo selecciona de un dropdown el user
-    idMarca: "",
+    idMarca: "", //
     //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idGabinete: "",
+    idGabinete: "", //
     //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
 
     unidadMedida: {
-      valor: 0,
-      idUnidadMedida: "",
+      valor: 0, //
+      idUnidadMedida: "", //
     },
 
     //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idEstadoFisico: "",
+    idEstadoFisico: "", //
     //OBLIGATORIO, lo fetcheas y se selecciona del dropdown
-    idCategoria: "",
+    idCategoria: "", //
     //OBLIGATORIO, se selecciona del dropdown por parte del usuario
     esPeligroso: false,
     //OBLIGATORIO, lo pone el usuario
@@ -192,31 +246,62 @@ const Inventory = () => {
   };
 
   /* USE EFFECTS */
+
   useEffect(() => {
-    if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
-      setEditReactant(selectedReactant);
+    if (!selectedReactant) return;
+
+    const actualizado = data.find(
+      (reactant) => reactant._id === selectedReactant._id
+    );
+    if (actualizado) {
+      setSelectedReactant(actualizado);
     }
+  }, [data]);
+
+  useEffect(() => {
+    setCodigoCatalogoEnabled(true);
   }, [activeModal]);
 
   useEffect(() => {
-    setEditReactant(JSON.parse(JSON.stringify(selectedReactant)));
+    //seleccionamos un nuevo reactivo
+    //1: a partir de selectedReactant, obtenemos sus propiedades
+
+    const objectWithIdProps = createObjectWithIdProps(selectedReactant);
+    //console.log("selectedReactant: ", selectedReactant);
+    //console.log("objectWithIdProps: ", objectWithIdProps);
+
+    //y las cargamos en setEditReactant que es lo que se va a mostrar en el modal
+    //y lo que cambiaremos se reflejará ahí y enviarlo al back
+    setEditReactant(JSON.parse(JSON.stringify(objectWithIdProps)));
+    setOriginalReactant(JSON.parse(JSON.stringify(objectWithIdProps)));
   }, [selectedReactant]);
 
   useEffect(() => {
-    console.log(editReactant);
-  }, [editReactant]);
-
-  useEffect(() => {
-    if (!codigoCatalogoEnabled) {
-      setNewReactant((prevState) => ({ ...prevState, codigoCatalogo: "N/D" }));
-    } else {
-      setNewReactant((prevState) => ({ ...prevState, codigoCatalogo: "" }));
+    //separamos logica acorde a cada modal
+    if (activeModal === MODAL_TYPE.AGREGAR_REACTIVO) {
+      if (!codigoCatalogoEnabled) {
+        setNewReactant((prevState) => ({
+          ...prevState,
+          codigoCatalogo: "N/D",
+        }));
+      } else {
+        setNewReactant((prevState) => ({ ...prevState, codigoCatalogo: "" }));
+      }
+    } else if (activeModal === MODAL_TYPE.EDITAR_REACTIVO) {
+      if (codigoCatalogoEnabled) {
+        setEditReactant((prevState) => ({
+          ...prevState,
+          codigoCatalogo: prevCodigoCatalogo,
+        }));
+      } else {
+        setPrevCodigoCatalogo(editReactant?.codigoCatalogo);
+        setEditReactant((prevState) => ({
+          ...prevState,
+          codigoCatalogo: "N/D",
+        }));
+      }
     }
   }, [codigoCatalogoEnabled]);
-
-  useEffect(() => {
-    console.log("Nuevo valor de newReactant:", newReactant);
-  }, [newReactant]);
 
   useEffect(() => {
     if (marcas && marcas.length > 0) {
@@ -229,16 +314,6 @@ const Inventory = () => {
       }
     }
   }, [marcas]);
-
-  /* USE EFFECTS */
-  useEffect(() => {
-    console.log("agregar reactivo: ", newReactant);
-  }, [newReactant]);
-
-  /*  useEffect(() => {
-    console.log("Marcas: ", marcas);
-    console.log("Categorias: ", categorias);
-  }, [categorias, marcas]); */
 
   return (
     <>
@@ -631,7 +706,9 @@ const Inventory = () => {
                     margin="normal"
                     value={editReactant?.unidadMedida?.valor}
                     onChange={(e) => {
-                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      const onlyNumbers = e.target.value
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 3);
                       setEditReactant({
                         ...editReactant,
                         unidadMedida: {
@@ -802,14 +879,40 @@ const Inventory = () => {
               </div>
             </div>
           </div>
+          <div className="absolute right-25 bottom-15">
+            <Checkbox
+              checked={editReactant?.esPeligroso}
+              onChange={(e) =>
+                setEditReactant({
+                  ...editReactant,
+                  esPeligroso: e.target.checked,
+                })
+              }
+              color="primary"
+            />
+            ¿Es Peligroso?
+          </div>
           <Button
-            onClick={() => {
-              console.log(
-                "Editando Reactivo nuevo y sanitizando entradas del modal.."
-              );
-              setActiveModal(null);
+            onClick={async () => {
+              if (!checkEntries(editReactant)) {
+                return;
+              }
+              if (isSame(editReactant, originalReactant)) {
+                toast.warning("No se han realizado cambios en el reactivo");
+                return;
+              }
+
+              try {
+                await updateReactant(editReactant?._id, editReactant);
+
+                queryClient.invalidateQueries(["data"]);
+
+                setActiveModal(null);
+              } catch (error) {
+                console.log("Error al editar reactivo, detalles: ", error);
+              }
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-10 left-1/2 -translate-x-1/2 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
             label="Confirmar"
           ></Button>
         </div>
@@ -941,7 +1044,9 @@ const Inventory = () => {
                     margin="normal"
                     value={newReactant?.unidadMedida?.valor}
                     onChange={(e) => {
-                      const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
+                      const onlyNumbers = e.target.value
+                        .replace(/[^0-9]/g, "")
+                        .slice(0, 3);
                       setNewReactant({
                         ...newReactant,
                         unidadMedida: {
