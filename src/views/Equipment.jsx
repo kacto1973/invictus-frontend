@@ -4,6 +4,7 @@ import TemporaryDrawer from "../components/TemporaryDrawer";
 import Card from "../components/Card";
 import SearchBox from "../components/SearchBox.jsx";
 import Button from "../components/Button";
+import CalendarComponent from "../components/CalendarComponent";
 import { useState } from "react";
 
 const Equipment = () => {
@@ -152,12 +153,35 @@ const Equipment = () => {
         <div
           className={` ${
             activeTab === TAB_TYPE.DETALLES
-              ? "absolute w-[40%] h-[80%]  ml-[45%] flex flex-col bg-white rounded-md"
+              ? "absolute w-[40%] h-[90%]  left-[45%] top-[5%] flex flex-col bg-white rounded-md shadow-md"
               : "hidden"
           } `}
         >
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Detalles del Equipo</p>
+          </div>
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]">
+            <h1 className="text-[30px] font-bold mt-4">Nombre del equipo</h1>
+            <p className="text-base text-justify w-[85%] mt-4">
+              Una máquina de laboratorio es un equipo especializado diseñado
+              para realizar análisis, mediciones o procesos técnicos con alta
+              precisión en entornos controlados. Suelen utilizarse en
+              investigaciones científicas, análisis clínicos o ensayos
+              industriales, y están construidas para ofrecer resultados
+              confiables, repetibles y seguros.
+            </p>
+            <div className="mt-5 flex flex-row justify-between w-[50%]">
+              <span className="text-[20px] font-bold">
+                Días Calendarizados:
+              </span>
+              <span className="px-4 py-1 bg-green-300 text-[20px] font-medium rounded-full">
+                Liberado
+              </span>
+            </div>
+            <div className="mt-2">
+              {" "}
+              <CalendarComponent></CalendarComponent>
+            </div>
           </div>
         </div>
 
@@ -165,39 +189,42 @@ const Equipment = () => {
         <div
           className={` ${
             activeTab === TAB_TYPE.CALENDARIZADO
-              ? "absolute w-[40%] h-[80%] ml-[45%] flex flex-col bg-white rounded-md"
+              ? "absolute w-[40%] h-[90%]  left-[45%] top-[5%] flex flex-col bg-white rounded-md shadow-md"
               : "hidden"
           }`}
         >
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Calendarizar uso del Equipo</p>
           </div>
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]"></div>
         </div>
 
         {/* panel de agregar equipo nuevo */}
         <div
           className={` ${
             activeTab === TAB_TYPE.AGREGAR
-              ? "absolute w-[40%] h-[80%]  ml-[45%] flex flex-col bg-white rounded-md"
+              ? "absolute w-[40%] h-[90%]  left-[45%] top-[5%] flex flex-col bg-white rounded-md shadow-md"
               : "hidden"
           } `}
         >
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Agregar un equipo</p>
           </div>
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]"></div>
         </div>
 
         {/* panel de editar equipo */}
         <div
           className={` ${
             activeTab === TAB_TYPE.EDITAR
-              ? "absolute w-[40%] h-[80%]  ml-[45%] flex flex-col bg-white rounded-md"
+              ? "absolute w-[40%] h-[90%]  left-[45%] top-[5%] flex flex-col bg-white rounded-md shadow-md"
               : "hidden"
           } `}
         >
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Editar Equipo</p>
           </div>
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]"></div>
         </div>
       </div>
     </div>
