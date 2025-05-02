@@ -104,3 +104,19 @@ export const fetchUpdateReactantById = async (reactantId, updatedReactant) => {
     body: JSON.stringify(updatedReactant),
   });
 };
+
+export const fetchNotifications = async () => {
+  const res = await fetch(`${BASE_URL}/notificaciones`);
+  return res.json();
+}
+
+export const fetchDeleteAllNotifications = async () => {
+  const res = await fetch(`${BASE_URL}/notificaciones/eliminarTodas`);
+  return res.json();
+}
+
+export const fetchReadAllNotifications = async () => {
+  return await fetch(`${BASE_URL}/notificaciones/leidoTodas`, {
+    method: "POST"
+  });
+}

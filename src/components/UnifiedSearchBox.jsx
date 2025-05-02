@@ -46,14 +46,18 @@ const UnifiedSearchBox = ({ classNames = "", onChange, value, onKeyDown, onDateR
             <button
                 type="button"
                 onClick={() => setShowCalendar((prev) => !prev)}
-                className="h-full flex items-center justify-center rounded-r-md overflow-hidden"
+                className="h-full flex items-center justify-center rounded-r-md overflow-hidden cursor-pointer transform hover:scale-110 transition duration-200 ease-in-out"
             >
                 <img src="/svgs/calendar.svg" alt="Calendario" className="w-full h-full" />
             </button>
 
-            {showCalendar && (
-                <div className="absolute top-full right-0 bg-white p-4 rounded shadow-lg z-10 mt-2 flex flex-col gap-2">
-                    <label className="text-sm text-gray-700">Fecha inicio:</label>
+            <div
+                className={`absolute top-full right-0 bg-white p-4 rounded shadow-lg z-10 mt-2 flex flex-col gap-2 transition-all duration-300 ease-in-out transform ${
+                    showCalendar ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
+                }`}
+            >
+
+                <label className="text-sm text-gray-700">Fecha inicio:</label>
                     <DatePicker
                         selected={startDate}
                         onChange={(date) => setStartDate(date)}
@@ -82,7 +86,7 @@ const UnifiedSearchBox = ({ classNames = "", onChange, value, onKeyDown, onDateR
                         Aplicar fechas
                     </button>
                 </div>
-            )}
+
         </div>
     );
 };

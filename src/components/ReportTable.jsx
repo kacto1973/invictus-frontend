@@ -215,7 +215,7 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
                 src="/svgs/plus-green.svg"
                 alt="Agregar"
                 width={25}
-                className="m-auto cursor-pointer"
+                className="m-auto cursor-pointer transform hover:scale-110 transition duration-200 ease-in-out"
                 onClick={handleAddOpen}
               />
               <Popover
