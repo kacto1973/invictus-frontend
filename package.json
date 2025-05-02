@@ -24,6 +24,7 @@
     "luxon": "^3.6.0",
     "match-sorter": "^8.0.0",
     "react": "^19.0.0",
+    "react-calendar": "^5.1.0",
     "react-chartjs-2": "^5.3.0",
     "react-date-range": "^2.0.1",
     "react-datepicker": "^8.3.0",

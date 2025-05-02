@@ -85,3 +85,22 @@ export const fetchCreateReport = async (newReport) => {
     body: JSON.stringify(newReport),
   });
 }
+
+export const fetchDeleteReactantById = async (reactantId) => {
+  return await fetch(`${BASE_URL}/reactivos/${reactantId}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const fetchUpdateReactantById = async (reactantId, updatedReactant) => {
+  return await fetch(`${BASE_URL}/reactivos/${reactantId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedReactant),
+  });
+};

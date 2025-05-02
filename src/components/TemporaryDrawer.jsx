@@ -82,8 +82,9 @@ export default function TemporaryDrawer({ isOpen }) {
             img: "/svgs/gear.svg",
             route: "settings",
           },
-        ].map((object) => (
+        ].map((object, id) => (
           <DrawerButton
+            key={id}
             buttonIcon={object.img}
             buttonText={object.text}
             classNames="justify-start cursor-pointer "
