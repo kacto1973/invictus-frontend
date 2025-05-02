@@ -202,8 +202,6 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
     handleModalClose();
   };
 
-  console.log("hola", reports);
-
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 300}} aria-label="customized table">
