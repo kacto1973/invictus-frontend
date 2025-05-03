@@ -7,10 +7,23 @@ import Button from "../components/Button";
 import CalendarComponent from "../components/CalendarComponent";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import { useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { fetchEquipment } from "../services/fetchers.js";
 
 import { useState, useRef } from "react";
 
 const Equipment = () => {
+  /* tanstack */
+
+  const queryClient = useQueryClient();
+
+  /* tanstack */
+  const { data: equipment } = useQuery({
+    queryKey: ["equipment"],
+    queryFn: fetchEquipment,
+  });
+
   // constants
 
   const fileInputRef = useRef();
@@ -93,21 +106,23 @@ const Equipment = () => {
 
             <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col bg-white   items-center overflow-y-auto">
               {/* individual cards para cada equipo */}
-              {equiposLaboratorio.map((equipo, index) => (
+              {equipment?.map((device) => (
                 <div
-                  id={index}
-                  className="w-[95%]  bg-gray-100 shadow-sm rounded-md relative mt-4 mb-2 "
+                  id={device?._id}
+                  className="w-[95%] h-[8rem] min-h-[8rem] max-h-[8rem]  bg-gray-200 shadow-sm rounded-md relative mt-4 mb-2 "
                 >
-                  <img
-                    className=""
-                    width={130}
-                    src="images/machine-sample.png"
-                    alt="machine image"
-                  />
+                  <div className="flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden border-4 border-dotted border-gray-300">
+                    <img
+                      className="w-full h-full object-contain"
+                      src={device?.urlImagen}
+                      alt="device image"
+                    />
+                  </div>
+
                   <img
                     onClick={() => {
                       console.log("Execute Task...");
-                      setSelectedEquipment(equipo);
+                      setSelectedEquipment(device);
                       setActiveModal(true);
                     }}
                     className="absolute top-2 right-2 cursor-pointer"
@@ -115,11 +130,11 @@ const Equipment = () => {
                     width={25}
                     alt="arrow svg"
                   />
-                  <span className=" absolute top-2 left-[32%] font-bold -translate-x-[2rem]">
-                    {equipo.nombre}
+                  <span className=" absolute top-2 left-[44%] font-bold -translate-x-[2rem]">
+                    {device?.nombre}
                   </span>
-                  <span className=" absolute bottom-4 left-[26%] bg-pink-300 rounded-full py-1 px-4 ">
-                    {equipo.status}
+                  <span className=" absolute bottom-4 left-[37%] bg-pink-300 rounded-full py-1 px-4 ">
+                    {device?.status}
                   </span>
                   <img
                     src="/svgs/edit-black.svg"
@@ -127,7 +142,7 @@ const Equipment = () => {
                     alt="info"
                     className="right-23 bottom-4 absolute cursor-pointer"
                     onClick={() => {
-                      setSelectedEquipment(equipo);
+                      setSelectedEquipment(device);
                       setActiveTab(TAB_TYPE.EDITAR);
                     }}
                   />
@@ -137,7 +152,7 @@ const Equipment = () => {
                     alt="info"
                     className="right-12 bottom-4 absolute cursor-pointer"
                     onClick={() => {
-                      setSelectedEquipment(equipo);
+                      setSelectedEquipment(device);
                       setActiveTab(TAB_TYPE.CALENDARIZADO);
                     }}
                   />
@@ -147,7 +162,7 @@ const Equipment = () => {
                     alt="info"
                     className="right-2 bottom-4 absolute cursor-pointer"
                     onClick={() => {
-                      setSelectedEquipment(equipo);
+                      setSelectedEquipment(device);
                       setActiveTab(TAB_TYPE.DETALLES);
                     }}
                   />
