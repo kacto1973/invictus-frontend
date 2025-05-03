@@ -8,8 +8,44 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Popover from "@mui/material/Popover";
-import { useState } from "react";
 import Button from "@mui/material/Button";
+import { useState } from "react";
+import {fetchRemoveReport, fetchChangeReportName, fetchCreateReport} from "../services/fetchers";
+import { useQueryClient } from "@tanstack/react-query";
+
+function formatearFecha(fechaObj) {
+  const fecha = new Date(fechaObj);
+  const dia = String(fecha.getDate()).padStart(2, '0');
+  const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+  const anio = fecha.getFullYear();
+
+  return `${dia}/${mes}/${anio}`;
+}
+
+async function descargarConFetch(pdfUrl, nombre) {
+
+  try {
+    const response = await fetch(pdfUrl);
+    const blob = await response.blob();
+
+    const blobUrl = window.URL.createObjectURL(blob);
+
+    // Crear el enlace invisible
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = nombre;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+  } catch (error) {
+    console.error('Error descargando el PDF:', error);
+  }
+}
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -18,6 +54,8 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    wordBreak: "break-word",
+    overflowWrap: "anywhere",
   },
 }));
 
@@ -31,7 +69,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const getEstadoEstilo = (estado) => {
-  let backgroundColor = "inherit";
+  let backgroundColor;
   switch (estado) {
     case "Completado":
       backgroundColor = "#d8ecdc";
@@ -39,8 +77,8 @@ const getEstadoEstilo = (estado) => {
     case "Error":
       backgroundColor = "#ffd4dc";
       break;
-    case "En progreso":
-      backgroundColor = "#fcf4cc";
+    case "En proceso":
+      backgroundColor = "#FFF3CD";
       break;
     default:
       backgroundColor = "inherit";
@@ -74,12 +112,39 @@ const buttonStyle = {
   justifyContent: "flex-start",
 };
 
-export default function CustomizedTables({ onReportClick, reports }) {
+export default function CustomizedTables({ onReportClick, reports, setReports, editingReportId, setEditingReportId,
+                                           reportToDelete, setReportToDelete}) {
+  const [openModal, setOpenModal] = useState(false);
   const [addAnchorEl, setAddAnchorEl] = React.useState(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState({});
-  const [selectedItems, setSelectedItems] = useState({}); 
-  const [openModal, setOpenModal] = useState(false);
+  const [newReportName, setNewReportName] = useState("");
+  const [selectedItems, setSelectedItems] = useState({}); // controlamos el estado de cada ícono
+  const queryClient = useQueryClient();
+  // const [editingReportId, setEditingReportId] = useState(null);
+  const [editingName, setEditingName] = useState("");
+  const [disableAnimationOnClose, setDisableAnimationOnClose] = useState(false);
 
+  React.useEffect(() => {
+    if (editingReportId) {
+      const report = reports.find(r => r._id === editingReportId);
+      if (report) setEditingName(report.nombre);
+    }
+  }, [editingReportId, reports]);
+
+  React.useEffect(() => {
+    async function eliminar() {
+        try {
+          await fetchRemoveReport(reportToDelete._id);
+          await queryClient.invalidateQueries(["reports"]);
+          setReportToDelete(null);
+        } catch (error) {
+          console.error("Error eliminando reporte:", error);
+        }
+    }
+    if (reportToDelete) {
+      eliminar();
+    }
+  }, [reportToDelete, reports, queryClient, setReportToDelete]);
 
   const handleAddOpen = (event) => setAddAnchorEl(event.currentTarget);
   const handleAddClose = () => setAddAnchorEl(null);
@@ -89,31 +154,57 @@ export default function CustomizedTables({ onReportClick, reports }) {
     setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: event.currentTarget }));
   };
 
-  const handleOptionsClose = (reportId) => {
-    setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: null }));
-  };
-
   const handleIconClick = (index) => {
-  
+    // Alternamos entre los dos iconos al hacer clic
     setSelectedItems((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
   };
 
+  const handleOptionsClose = (reportId) => {
+    setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: null }));
+  };
   const handleModalOpen = () => setOpenModal(true);
   const handleModalClose = () => setOpenModal(false);
 
-  const handleCreateReport = () => {
-    alert("Se ha guardado el reporte");
-  
+  const transformDict = (dict) => {
+    const nuevaEstructura = {
+      0: 'listadoReactivos',
+      1: 'listadoEntradasSalidas',
+      2: 'listadoEquipos',
+      3: 'listadoServicios',
+      4: 'listadoUsos',
+      5: 'graficaCategoriasReactivos',
+      6: 'graficaEntradasSalidas',
+      7: 'graficaReactivosAgotados',
+      8: 'graficaUsodeEquipos',
+      9: 'graficaServicioEquipos'
+    };
+
+    const resultado = {};
+
+    for (const [numero, nuevaLlave] of Object.entries(nuevaEstructura)) {
+      const num = Number(numero);
+      if (dict.hasOwnProperty(num)) {
+        resultado[nuevaLlave] = dict[num];
+      } else {
+        resultado[nuevaLlave] = false;
+      }
+    }
+
+    return resultado;
+  }
+
+  const handleCreateReport = async () => {
+    await fetchCreateReport(transformDict(selectedItems))
+    await queryClient.invalidateQueries(["reports"]);
     handleModalClose();
   };
-  
 
   return (
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 300 }} aria-label="customized table">
+      <Table sx={{ minWidth: 300}} aria-label="customized table">
         <TableHead>
           <TableRow>
             <StyledTableCell>Nombre</StyledTableCell>
@@ -121,18 +212,21 @@ export default function CustomizedTables({ onReportClick, reports }) {
             <StyledTableCell>Estado</StyledTableCell>
             <StyledTableCell>
               <img
-                src="svgs/plus-green.svg"
+                src="/svgs/plus-green.svg"
                 alt="Agregar"
                 width={25}
-                className="m-auto cursor-pointer"
+                className="m-auto cursor-pointer transform hover:scale-110 transition duration-200 ease-in-out"
                 onClick={handleAddOpen}
               />
               <Popover
                 open={addOpen}
                 anchorEl={addAnchorEl}
-                onClose={handleAddClose}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                onClose={() => {
+                  setDisableAnimationOnClose(false);
+                  handleAddClose();
+                }}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                transformOrigin={{ vertical: "top", horizontal: "center" }}
                 PaperProps={{
                   sx: {
                     boxShadow: 2,
@@ -141,13 +235,19 @@ export default function CustomizedTables({ onReportClick, reports }) {
                     backgroundColor: "#f5f5f5",
                   },
                 }}
+                TransitionProps={{
+                  timeout: disableAnimationOnClose ? 0 : undefined,
+                }}
               >
                 <Button
-                  onClick={handleModalOpen}
-                  startIcon={<img src="svgs/plus-sign.svg" alt="icono" width={16} />}
+                  onClick={() => {
+                    setDisableAnimationOnClose(true);
+                    setAddAnchorEl(null);
+                    handleModalOpen();
+                  }}
+                  startIcon={<img src="/svgs/plus-sign.svg" alt="icono" width={16} />}
                   sx={buttonStyle}
                 >
-            
                   Crear reporte
                 </Button>
               </Popover>
@@ -159,14 +259,68 @@ export default function CustomizedTables({ onReportClick, reports }) {
             const open = Boolean(optionsAnchorEl[report._id]);
             return (
               <StyledTableRow key={report._id}>
-                <StyledTableCell>{report.nombre}</StyledTableCell>
-                <StyledTableCell>{report.fecha}</StyledTableCell>
+                <StyledTableCell sx={{ width: "50.63%"}}>
+                  {editingReportId === report._id ? (
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <input
+                            type="text"
+                            value={editingName}
+                            onChange={(e) => setEditingName(e.target.value)}
+                            style={{
+                              height: "32px",
+                              fontSize: "14px",
+                              padding: "4px 8px",
+                              border: "1px solid #ccc",
+                              borderRadius: "4px",
+                              flexGrow: 1,
+                            }}
+                        />
+                        <Button
+                            onClick={() => setEditingReportId(null)}
+                            sx={{
+                              minWidth: "32px",
+                              height: "32px",
+                              backgroundColor: "#f5f5f5",
+                              color: "#555",
+                              borderRadius: "4px",
+                              padding: "0",
+                              "&:hover": { backgroundColor: "#e0e0e0" },
+                            }}
+                        >
+                          ✖
+                        </Button>
+                        <Button
+                            onClick={async () => {
+                              await fetchChangeReportName(report._id, editingName);
+                              await queryClient.invalidateQueries(["reports"]);
+                              setEditingReportId(null);
+                            }}
+                            sx={{
+                              minWidth: "32px",
+                              height: "32px",
+                              backgroundColor: "#4CAF50",
+                              color: "white",
+                              borderRadius: "4px",
+                              padding: "0",
+                              "&:hover": { backgroundColor: "#45a049" },
+                            }}
+                        >
+                          ✔
+                        </Button>
+                      </div>
+                  ) : (
+                      report.nombre
+                  )}
+                </StyledTableCell>
+                <StyledTableCell>{formatearFecha(report.fechaGeneracion)}</StyledTableCell>
                 <StyledTableCell>
-                  <span style={getEstadoEstilo(report.estado)}>{report.estado}</span>
+                  <span style={getEstadoEstilo(report.idEstadoReporte.nombre)}>
+                    {report.idEstadoReporte.nombre}
+                  </span>
                 </StyledTableCell>
                 <StyledTableCell>
                   <img
-                    src="svgs/options-vertical.svg"
+                    src="/svgs/options-vertical.svg"
                     alt="Opciones"
                     width={25}
                     className="m-auto cursor-pointer"
@@ -176,8 +330,8 @@ export default function CustomizedTables({ onReportClick, reports }) {
                     open={open}
                     anchorEl={optionsAnchorEl[report._id]}
                     onClose={() => handleOptionsClose(report._id)}
-                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-                    transformOrigin={{ vertical: 'top', horizontal: 'center' }}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    transformOrigin={{ vertical: "top", horizontal: "center" }}
                     PaperProps={{
                       sx: {
                         boxShadow: 2,
@@ -190,60 +344,48 @@ export default function CustomizedTables({ onReportClick, reports }) {
                       },
                     }}
                   >
-                 <Button
-                      startIcon={<img src="svgs/download copy.svg" alt="Descargar" width={16} />}
+                    <Button
+                      startIcon={<img src="/svgs/download copy.svg" alt="Descargar" width={16} />}
                       sx={buttonStyle}
-                      onClick={() => handleOptionsClose(report._id)}
+                      onClick={async () => {
+                        await descargarConFetch(report.urlReporte, report.nombre);
+                        handleOptionsClose(report._id)
+                      }}
                     >
                       Descargar
                     </Button>
-                <Button
-                  startIcon={
-                  <img
-                  src="svgs/eye-gray.svg"
-                  alt="Vista previa"
-                  width={16}
-                  height={16}
-                />
-               }
-              sx={buttonStyle}
-              onClick={() => {
-                console.log("Vista previa:", report);
-                handleOptionsClose(report._id);
-              }}
-            >
-              Vista previa
-            </Button>
+                    <a href={report.urlReporte} target="_blank" rel="noopener noreferrer">
+                    <Button
+                      startIcon={<img src="/svgs/eye-gray.svg" alt="Vista previa" width={16} />}
+                      sx={buttonStyle}
+                      onClick={() => handleOptionsClose(report._id)}
+                    >
+                      Vista previa
+                    </Button>
+                    </a>
+                    <Button
+                      startIcon={<img src="/svgs/rename.svg" alt="Renombrar" width={20} />}
+                      sx={buttonStyle}
+                      onClick={() => {
+                        setEditingReportId(report._id);
+                        setEditingName(report.nombre);
+                        handleOptionsClose(report._id);
+                      }}
 
-            <Button
-           startIcon={<img src="svgs/rename.svg" alt="Renombrar" width={20} />}
-            sx={buttonStyle}
-              onClick={() => handleRenameReport(report._id)}
-             >
-            Renombrar
-            </Button>
+                    >
+                      Renombrar
+                    </Button>
 
-              <Button
-                startIcon={
-                  <img
-                    src="svgs/trash-red2.svg"
-                    alt="Eliminar"
-                    width={16}
-                    height={16}
-                  />
-                }
-                sx={{
-                  ...buttonStyle,
-                  color: "#b00020",
-                }}
-                onClick={() => {
-                  console.log("Eliminar:", report);
-                  handleOptionsClose(report._id);
-                }}
-              >
-                Eliminar
-              </Button>
-
+                    <Button
+                      startIcon={<img src="/svgs/trash-red2.svg" alt="Eliminar" width={16} />}
+                      sx={{ ...buttonStyle, color: "#b00020" }}
+                      onClick={async () => {
+                        setReportToDelete(report);
+                        handleOptionsClose(report._id);
+                      }}
+                    >
+                      Eliminar
+                    </Button>
                   </Popover>
                 </StyledTableCell>
               </StyledTableRow>
@@ -252,7 +394,7 @@ export default function CustomizedTables({ onReportClick, reports }) {
         </TableBody>
       </Table>
 
-     {openModal && (
+      {openModal && (
         <div style={modalBackdropStyle}>
           <div style={modalContentStyle}>
             <h2 style={{ marginBottom: "20px", fontWeight: "bold" }}>Contenido del reporte</h2>
@@ -292,7 +434,9 @@ export default function CustomizedTables({ onReportClick, reports }) {
 
             <div style={{ display: "flex", justifyContent: "center", gap: "20px" }}>
             <Button
-            onClick={handleModalClose}
+            onClick={async () => {
+              handleModalClose();
+            }}
             sx={{
               backgroundColor: "white",
               color: "black", 
@@ -338,7 +482,8 @@ const modalBackdropStyle = {
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
-  paddingTop: "72px"
+  paddingTop: "72px",
+  zIndex: 9999 // :O
 };
 
 const modalContentStyle = {

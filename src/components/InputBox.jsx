@@ -4,9 +4,9 @@ const InputBox = ({
   label, 
   placeholder, 
   iconSrc, 
-  onIconClick, 
+  onClickIcon, 
   secondIconSrc, 
-  onSecondIconClick, 
+  onClickSecondIcon, 
   type = "text" 
 }) => {
   return (
@@ -22,18 +22,26 @@ const InputBox = ({
           <button
             type="button"
             className="absolute inset-y-0 right-8 flex items-center"
-            onClick={onIconClick}
+            onClick={onClickIcon}
           >
-            <img src={iconSrc} alt="icon" className="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
+            <img
+              src={iconSrc}
+              alt="icon"
+              className="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+            />
           </button>
         )}
         {secondIconSrc && (
           <button
             type="button"
             className="absolute inset-y-0 right-2 flex items-center"
-            onClick={onSecondIconClick}
+            onClick={onClickSecondIcon}
           >
-            <img src={secondIconSrc} alt="second-icon" className="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100" />
+            <img
+              src={secondIconSrc}
+              alt="second-icon"
+              className="w-5 h-5 cursor-pointer opacity-70 hover:opacity-100"
+            />
           </button>
         )}
       </div>

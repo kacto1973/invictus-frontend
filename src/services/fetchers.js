@@ -46,6 +46,46 @@ export const fetchNewReactant = async (newReactant) => {
   });
 };
 
+export const fetchReports = async () => {
+  const res = await fetch(`${BASE_URL}/reportes`);
+  return res.json();
+}
+
+export const fetchRemoveReport = async (idReport) => {
+  return await fetch(`${BASE_URL}/reportes/eliminar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      "id": idReport
+    }),
+  });
+};
+
+export const fetchChangeReportName = async (idReport, newName) => {
+    return await fetch(`${BASE_URL}/reportes/cambiarNombre`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          "id": idReport,
+          "nombre": newName
+        }),
+    });
+}
+
+export const fetchCreateReport = async (newReport) => {
+  return await fetch(`${BASE_URL}/reportes/crear`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newReport),
+  });
+}
+
 export const fetchDeleteReactantById = async (reactantId) => {
   return await fetch(`${BASE_URL}/reactivos/${reactantId}`, {
     method: "DELETE",
@@ -64,6 +104,22 @@ export const fetchUpdateReactantById = async (reactantId, updatedReactant) => {
     body: JSON.stringify(updatedReactant),
   });
 };
+
+export const fetchNotifications = async () => {
+  const res = await fetch(`${BASE_URL}/notificaciones`);
+  return res.json();
+}
+
+export const fetchDeleteAllNotifications = async () => {
+  const res = await fetch(`${BASE_URL}/notificaciones/eliminarTodas`);
+  return res.json();
+}
+
+export const fetchReadAllNotifications = async () => {
+  return await fetch(`${BASE_URL}/notificaciones/leidoTodas`, {
+    method: "POST"
+  });
+}
 
 //fetchers for equipment module
 

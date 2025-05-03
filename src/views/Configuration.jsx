@@ -26,10 +26,10 @@ const Configuration = () => {
           <div className="flex items-center justify-between mt-5">
             <label className="text-red-600 font-semibold">Restablecer base de datos</label>
             <Button
-            icon = "svgs/restore-sign.svg"
+          
             label = "Restablecer"
             onClick={() => alert("la base de datos se ha restablecido")}
-            classNames="hover:bg-[#CA5E5E] bg-[#E96D6D] w-[30%] h-[3rem] mb-9 ml-25 flex items-center justify-center gap-7 text-white font-normal"
+            classNames="hover:bg-[#CA5E5E] bg-[#E96D6D] w-[30%] h-[3rem] text-white font-normal"
           />
           </div>
         </Card>
