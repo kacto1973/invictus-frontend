@@ -26,7 +26,7 @@ const Equipment = () => {
 
   // constants
 
-  const fileInputRef = useRef();
+  const fileInputRef = useRef(null);
 
   const TAB_TYPE = {
     CALENDARIZADO: "calendarizado",
@@ -76,6 +76,13 @@ const Equipment = () => {
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  /* functions */
+  const handleFileSelection = (e) => {
+    const file = e.target.files[0];
+    console.log("ejecutando metodo handle file: " + file);
+  };
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
@@ -273,9 +280,25 @@ const Equipment = () => {
               type="file"
               accept="image/*"
               ref={fileInputRef}
-              style={{ display: "none" }}
+              style={{
+                position: "absolute",
+                top: "-9999px",
+                left: "-9999px",
+                opacity: "0",
+                width: "1px",
+                height: "1px",
+                pointerEvents: "none",
+              }}
+              onChange={(e) => {
+                handleFileSelection(e);
+              }}
             />
-            <div className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer">
+            <div
+              onClick={() => {
+                fileInputRef?.current.click();
+              }}
+              className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer"
+            >
               <img src="/svgs/upload-purple.svg" alt="upload icon" width={40} />
               <span className="text-lg ml-4">Subir Imagen</span>
             </div>
