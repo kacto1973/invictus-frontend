@@ -120,3 +120,10 @@ export const fetchReadAllNotifications = async () => {
     method: "POST"
   });
 }
+
+//fetchers for equipment module
+
+export const fetchEquipment = async () => {
+  const res = await fetch(`${BASE_URL}/equipos`);
+  return res.json();
+};

@@ -542,6 +542,7 @@ const Inventory = () => {
           </div>
         </div>
       </div>
+
       {/* pantalla opaca del fondo */}
       {activeModal !== null && (
         <div className="absolute top-0 left-0 w-full h-full bg-black z-50 opacity-40"></div>
