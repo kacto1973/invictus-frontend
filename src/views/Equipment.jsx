@@ -1,4 +1,5 @@
 import React from "react";
+import { useEffect } from "react";
 import Header from "../components/Header";
 import TemporaryDrawer from "../components/TemporaryDrawer";
 import Card from "../components/Card";
@@ -9,8 +10,13 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { fetchEquipment } from "../services/fetchers.js";
-
+import {
+  fetchEquipment,
+  fetchAddNewDevice,
+  fetchUpdateDevice,
+} from "../services/fetchers.js";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 
 const Equipment = () => {
@@ -26,7 +32,8 @@ const Equipment = () => {
 
   // constants
 
-  const fileInputRef = useRef(null);
+  const fileInputRefAdd = useRef(null);
+  const fileInputRefEdit = useRef(null);
 
   const TAB_TYPE = {
     CALENDARIZADO: "calendarizado",
@@ -76,18 +83,145 @@ const Equipment = () => {
   const [selectedEquipment, setSelectedEquipment] = useState(null);
   const [activeTab, setActiveTab] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [originalDevice, setOriginalDevice] = useState(null);
+  const [editDevice, setEditDevice] = useState(null);
+  const [newDevice, setNewDevice] = useState({
+    nombre: "",
+    descripcion: "",
+    file: null,
+    requiereMantenimiento: false,
+    //status: "Liberado",
+  });
+
+  /* use effect */
+
+  useEffect(() => {
+    /*
+    tienen esta anatomía:
+
+    ya que selectedReactant es sacado de equipos que fetcheamos
+
+  {
+    "_id": "6813fbb4557133f6b21457cd",
+    "nombre": "Microscopio Digital",
+    "descripcion": "Microscopio con cámara integrada para análisis detallado",
+    "urlImagen": "https://m.media-amazon.com/images/I/51eFrgkJHjL._AC_UF894,1000_QL80_.jpg",
+    "requiereMantenimiento": false,
+    "status": "Liberado",
+    "mantenimientos": [],
+    "reservas": []
+  }
+
+    */
+    setEditDevice(JSON.parse(JSON.stringify(selectedEquipment)));
+    setOriginalDevice(JSON.parse(JSON.stringify(selectedEquipment)));
+  }, [selectedEquipment]);
+
+  useEffect(() => {
+    console.log("new device props: ", newDevice);
+  }, [newDevice]);
 
   /* functions */
-  const handleFileSelection = (e) => {
-    const file = e.target.files[0];
-    console.log("ejecutando metodo handle file: " + file);
+
+  const checkEntries = (device) => {
+    if (!device.nombre) {
+      toast.error("Nombre del equipo es requerido");
+      return false;
+    }
+    if (!device.descripcion) {
+      toast.error("Descripción del equipo es requerido");
+      return false;
+    }
+    if (!device.file) {
+      toast.error("Imagen del equipo es requerida");
+      return false;
+    }
+    return true;
+  };
+
+  const checkEntriesEdit = (device) => {
+    if (!device.nombre) {
+      toast.error("Nombre del equipo es requerido");
+      return false;
+    }
+    if (!device.descripcion) {
+      toast.error("Descripción del equipo es requerido");
+      return false;
+    }
+    if (!device.file && !originalDevice?.file) {
+      toast.error("Imagen del equipo es requerida");
+      return false;
+    }
+    return true;
+  };
+
+  const updateEquipment = async (updatedDevice) => {
+    console.log("Updating device: ", updatedDevice);
+
+    const img = updatedDevice?.file || originalDevice?.file;
+
+    const formData = new FormData();
+    formData.append("nombre", updatedDevice?.nombre);
+    formData.append("descripcion", updatedDevice?.descripcion);
+    formData.append("imagen", img);
+    formData.append(
+      "requiereMantenimiento",
+      updatedDevice?.requiereMantenimiento
+    );
+    //formData.append("status", newDevice?.status);
+    const device_id = updatedDevice?._id;
+
+    const response = await fetchUpdateDevice(formData, device_id);
+
+    if (response.ok) {
+      toast.success("Equipo actualizado correctamente");
+      queryClient.invalidateQueries(["equipment"]);
+      setEditDevice({
+        nombre: "",
+        descripcion: "",
+        file: null,
+        requiereMantenimiento: false,
+        //status: "Liberado",
+      });
+    } else {
+      toast.error("Error al actualizar Equipo");
+      throw new Error("Error al actualizar Equipo");
+    }
+  };
+
+  const addEquipment = async (newDevice) => {
+    console.log("Adding new device: ", newDevice);
+    const formData = new FormData();
+    formData.append("nombre", newDevice?.nombre);
+    formData.append("descripcion", newDevice?.descripcion);
+    formData.append("imagen", newDevice?.file);
+    formData.append("requiereMantenimiento", newDevice?.requiereMantenimiento);
+    //formData.append("status", newDevice?.status);
+
+    const response = await fetchAddNewDevice(formData);
+
+    if (response.ok) {
+      toast.success("Equipo agregado correctamente");
+      queryClient.invalidateQueries(["equipment"]);
+      setNewDevice({
+        nombre: "",
+        descripcion: "",
+        file: null,
+        requiereMantenimiento: false,
+        //status: "Liberado",
+      });
+    } else {
+      toast.error("Error al agregar Equipo");
+      throw new Error("Error agregar equipment");
+    }
   };
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
       <TemporaryDrawer></TemporaryDrawer>
       <Header label="Equipment"></Header>
+      <ToastContainer position="bottom-right" autoClose={2500} />
+
       <div
         className={`ml-[250px] mt-[5rem] w-[calc(100vw-250px)]
            h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden p-5 relative`}
@@ -113,9 +247,9 @@ const Equipment = () => {
 
             <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col bg-white   items-center overflow-y-auto">
               {/* individual cards para cada equipo */}
-              {equipment?.map((device) => (
+              {equipment?.map((device, index) => (
                 <div
-                  id={device?._id}
+                  key={index}
                   className="w-[95%] h-[8rem] min-h-[8rem] max-h-[8rem]  bg-gray-200 shadow-sm rounded-md relative mt-4 mb-2 "
                 >
                   <div className="flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden border-4 border-dotted border-gray-300">
@@ -146,7 +280,7 @@ const Equipment = () => {
                   <img
                     src="/svgs/edit-black.svg"
                     width={25}
-                    alt="info"
+                    alt="edit"
                     className="right-23 bottom-4 absolute cursor-pointer"
                     onClick={() => {
                       setSelectedEquipment(device);
@@ -156,7 +290,7 @@ const Equipment = () => {
                   <img
                     src="/svgs/calendar-black.svg"
                     width={30}
-                    alt="info"
+                    alt="calendar"
                     className="right-12 bottom-4 absolute cursor-pointer"
                     onClick={() => {
                       setSelectedEquipment(device);
@@ -241,9 +375,7 @@ const Equipment = () => {
               />
               <Button
                 label="Guardar"
-                onClick={() => {
-                  console.log("Agregar equipo...");
-                }}
+                onClick={() => {}}
                 classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
               />
             </div>
@@ -261,11 +393,15 @@ const Equipment = () => {
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Agregar un equipo</p>
           </div>
-          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]">
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
             <div className="mt-6 w-full flex justify-center">
               <TextField
                 label="Nombre del equipo"
                 sx={{ width: "90%" }}
+                value={newDevice?.nombre}
+                onChange={(e) => {
+                  setNewDevice({ ...newDevice, nombre: e.target.value });
+                }}
               ></TextField>
             </div>
             <div className="mt-4 w-full flex justify-center">
@@ -274,12 +410,16 @@ const Equipment = () => {
                 multiline
                 rows={3}
                 sx={{ width: "90%" }}
+                value={newDevice?.descripcion}
+                onChange={(e) => {
+                  setNewDevice({ ...newDevice, descripcion: e.target.value });
+                }}
               ></TextField>
             </div>
             <input
               type="file"
               accept="image/*"
-              ref={fileInputRef}
+              ref={fileInputRefAdd}
               style={{
                 position: "absolute",
                 top: "-9999px",
@@ -290,36 +430,58 @@ const Equipment = () => {
                 pointerEvents: "none",
               }}
               onChange={(e) => {
-                handleFileSelection(e);
+                const file = e.target.files[0];
+                if (file) {
+                  setNewDevice({ ...newDevice, file: file });
+                }
               }}
             />
             <div
               onClick={() => {
-                fileInputRef?.current.click();
+                if (fileInputRefAdd.current) {
+                  fileInputRefAdd.current.click();
+                }
               }}
-              className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer"
+              className="bg-[#F0E6F7] cursor-pointer mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md "
             >
               <img src="/svgs/upload-purple.svg" alt="upload icon" width={40} />
               <span className="text-lg ml-4">Subir Imagen</span>
             </div>
-            <img
-              className="mt-6"
-              src="/images/machine-sample.png"
-              alt="machine img"
-              width={130}
-            />
+            <div className="mt-6 flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden">
+              <img
+                className="w-full h-full object-contain"
+                src={
+                  newDevice?.file
+                    ? URL.createObjectURL(newDevice?.file)
+                    : "/images/empty.png"
+                }
+                alt="machine img"
+                width={130}
+              />
+            </div>
+
             <div className="mt-4 w-[80%] flex flex-row justify-around">
               <Button
                 label="Cancelar"
                 onClick={() => {
-                  console.log("Cancelar equipo...");
+                  setNewDevice({
+                    nombre: "",
+                    descripcion: "",
+                    file: null,
+                    requiereMantenimiento: false,
+                  });
+                  setActiveTab(null);
                 }}
                 classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
               />
               <Button
                 label="Agregar"
-                onClick={() => {
-                  console.log("Agregar equipo...");
+                onClick={async () => {
+                  if (!checkEntries(newDevice)) {
+                    return;
+                  }
+
+                  await addEquipment(newDevice);
                 }}
                 classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
               />
@@ -343,7 +505,11 @@ const Equipment = () => {
               <TextField
                 label="Nombre del equipo"
                 sx={{ width: "90%" }}
-              ></TextField>
+                value={editDevice?.nombre || ""}
+                onChange={(e) => {
+                  setEditDevice({ ...editDevice, nombre: e.target.value });
+                }}
+              />
             </div>
             <div className="mt-4 w-full flex justify-center">
               <TextField
@@ -351,24 +517,56 @@ const Equipment = () => {
                 multiline
                 rows={3}
                 sx={{ width: "90%" }}
+                value={editDevice?.descripcion || ""}
+                onChange={(e) => {
+                  setEditDevice({ ...editDevice, descripcion: e.target.value });
+                }}
               ></TextField>
             </div>
             <input
               type="file"
               accept="image/*"
-              ref={fileInputRef}
-              style={{ display: "none" }}
+              ref={fileInputRefEdit}
+              style={{
+                position: "absolute",
+                top: "-9999px",
+                left: "-9999px",
+                opacity: "0",
+                width: "1px",
+                height: "1px",
+                pointerEvents: "none",
+              }}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (file) {
+                  setEditDevice({ ...editDevice, file: e.target.files[0] });
+                }
+              }}
             />
-            <div className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer">
+            <div
+              onClick={() => {
+                if (fileInputRefEdit.current) {
+                  fileInputRefEdit.current.click();
+                }
+              }}
+              className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer"
+            >
               <img src="/svgs/upload-purple.svg" alt="upload icon" width={40} />
               <span className="text-lg ml-4">Subir Imagen</span>
             </div>
-            <img
-              className="mt-6"
-              src="/images/machine-sample.png"
-              alt="machine img"
-              width={130}
-            />
+            <div className="mt-6 flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden">
+              <img
+                className="w-full h-full object-contain"
+                src={
+                  editDevice?.file
+                    ? URL.createObjectURL(editDevice?.file)
+                    : selectedEquipment?.urlImagen
+                }
+                alt="machine img"
+                width={130}
+              />
+            </div>
+
             <div className="mt-4 w-[80%] flex flex-row justify-around">
               <Button
                 label="Cancelar"
@@ -379,8 +577,12 @@ const Equipment = () => {
               />
               <Button
                 label="Confirmar"
-                onClick={() => {
-                  console.log("Actualizando equipo...");
+                onClick={async () => {
+                  if (!checkEntriesEdit(editDevice)) {
+                    return;
+                  }
+
+                  await updateEquipment(editDevice);
                 }}
                 classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
               />

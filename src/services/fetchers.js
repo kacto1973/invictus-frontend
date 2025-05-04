@@ -49,7 +49,7 @@ export const fetchNewReactant = async (newReactant) => {
 export const fetchReports = async () => {
   const res = await fetch(`${BASE_URL}/reportes`);
   return res.json();
-}
+};
 
 export const fetchRemoveReport = async (idReport) => {
   return await fetch(`${BASE_URL}/reportes/eliminar`, {
@@ -58,23 +58,23 @@ export const fetchRemoveReport = async (idReport) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      "id": idReport
+      id: idReport,
     }),
   });
 };
 
 export const fetchChangeReportName = async (idReport, newName) => {
-    return await fetch(`${BASE_URL}/reportes/cambiarNombre`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          "id": idReport,
-          "nombre": newName
-        }),
-    });
-}
+  return await fetch(`${BASE_URL}/reportes/cambiarNombre`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: idReport,
+      nombre: newName,
+    }),
+  });
+};
 
 export const fetchCreateReport = async (newReport) => {
   return await fetch(`${BASE_URL}/reportes/crear`, {
@@ -84,7 +84,7 @@ export const fetchCreateReport = async (newReport) => {
     },
     body: JSON.stringify(newReport),
   });
-}
+};
 
 export const fetchDeleteReactantById = async (reactantId) => {
   return await fetch(`${BASE_URL}/reactivos/${reactantId}`, {
@@ -108,22 +108,36 @@ export const fetchUpdateReactantById = async (reactantId, updatedReactant) => {
 export const fetchNotifications = async () => {
   const res = await fetch(`${BASE_URL}/notificaciones`);
   return res.json();
-}
+};
 
 export const fetchDeleteAllNotifications = async () => {
   const res = await fetch(`${BASE_URL}/notificaciones/eliminarTodas`);
   return res.json();
-}
+};
 
 export const fetchReadAllNotifications = async () => {
   return await fetch(`${BASE_URL}/notificaciones/leidoTodas`, {
-    method: "POST"
+    method: "POST",
   });
-}
+};
 
 //fetchers for equipment module
 
 export const fetchEquipment = async () => {
   const res = await fetch(`${BASE_URL}/equipos`);
   return res.json();
+};
+
+export const fetchAddNewDevice = async (device) => {
+  return await fetch(`${BASE_URL}/equipos`, {
+    method: "POST",
+    body: device,
+  });
+};
+
+export const fetchUpdateDevice = async (device, id) => {
+  return await fetch(`${BASE_URL}/equipos?id=${id}`, {
+    method: "PUT",
+    body: device,
+  });
 };
