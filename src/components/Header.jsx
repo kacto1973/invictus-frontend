@@ -361,8 +361,28 @@ const Header = ({ label }) => {
                     {getTimeElapsed(notif.fechaGeneracion)}
                   </div>
                 </div>
-                <div style={{ fontSize: "14px", color: "#555555" }}>
-                  {notif.descripcion}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-end",
+                    marginTop: "5px",
+                  }}
+                >
+                {/*icono de borrar noti*/ }
+                  <div style={{ fontSize: "14px", color: "#555555" }}>
+                    {notif.descripcion}
+                  </div>
+                  <img
+                    src="/svgs/trash-red2.svg"
+                    alt="Borrar"
+                    style={{
+                      width: "18px",
+                      height: "18px",
+                      cursor: "pointer",
+                      marginLeft: "10px",
+                    }}
+                  />
                 </div>
               </div>
             </div>
