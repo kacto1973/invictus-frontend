@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import { useState } from "react";
 import {fetchRemoveReport, fetchChangeReportName, fetchCreateReport} from "../services/fetchers";
 import { useQueryClient } from "@tanstack/react-query";
+import {toast, ToastContainer} from "react-toastify";
 
 function formatearFecha(fechaObj) {
   const fecha = new Date(fechaObj);
@@ -112,12 +113,11 @@ const buttonStyle = {
   justifyContent: "flex-start",
 };
 
-export default function CustomizedTables({ onReportClick, reports, setReports, editingReportId, setEditingReportId,
+export default function CustomizedTables({ reports, editingReportId, setEditingReportId,
                                            reportToDelete, setReportToDelete}) {
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setopenModal] = useState(false);
   const [addAnchorEl, setAddAnchorEl] = React.useState(null);
   const [optionsAnchorEl, setOptionsAnchorEl] = React.useState({});
-  const [newReportName, setNewReportName] = useState("");
   const [selectedItems, setSelectedItems] = useState({}); // controlamos el estado de cada ícono
   const queryClient = useQueryClient();
   // const [editingReportId, setEditingReportId] = useState(null);
@@ -137,6 +137,7 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
           await fetchRemoveReport(reportToDelete._id);
           await queryClient.invalidateQueries(["reports"]);
           setReportToDelete(null);
+          toast.success("Reporte eliminado exitosamente!");
         } catch (error) {
           console.error("Error eliminando reporte:", error);
         }
@@ -165,8 +166,8 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
   const handleOptionsClose = (reportId) => {
     setOptionsAnchorEl((prev) => ({ ...prev, [reportId]: null }));
   };
-  const handleModalOpen = () => setOpenModal(true);
-  const handleModalClose = () => setOpenModal(false);
+  const handleModalOpen = () => setopenModal(true);
+  const handleModalClose = () => setopenModal(false);
 
   const transformDict = (dict) => {
     const nuevaEstructura = {
@@ -197,9 +198,15 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
   }
 
   const handleCreateReport = async () => {
-    await fetchCreateReport(transformDict(selectedItems))
-    await queryClient.invalidateQueries(["reports"]);
-    handleModalClose();
+    const valores = Object.values(selectedItems);
+    if (valores.length === 0 || valores.every(valor => valor === false)){
+      toast.warning("Debes seleccionar al menos una opción para crear el reporte");
+    } else {
+      await fetchCreateReport(transformDict(selectedItems))
+      await queryClient.invalidateQueries(["reports"]);
+      handleModalClose();
+      toast.success("Reporte creado exitosamente!");
+    }
   };
 
   return (
@@ -242,7 +249,7 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
                 <Button
                   onClick={() => {
                     setDisableAnimationOnClose(true);
-                    setAddAnchorEl(null);
+                    // setAddAnchorEl(null);
                     handleModalOpen();
                   }}
                   startIcon={<img src="/svgs/plus-sign.svg" alt="icono" width={16} />}
@@ -294,6 +301,7 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
                               await fetchChangeReportName(report._id, editingName);
                               await queryClient.invalidateQueries(["reports"]);
                               setEditingReportId(null);
+                              toast.success("Reporte actualizado exitosamente!");
                             }}
                             sx={{
                               minWidth: "32px",
@@ -324,7 +332,12 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
                     alt="Opciones"
                     width={25}
                     className="m-auto cursor-pointer"
-                    onClick={(e) => handleOptionsOpen(e, report._id)}
+                    onClick={
+                      (e) =>  {
+                        setAddAnchorEl(null);
+                        handleOptionsOpen(e, report._id)
+                      }
+                    }
                   />
                   <Popover
                     open={open}
@@ -452,7 +465,9 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
             Cancelar
           </Button>
               <Button
-                onClick={handleCreateReport}
+                onClick={() => {
+                  handleCreateReport();
+                }}
                 sx={{
                   backgroundColor: "#4CAF50",
                   color: "#fff",
@@ -468,6 +483,7 @@ export default function CustomizedTables({ onReportClick, reports, setReports, e
           </div>
         </div>
       )}
+      <ToastContainer position="bottom-right" autoClose={2500} />
     </TableContainer>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import Button from "@mui/material/Button";
 
 const UnifiedSearchBox = ({ classNames = "", onChange, value, onKeyDown, onDateRangeSelected }) => {
     const [showCalendar, setShowCalendar] = useState(false);
@@ -26,6 +27,19 @@ const UnifiedSearchBox = ({ classNames = "", onChange, value, onKeyDown, onDateR
         }
     };
 
+    const handleClearInput = () => {
+        const fakeEvent = {
+            key: "Enter",
+            code: "Enter",
+            keyCode: 13,
+            which: 13,
+            preventDefault: () => {},
+        };
+
+        onChange({ target: { value: "" } });
+        onKeyDown && onKeyDown(fakeEvent);
+    };
+
     return (
         <div className={`relative flex items-center bg-white shadow-md rounded-md h-[3rem] w-full ${classNames}`} ref={wrapperRef}>
             <img
@@ -42,6 +56,24 @@ const UnifiedSearchBox = ({ classNames = "", onChange, value, onKeyDown, onDateR
                 onKeyDown={onKeyDown}
                 className="flex-grow outline-none text-sm"
             />
+
+            {value && (
+                <Button
+                    onClick={handleClearInput}
+                    sx={{
+                        minWidth: "34px",
+                        height: "34px",
+                        backgroundColor: "#f5f5f5",
+                        color: "#555",
+                        borderRadius: "4px",
+                        padding: "0",
+                        marginRight: "8px",
+                        "&:hover": { backgroundColor: "#e0e0e0" },
+                    }}
+                >
+                    ✖
+                </Button>
+            )}
 
             <button
                 type="button"

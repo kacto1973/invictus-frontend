@@ -4,6 +4,7 @@ import {
   fetchNotifications,
   fetchDeleteAllNotifications,
   fetchReadAllNotifications,
+  fetchDeleteNotificacion,
 } from "../services/fetchers.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -42,66 +43,11 @@ const Header = ({ label }) => {
   const queryClient = useQueryClient();
 
   const {
-    data: notifications = [],
-    isLoading,
-    error,
+    data: notifications = []
   } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
   });
-
-  // const [notifications, setNotifications] = useState([
-  //   {
-  //     id: 1,
-  //     idTipoNotificacion: {
-  //         nombre: "Reactivo Agotado"
-  //     },
-  //     descripcion: "Actualmente no contamos con glicina en inventario.",
-  //     idEstadoNotificacion: {
-  //         nombre: "Sin leer"
-  //     },
-  //     fechaGeneracion: "2023-10-01T12:00:00Z",
-  //     status: true
-  //   },
-  //   {
-  //     id: 2,
-  //     idTipoNotificacion: {
-  //         nombre: "Equipo Calendarizado"
-  //     },
-  //     descripcion: "El cromatógrafo de gas ha sido calendarizado por 10 días.",
-  //     idEstadoNotificacion: {
-  //         nombre: "Leido"
-  //     },
-  //     fechaGeneracion: "2025-04-23T03:15:37.476Z",
-  //     status: true
-  //   },
-  //   {
-  //     id: 3,
-  //     idTipoNotificacion: {
-  //         nombre: "Equipo en Mantenimiento"
-  //     },
-  //     descripcion: "El equipo HPLC se encuentra bajo mantenimiento",
-  //     idEstadoNotificacion: {
-  //         nombre: "Sin leer"
-  //     },
-  //     fechaGeneracion: "2025-05-01T12:00:00Z",
-  //     status: true
-  //   },
-  //
-  //   {
-  //     id: 4,
-  //     idTipoNotificacion: {
-  //         nombre: "Reactivo Agotado"
-  //     },
-  //     descripcion: "Actualmente no contamos con azul de metileno en el inventario.",
-  //     idEstadoNotificacion: {
-  //         nombre: "Eliminado"
-  //     },
-  //     fechaGeneracion: "2025-03-01T12:00:00Z",
-  //     status: true
-  //   },
-  //
-  // ]);
 
   const formatCount = (count) => (count > 9 ? "9+" : count);
   const counts = {
@@ -152,7 +98,7 @@ const Header = ({ label }) => {
       return notif.idEstadoNotificacion.nombre === activeFilter;
     });
 
-  //console.log(counts);
+
 
   return (
     <>
@@ -290,7 +236,7 @@ const Header = ({ label }) => {
         >
           {filteredNotifications.map((notif) => (
             <div
-              key={notif.id}
+              key={notif._id}
               className="flex-shrink-0"
               style={{
                 width: "350px",
@@ -302,7 +248,6 @@ const Header = ({ label }) => {
                 alignItems: "center",
                 gap: "20px",
                 boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-                cursor: "pointer",
                 minHeight: "87px",
               }}
             >
@@ -369,13 +314,17 @@ const Header = ({ label }) => {
                     marginTop: "5px",
                   }}
                 >
-                {/*icono de borrar noti*/ }
+                {/*icono de borrar notificaciones*/ }
                   <div style={{ fontSize: "14px", color: "#555555" }}>
                     {notif.descripcion}
                   </div>
                   <img
                     src="/svgs/trash-red2.svg"
                     alt="Borrar"
+                    onClick={async () => {
+                      await fetchDeleteNotificacion(notif._id);
+                      queryClient.invalidateQueries(["notifications"]);
+                    }}
                     style={{
                       width: "18px",
                       height: "18px",

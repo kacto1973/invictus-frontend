@@ -5,8 +5,8 @@ import UnifiedSearchBox from "../components/UnifiedSearchBox";
 import ReportTable from "../components/ReportTable";
 import CardReport from "../components/CardReport";
 import Button from "../components/Button";
-import {fetchRemoveReport, fetchReports} from "../services/fetchers";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
+import {fetchReports} from "../services/fetchers";
+import {useQuery} from "@tanstack/react-query";
 import { matchSorter } from "match-sorter";
 
 async function descargarConFetch(pdfUrl, nombre) {
@@ -61,10 +61,9 @@ const getReporteMasReciente = (reports) => {
 };
 
 const Reports = () => {
-
-  const queryClient = useQueryClient();
   const [editingReportId, setEditingReportId] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
+  const [firstTime, setfirstTime] = useState(true);
 
   const { data: reports = [], isLoading, error } = useQuery({
     queryKey: ["reports"],
@@ -78,7 +77,8 @@ const Reports = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
-            const texto = e.target.value.trim();
+            setfirstTime(false);
+            const texto = e.target?.value.trim() ?? "";
 
             if (texto.includes("$")) {
                 // Buscar por rango de fechas
@@ -108,7 +108,7 @@ const Reports = () => {
             } else {
                 // Buscar por nombre
                 if (texto === "") {
-                    setFilteredReports([]);
+                    setFilteredReports(reports);
                     return;
                 }
 
@@ -122,27 +122,14 @@ const Reports = () => {
                     return fechaB - fechaA; // Más nuevo primero
                 });
 
-                setFilteredReports(resultadosOrdenados);
+                if (resultadosOrdenados.length === 0) setFilteredReports([]);
+                else setFilteredReports(resultadosOrdenados);
             }
         }
     };
 
-
-
-    const handleDelete = async () => {
-    if (!reporteMasReciente) return;
-
-    try {
-      await fetchRemoveReport(reporteMasReciente._id);
-      await queryClient.invalidateQueries(["reports"]);
-      setReportToDelete(null);
-    } catch (error) {
-      console.error("Error eliminando reporte:", error);
-    }
-  };
-
-  if (isLoading) return <div>Cargando reportes...</div>;
-  if (error) return <div>Error al cargar reportes</div>;
+  // if (isLoading) return <div>Cargando reportes...</div>;
+  // if (error) return <div>Error al cargar reportes</div>;
 
   return (
     <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
@@ -160,10 +147,10 @@ const Reports = () => {
                 onDateRangeSelected={(newValue) => setSearchValue(newValue)}
             />
 
-            <div className="overflow-auto shadow-md rounded-lg"> {/* Le quite flex-1 y funciona */}
+            <div className="overflow-auto shadow-md rounded-lg">
           <ReportTable
               onReportsClick={() => {}}
-              reports={filteredReports.length > 0 ? filteredReports : reports} // Esta línea causa problemas / Cambiar por reports={reports}
+              reports={firstTime ? reports : filteredReports} // filteredReports.length > 0 ? filteredReports : reports
               editingReportId={editingReportId}
               setEditingReportId={setEditingReportId}
               reportToDelete={reportToDelete}
