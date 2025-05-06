@@ -69,15 +69,13 @@ const Equipment = () => {
   /* use effect */
 
   useEffect(() => {
-    //ta mal esta amdre, a cual reservas o cual mantenimiento de que equipo entrar??
-    //tengo que iterar sobre todos y combinar sus reservas y sus mantenimientos
-    //para posteriormente mostrar ambos en el calendario
+    if (!selectedEquipment) return;
 
-    setReservations(equipment?.reservas || []);
-    setMaintenances(equipment?.mantenimientos || []);
-    console.log("reservations: ", reservations);
-    console.log("maintenances: ", maintenances);
-  }, [equipment]);
+    setReservations(selectedEquipment?.reservas || []);
+    setMaintenances(selectedEquipment?.mantenimientos || []);
+    console.log("reservations: ", selectedEquipment?.reservas);
+    console.log("maintenances: ", selectedEquipment?.mantenimientos);
+  }, [selectedEquipment]);
 
   useEffect(() => {
     /*
@@ -335,7 +333,10 @@ const Equipment = () => {
               </span>
             </p>
             <div className="scale-[0.85] absolute top-[27%]  flex flex-col items-center justify-center">
-              <CalendarComponent></CalendarComponent>
+              <CalendarComponent
+                reservations={reservations}
+                maintenances={maintenances}
+              ></CalendarComponent>
             </div>
           </div>
         </div>
@@ -376,7 +377,10 @@ const Equipment = () => {
             </p>
 
             <div className="scale-[0.85] absolute top-[10%]  flex flex-col items-center justify-center">
-              <CalendarComponent></CalendarComponent>
+              <CalendarComponent
+                reservations={reservations}
+                maintenances={maintenances}
+              ></CalendarComponent>
             </div>
             <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
               <Button
