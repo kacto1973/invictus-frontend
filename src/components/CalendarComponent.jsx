@@ -1,11 +1,17 @@
 import { DATE_VIEWS } from "@mui/x-date-pickers/internals";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Importa los estilos por defecto
 import { DateTime } from "luxon";
 
-const CalendarComponent = ({ reservations, maintenances }) => {
-  //const [selectedDate, setSelectedDate] = useState(new Date());
+const CalendarComponent = ({
+  reservations,
+  maintenances,
+  selectedRange,
+  onChangeRange,
+}) => {
+  /*states */
+  //  const [selectedRange, setSelectedRange] = useState([]);
 
   /* functions */
   const getTileClassName = ({ date, view }) => {
@@ -28,7 +34,7 @@ const CalendarComponent = ({ reservations, maintenances }) => {
 
         //si cae en el rango aplicamos el color de la reservación
         if (startDate <= dateTile && dateTile <= endDate) {
-          return "!bg-blue-300";
+          return "!bg-red-400";
         }
       }
     }
@@ -42,9 +48,9 @@ const CalendarComponent = ({ reservations, maintenances }) => {
         }).plus({ days: 1 }); //mexicanada pa q jale porque no incluye el último día;
         const dateTile = DateTime.fromJSDate(date, { zone: zonaHermosillo });
 
-        //si cae en el rango aplicamos el color de la reservación
+        //si cae en el rango aplicamos el color del mantenimeinto
         if (startDate <= dateTile && dateTile <= endDate) {
-          return "!bg-pink-300";
+          return "!bg-orange-400";
         }
       }
     }
@@ -56,12 +62,17 @@ const CalendarComponent = ({ reservations, maintenances }) => {
     <div className="p-4">
       {/*<h2 className="text-lg font-semibold mb-2">Selecciona una fecha:</h2>*/}
       <Calendar
+        selectRange
         tileClassName={getTileClassName}
-        //onChange={setSelectedDate}
-        //value={selectedDate}
+        onChange={onChangeRange}
+        value={selectedRange}
       />
 
-      {/*<p className="mt-4">Fecha seleccionada: {selectedDate.toDateString()}</p>*/}
+      <p className="mt-4">
+        Rango seleccionado:
+        {selectedRange && selectedRange[0]?.toDateString()} -{" "}
+        {selectedRange && selectedRange[1]?.toDateString()}
+      </p>
     </div>
   );
 };

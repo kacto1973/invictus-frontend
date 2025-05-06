@@ -131,7 +131,7 @@ export const fetchDeleteNotificacion = async (id) => {
       id: id,
     }),
   });
-}
+};
 
 //fetchers for equipment module
 
@@ -157,5 +157,27 @@ export const fetchUpdateDevice = async (device, id) => {
 export const fetchDeleteDevice = async (id) => {
   return await fetch(`${BASE_URL}/equipos?id=${id}`, {
     method: "DELETE",
+  });
+};
+
+/* mantenimientos y reservas */
+
+export const fetchAddMaintenance = async (body, id) => {
+  return await fetch(`${BASE_URL}/equipos/mantenimiento?id=${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+};
+
+export const fetchAddReservation = async (body, id) => {
+  return await fetch(`${BASE_URL}/equipos/reserva?id=${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
   });
 };

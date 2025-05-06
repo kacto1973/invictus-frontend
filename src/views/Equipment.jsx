@@ -15,10 +15,13 @@ import {
   fetchAddNewDevice,
   fetchUpdateDevice,
   fetchDeleteDevice,
+  fetchAddReservation,
+  fetchAddMaintenance,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
+import { DateTime } from "luxon";
 
 const Equipment = () => {
   /* tanstack */
@@ -65,8 +68,13 @@ const Equipment = () => {
   const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPE.USO);
   const [reservations, setReservations] = useState([]);
   const [maintenances, setMaintenances] = useState([]);
+  const [selectedRange, setSelectedRange] = useState([]);
 
   /* use effect */
+
+  useEffect(() => {
+    setSelectedRange([]);
+  }, [selectedEquipment]);
 
   useEffect(() => {
     if (!selectedEquipment) return;
@@ -104,6 +112,61 @@ const Equipment = () => {
   }, [newDevice]);
 
   /* functions */
+
+  const formatDate = (date) => {
+    return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd");
+  };
+
+  const handleSaveSchedule = async () => {
+    //uso
+    if (scheduleType === SCHEDULE_TYPE.USO) {
+      console.log("Calendarizando uso del equipo...");
+
+      const body = {
+        persona: "Usuario del Laboratorio",
+        fechaInicio: formatDate(selectedRange[0]),
+        fechaFin: formatDate(selectedRange[1]),
+      };
+
+      //ASÍ debería ser, pero el back no funciona bien en reservas/uso
+      /*const res = await fetchAddReservation(body, selectedEquipment?._id);
+      if (res.ok) {
+        toast.success("Reserva calendarizada correctamente");
+        queryClient.invalidateQueries(["equipment"]);
+        setActiveTab(null);
+      } else {
+        toast.error("Error al calendarizar reserva");
+        throw new Error("Error al calendarizar reserva");
+      } */
+      await fetchAddReservation(body, selectedEquipment?._id);
+      toast.success("Reserva calendarizada correctamente");
+      queryClient.invalidateQueries(["equipment"]);
+      setSelectedEquipment(null);
+      setActiveTab(null);
+    }
+
+    // mantenimiento
+    if (scheduleType === SCHEDULE_TYPE.MANTENIMIENTO) {
+      console.log("Calendarizando mantenimiento del equipo...");
+
+      const body = {
+        fechaInicio: formatDate(selectedRange[0]),
+        fechaFin: formatDate(selectedRange[1]),
+        descripcion: "Mantenimiento programado",
+      };
+
+      const res = await fetchAddMaintenance(body, selectedEquipment?._id);
+      if (res.ok) {
+        toast.success("Mantenimiento programado correctamente");
+        queryClient.invalidateQueries(["equipment"]);
+        setSelectedEquipment(null);
+        setActiveTab(null);
+      } else {
+        toast.error("Error al calendarizar reserva");
+        throw new Error("Error al calendarizar reserva");
+      }
+    }
+  };
 
   const checkEntries = (device) => {
     if (!device.nombre) {
@@ -325,10 +388,10 @@ const Equipment = () => {
               <span className="text-sm font-bold">Días Calendarizados:</span>
             </div>
             <p className="mt-2">
-              <span className="mr-4 px-4 py-1 bg-blue-300 text-sm font-medium rounded-full">
+              <span className="mr-4 px-4 py-1 bg-red-400 text-sm font-medium rounded-full">
                 En Uso
               </span>
-              <span className="px-4 py-1 bg-pink-300 text-sm font-medium rounded-full">
+              <span className="px-4 py-1 bg-orange-400 text-sm font-medium rounded-full">
                 En Mantenimiento
               </span>
             </p>
@@ -368,8 +431,8 @@ const Equipment = () => {
                 }}
                 className={`cursor-pointer font-bold text-base rounded-full mx-2 px-4 py-2 ${
                   scheduleType === SCHEDULE_TYPE.USO
-                    ? "bg-blue-300"
-                    : "bg-pink-300"
+                    ? "bg-red-400"
+                    : "bg-orange-400"
                 } `}
               >
                 {scheduleType}
@@ -380,19 +443,23 @@ const Equipment = () => {
               <CalendarComponent
                 reservations={reservations}
                 maintenances={maintenances}
+                selectedRange={selectedRange}
+                onChangeRange={setSelectedRange}
               ></CalendarComponent>
             </div>
             <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
               <Button
-                label="Cancelar"
+                label="Limpiar"
                 onClick={() => {
-                  console.log("Cancelar equipo...");
+                  console.log("limpiando días seleciconados");
                 }}
                 classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
               />
               <Button
                 label="Guardar"
-                onClick={() => {}}
+                onClick={async () => {
+                  await handleSaveSchedule();
+                }}
                 classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
               />
             </div>
