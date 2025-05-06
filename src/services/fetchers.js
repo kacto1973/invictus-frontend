@@ -121,6 +121,18 @@ export const fetchReadAllNotifications = async () => {
   });
 };
 
+export const fetchDeleteNotificacion = async (id) => {
+  return await fetch(`${BASE_URL}/notificaciones/eliminar`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      id: id,
+    }),
+  });
+}
+
 //fetchers for equipment module
 
 export const fetchEquipment = async () => {
