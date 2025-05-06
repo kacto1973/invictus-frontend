@@ -15,16 +15,16 @@ const Dashboard = () => {
     console.log(drawerOpened);
   }, [drawerOpened]);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["data"],
+  const { data: dataW, isLoading, error } = useQuery({
+    queryKey: ["dataW"],
     queryFn: fetchDashboard,
   });
 
-  const orderedDataBarChart = data?.datosGraficaUnidadMedida
+  const orderedDataBarChart = dataW?.datosGraficaUnidadMedida
     ?.slice()
     ?.sort((a, b) => a._id.localeCompare(b._id));
 
-  const orderedDataPieChart = data?.datosGraficaEstadoFisico
+  const orderedDataPieChart = dataW?.datosGraficaEstadoFisico
     ?.slice()
     ?.sort((a, b) => a._id.localeCompare(b._id));
 
@@ -117,7 +117,7 @@ const Dashboard = () => {
               subClassNames="flex items-center justify-center"
             >
               <span className="text-[50px] font-semibold">
-                {data?.TotalReactivos}
+                {dataW?.TotalReactivos}
               </span>
             </Card>
 
@@ -129,7 +129,7 @@ const Dashboard = () => {
             >
               <span className="text-[50px] font-semibold">
                 {" "}
-                {data?.TotalReactivosAdquiridos}
+                {dataW?.TotalReactivosAdquiridos}
               </span>
             </Card>
             <Card
@@ -139,7 +139,7 @@ const Dashboard = () => {
               subClassNames="flex items-center justify-center"
             >
               <span className="text-[50px] font-semibold">
-                {data?.TotalReactivosAgotados}
+                {dataW?.TotalReactivosAgotados}
               </span>
             </Card>
           </div>
