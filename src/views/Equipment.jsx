@@ -14,6 +14,7 @@ import {
   fetchEquipment,
   fetchAddNewDevice,
   fetchUpdateDevice,
+  fetchDeleteDevice,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -42,41 +43,10 @@ const Equipment = () => {
     EDITAR: "editar",
   };
 
-  const equiposLaboratorio = [
-    {
-      nombre: "Microscopio Óptico",
-      descripcion:
-        "Permite observar muestras biológicas con aumentos de hasta 1000x.",
-      requiereMantenimiento: true,
-      status: "En Utilización",
-    },
-    {
-      nombre: "Centrífuga de Laboratorio",
-      descripcion:
-        "Utilizada para separar componentes de una muestra por densidad.",
-      requiereMantenimiento: false,
-      status: "Liberado",
-    },
-    {
-      nombre: "Espectrofotómetro",
-      descripcion: "Mide la absorción de luz en diferentes longitudes de onda.",
-      requiereMantenimiento: true,
-      status: "En Utilización",
-    },
-    {
-      nombre: "Balanza Analítica",
-      descripcion: "Permite medir masas con gran precisión hasta microgramos.",
-      requiereMantenimiento: false,
-      status: "Liberado",
-    },
-    {
-      nombre: "Autoclave",
-      descripcion:
-        "Esteriliza material de laboratorio usando vapor de alta presión.",
-      requiereMantenimiento: true,
-      status: "En Utilización",
-    },
-  ];
+  const SCHEDULE_TYPE = {
+    MANTENIMIENTO: "mantenimiento",
+    USO: "uso",
+  };
 
   // use states
 
@@ -92,8 +62,22 @@ const Equipment = () => {
     requiereMantenimiento: false,
     //status: "Liberado",
   });
+  const [scheduleType, setScheduleType] = useState(SCHEDULE_TYPE.USO);
+  const [reservations, setReservations] = useState([]);
+  const [maintenances, setMaintenances] = useState([]);
 
   /* use effect */
+
+  useEffect(() => {
+    //ta mal esta amdre, a cual reservas o cual mantenimiento de que equipo entrar??
+    //tengo que iterar sobre todos y combinar sus reservas y sus mantenimientos
+    //para posteriormente mostrar ambos en el calendario
+
+    setReservations(equipment?.reservas || []);
+    setMaintenances(equipment?.mantenimientos || []);
+    console.log("reservations: ", reservations);
+    console.log("maintenances: ", maintenances);
+  }, [equipment]);
 
   useEffect(() => {
     /*
@@ -148,7 +132,7 @@ const Equipment = () => {
       toast.error("Descripción del equipo es requerido");
       return false;
     }
-    if (!device.file && !originalDevice?.file) {
+    if (!device.file && !originalDevice?.urlImagen) {
       toast.error("Imagen del equipo es requerida");
       return false;
     }
@@ -183,6 +167,8 @@ const Equipment = () => {
         requiereMantenimiento: false,
         //status: "Liberado",
       });
+      setOriginalDevice(null);
+      setActiveTab(null);
     } else {
       toast.error("Error al actualizar Equipo");
       throw new Error("Error al actualizar Equipo");
@@ -274,7 +260,13 @@ const Equipment = () => {
                   <span className=" absolute top-2 left-[44%] font-bold -translate-x-[2rem]">
                     {device?.nombre}
                   </span>
-                  <span className=" absolute bottom-4 left-[37%] bg-pink-300 rounded-full py-1 px-4 ">
+                  <span
+                    className={`absolute bottom-4 left-[37%] rounded-full py-1 px-4 ${
+                      device?.status === "Liberado"
+                        ? "bg-green-400 text-white"
+                        : "bg-black text-white"
+                    }`}
+                  >
                     {device?.status}
                   </span>
                   <img
@@ -325,20 +317,23 @@ const Equipment = () => {
             <p className="ml-5 *:">Detalles del Equipo</p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
-            <h1 className="text-lg font-bold mt-2">Nombre del equipo</h1>
-            <p className="text-sm text-justify w-[95%] mt-2">
-              Una máquina de laboratorio es un equipo especializado diseñado
-              para realizar análisis, mediciones o procesos técnicos con alta
-              precisión en entornos controlados. Suelen utilizarse en
-              investigaciones científicas, análisis clínicos o ensayos
-              industriales.
+            <h1 className="text-lg font-bold mt-2">
+              {selectedEquipment?.nombre}
+            </h1>
+            <p className="text-sm text-center w-[95%] my-4">
+              {selectedEquipment?.descripcion}
             </p>
-            <div className="mt-2 flex flex-row justify-between w-[52%] items-center">
+            <div className="mt-2 flex flex-row justify-around w-[70%] items-center">
               <span className="text-sm font-bold">Días Calendarizados:</span>
-              <span className="px-4 py-1 bg-green-300 text-sm font-medium rounded-full">
-                Liberado
-              </span>
             </div>
+            <p className="mt-2">
+              <span className="mr-4 px-4 py-1 bg-blue-300 text-sm font-medium rounded-full">
+                En Uso
+              </span>
+              <span className="px-4 py-1 bg-pink-300 text-sm font-medium rounded-full">
+                En Mantenimiento
+              </span>
+            </p>
             <div className="scale-[0.85] absolute top-[27%]  flex flex-col items-center justify-center">
               <CalendarComponent></CalendarComponent>
             </div>
@@ -357,10 +352,28 @@ const Equipment = () => {
             <p className="ml-5 *:">Calendarizar uso del Equipo</p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
-            <h1 className="text-lg font-bold mt-2">Nombre del equipo</h1>
-            <h2 className="text-base font-bold mt-4">
-              Elegir días para calendarizar
-            </h2>
+            <h1 className="text-lg font-bold mt-2">
+              {selectedEquipment?.nombre}
+            </h1>
+            <p className="text-base font-bold mt-4">
+              Elegir días para calendarizar{" "}
+              <span
+                onClick={() => {
+                  if (scheduleType === SCHEDULE_TYPE.USO) {
+                    setScheduleType(SCHEDULE_TYPE.MANTENIMIENTO);
+                  } else {
+                    setScheduleType(SCHEDULE_TYPE.USO);
+                  }
+                }}
+                className={`cursor-pointer font-bold text-base rounded-full mx-2 px-4 py-2 ${
+                  scheduleType === SCHEDULE_TYPE.USO
+                    ? "bg-blue-300"
+                    : "bg-pink-300"
+                } `}
+              >
+                {scheduleType}
+              </span>
+            </p>
 
             <div className="scale-[0.85] absolute top-[10%]  flex flex-col items-center justify-center">
               <CalendarComponent></CalendarComponent>
@@ -597,11 +610,20 @@ const Equipment = () => {
 
           <div className=" flex justify-center w-[30%] h-[30%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-50">
             <p className="text-xl font-bold text-left w-[80%] top-[2rem] left-1/2 bottom-0 -translate-x-1/2 absolute ">
-              ¿Desea usted eliminar el reactivo: EQUIPO DE EJEMPLO?
+              ¿Desea usted eliminar el reactivo: {selectedEquipment?.nombre}?
             </p>
             <Button
-              onClick={() => {
-                console.log("Eliminar equipo...");
+              onClick={async () => {
+                const res = await fetchDeleteDevice(selectedEquipment?._id);
+
+                if (res.ok) {
+                  toast.success("Equipo eliminado correctamente");
+                  queryClient.invalidateQueries(["equipment"]);
+                  setActiveModal(null);
+                } else {
+                  toast.error("Error al eliminar equipo");
+                  throw new Error("Error al eliminar equipo");
+                }
               }}
               classNames="!absolute cursor-pointer hover  :bg-[#CD1C1C] bg-[#D41D1D] w-[8rem] h-[2rem] left-1/2 -translate-x-1/2 bottom-8 shadow-md rounded-md text-bold text-white text-LG"
               label="Eliminar"

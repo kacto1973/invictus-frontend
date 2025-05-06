@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Importa los estilos por defecto
 
-const CalendarComponent = () => {
+const CalendarComponent = ({ reservations, maintenances }) => {
   const [date, setDate] = useState(new Date());
 
   return (

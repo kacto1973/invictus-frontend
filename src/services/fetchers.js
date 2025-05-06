@@ -141,3 +141,9 @@ export const fetchUpdateDevice = async (device, id) => {
     body: device,
   });
 };
+
+export const fetchDeleteDevice = async (id) => {
+  return await fetch(`${BASE_URL}/equipos?id=${id}`, {
+    method: "DELETE",
+  });
+};
