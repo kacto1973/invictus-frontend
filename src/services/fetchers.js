@@ -181,3 +181,15 @@ export const fetchAddReservation = async (body, id) => {
     body: JSON.stringify(body),
   });
 };
+
+export const fetchDeleteReservation = async (id) => {
+  return await fetch(`${BASE_URL}/equipos/reserva?id=${id}`, {
+    method: "DELETE",
+  });
+};
+
+export const fetchDeleteMaintenance = async (id) => {
+  return await fetch(`${BASE_URL}/equipos/mantenimiento?id=${id}`, {
+    method: "DELETE",
+  });
+};

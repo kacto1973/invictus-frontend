@@ -9,6 +9,7 @@ const CalendarComponent = ({
   maintenances,
   selectedRange,
   onChangeRange,
+  applyRange,
 }) => {
   /*states */
   //  const [selectedRange, setSelectedRange] = useState([]);
@@ -20,9 +21,9 @@ const CalendarComponent = ({
 
     const zonaHermosillo = "America/Hermosillo";
 
-    //comparamos si el día se encuentra en el rango de una reserva
-
     if (Array.isArray(reservations) || reservations?.length > 0) {
+      //comparamos si el día se encuentra en el rango de una reserva
+
       for (const reservation of reservations) {
         const startDate = DateTime.fromISO(reservation.fechaInicio, {
           zone: zonaHermosillo,
@@ -62,17 +63,17 @@ const CalendarComponent = ({
     <div className="p-4">
       {/*<h2 className="text-lg font-semibold mb-2">Selecciona una fecha:</h2>*/}
       <Calendar
-        selectRange
+        selectRange={applyRange}
         tileClassName={getTileClassName}
         onChange={onChangeRange}
         value={selectedRange}
       />
 
-      <p className="mt-4">
+      {/*<p className="mt-4">
         Rango seleccionado:
         {selectedRange && selectedRange[0]?.toDateString()} -{" "}
         {selectedRange && selectedRange[1]?.toDateString()}
-      </p>
+      </p> */}
     </div>
   );
 };

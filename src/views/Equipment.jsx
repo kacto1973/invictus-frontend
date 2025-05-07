@@ -17,6 +17,8 @@ import {
   fetchDeleteDevice,
   fetchAddReservation,
   fetchAddMaintenance,
+  fetchDeleteReservation,
+  fetchDeleteMaintenance,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -69,6 +71,7 @@ const Equipment = () => {
   const [reservations, setReservations] = useState([]);
   const [maintenances, setMaintenances] = useState([]);
   const [selectedRange, setSelectedRange] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   /* use effect */
 
@@ -113,6 +116,70 @@ const Equipment = () => {
 
   /* functions */
 
+  const deleteRangeDates = async (date) => {
+    console.log("hola desde delete range dates");
+
+    const reservationId = reservations.find((reservation) => {
+      const startDate = DateTime.fromISO(reservation.fechaInicio, {
+        zone: "America/Hermosillo",
+      }).toJSDate();
+
+      const endDate = DateTime.fromISO(reservation.fechaFin, {
+        zone: "America/Hermosillo",
+      }).toJSDate();
+
+      if (startDate <= date && date <= endDate) {
+        return reservation._id;
+      }
+
+      return null;
+    });
+
+    const maintenanceId = maintenances.find((maintenance) => {
+      const startDate = DateTime.fromISO(maintenance.fechaInicio, {
+        zone: "America/Hermosillo",
+      }).toJSDate();
+
+      const endDate = DateTime.fromISO(maintenance.fechaFin, {
+        zone: "America/Hermosillo",
+      }).toJSDate();
+
+      if (startDate <= date && date <= endDate) {
+        return maintenance._id;
+      }
+
+      return null;
+    });
+
+    if (reservationId) {
+      console.log("borrando reserva :) con id de: ", reservationId);
+      const res = await fetchDeleteReservation(reservationId);
+      if (res.ok) {
+        toast.success("Reserva eliminada correctamente");
+        queryClient.invalidateQueries(["equipment"]);
+        setSelectedEquipment(null);
+        setActiveTab(null);
+      } else {
+        toast.error("Error al eliminar reserva");
+        throw new Error("Error al eliminar reserva");
+      }
+    }
+
+    if (maintenanceId) {
+      console.log("borrando mantenimiento  :)");
+      const res = await fetchDeleteMaintenance(maintenanceId);
+      if (res.ok) {
+        toast.success("Mantenimiento eliminado correctamente");
+        queryClient.invalidateQueries(["equipment"]);
+        setSelectedEquipment(null);
+        setActiveTab(null);
+      } else {
+        toast.error("Error al eliminar mantenimiento");
+        throw new Error("Error al eliminar mantenimiento");
+      }
+    }
+  };
+
   const formatDate = (date) => {
     return DateTime.fromJSDate(date).toFormat("yyyy-MM-dd");
   };
@@ -129,7 +196,7 @@ const Equipment = () => {
       };
 
       //ASÍ debería ser, pero el back no funciona bien en reservas/uso
-      /*const res = await fetchAddReservation(body, selectedEquipment?._id);
+      const res = await fetchAddReservation(body, selectedEquipment?._id);
       if (res.ok) {
         toast.success("Reserva calendarizada correctamente");
         queryClient.invalidateQueries(["equipment"]);
@@ -137,12 +204,13 @@ const Equipment = () => {
       } else {
         toast.error("Error al calendarizar reserva");
         throw new Error("Error al calendarizar reserva");
-      } */
-      await fetchAddReservation(body, selectedEquipment?._id);
+      }
+
+      /* await fetchAddReservation(body, selectedEquipment?._id);
       toast.success("Reserva calendarizada correctamente");
       queryClient.invalidateQueries(["equipment"]);
       setSelectedEquipment(null);
-      setActiveTab(null);
+      setActiveTab(null); */
     }
 
     // mantenimiento
@@ -375,7 +443,7 @@ const Equipment = () => {
           } `}
         >
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 *:">Detalles del Equipo</p>
+            <p className="ml-5 *:">Eliminar reservas/mantenimientos</p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
             <h1 className="text-lg font-bold mt-2">
@@ -384,7 +452,7 @@ const Equipment = () => {
             <p className="text-sm text-center w-[95%] my-4">
               {selectedEquipment?.descripcion}
             </p>
-            <div className="mt-2 flex flex-row justify-around w-[70%] items-center">
+            <div className=" flex flex-row justify-around w-[70%] items-center">
               <span className="text-sm font-bold">Días Calendarizados:</span>
             </div>
             <p className="mt-2">
@@ -399,7 +467,20 @@ const Equipment = () => {
               <CalendarComponent
                 reservations={reservations}
                 maintenances={maintenances}
+                selectedRange={selectedDate}
+                onChangeRange={setSelectedDate}
+                applyRange={false}
               ></CalendarComponent>
+            </div>
+            <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
+              <Button
+                label="Limpiar"
+                onClick={async () => {
+                  if (!selectedDate) return;
+                  await deleteRangeDates(selectedDate);
+                }}
+                classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
+              />
             </div>
           </div>
         </div>
@@ -415,46 +496,40 @@ const Equipment = () => {
           <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
             <p className="ml-5 *:">Calendarizar uso del Equipo</p>
           </div>
-          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
+          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center  mt-[3rem] relative">
             <h1 className="text-lg font-bold mt-2">
               {selectedEquipment?.nombre}
             </h1>
-            <p className="text-base font-bold mt-4">
-              Elegir días para calendarizar{" "}
-              <span
-                onClick={() => {
-                  if (scheduleType === SCHEDULE_TYPE.USO) {
-                    setScheduleType(SCHEDULE_TYPE.MANTENIMIENTO);
-                  } else {
-                    setScheduleType(SCHEDULE_TYPE.USO);
-                  }
-                }}
-                className={`cursor-pointer font-bold text-base rounded-full mx-2 px-4 py-2 ${
-                  scheduleType === SCHEDULE_TYPE.USO
-                    ? "bg-red-400"
-                    : "bg-orange-400"
-                } `}
-              >
-                {scheduleType}
-              </span>
+            <p className="text-base font-bold my-2">
+              Elegir días para calendarizar
+            </p>
+            <p
+              onClick={() => {
+                if (scheduleType === SCHEDULE_TYPE.USO) {
+                  setScheduleType(SCHEDULE_TYPE.MANTENIMIENTO);
+                } else {
+                  setScheduleType(SCHEDULE_TYPE.USO);
+                }
+              }}
+              className={`cursor-pointer w-[12rem] text-center my-2 font-bold text-base rounded-full mx-2 px-4 py-2 ${
+                scheduleType === SCHEDULE_TYPE.USO
+                  ? "bg-red-400"
+                  : "bg-orange-400"
+              } `}
+            >
+              {scheduleType}
             </p>
 
-            <div className="scale-[0.85] absolute top-[10%]  flex flex-col items-center justify-center">
+            <div className="scale-[0.85] absolute top-[20%]  flex flex-col items-center justify-center">
               <CalendarComponent
                 reservations={reservations}
                 maintenances={maintenances}
                 selectedRange={selectedRange}
                 onChangeRange={setSelectedRange}
+                applyRange={true}
               ></CalendarComponent>
             </div>
             <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
-              <Button
-                label="Limpiar"
-                onClick={() => {
-                  console.log("limpiando días seleciconados");
-                }}
-                classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
-              />
               <Button
                 label="Guardar"
                 onClick={async () => {
