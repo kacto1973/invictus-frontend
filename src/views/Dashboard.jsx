@@ -105,7 +105,7 @@ const Dashboard = () => {
     <>
       <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
         <TemporaryDrawer isOpen={true}></TemporaryDrawer>
-        <Header label="Home"></Header>
+        <Header label="Menú Principal"></Header>
 
         {/* aqui vamos a meter todos los demas componentes q no son el header ni el drawer */}
         <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)]">
