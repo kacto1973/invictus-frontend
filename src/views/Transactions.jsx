@@ -24,7 +24,6 @@ const Transactions = () => {
   const [newTransaction, setNewTransaction] = useState({
     movimiento: "",
     idReactivo: "",
-    idMarca: "",
     cantidad: "",
     descripcion: "",
   });
@@ -52,11 +51,6 @@ const Transactions = () => {
     queryFn: fetchInventory,
   });
 
-  const { data: marcas } = useQuery({
-    queryKey: ["marcas"],
-    queryFn: fetchBrands,
-  });
-
   /* functions */
 
   const checkEntries = (newTransaction) => {
@@ -68,10 +62,7 @@ const Transactions = () => {
       toast.error("Selecciona un reactivo");
       return false;
     }
-    if (!newTransaction?.idMarca) {
-      toast.error("Selecciona una marca");
-      return false;
-    }
+
     if (!newTransaction?.cantidad) {
       toast.error("Selecciona una cantidad");
       return false;
@@ -91,7 +82,6 @@ const Transactions = () => {
       setNewTransaction({
         movimiento: "",
         idReactivo: "",
-        idMarca: "",
         cantidad: "",
         descripcion: "",
       });
@@ -165,7 +155,7 @@ const Transactions = () => {
       <div
         className={`${
           activeModal === TAB_TYPE.AGREGAR
-            ? "absolute rounded-md z-50 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white w-[30%] h-[88%]"
+            ? "absolute rounded-md z-50 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-white w-[30%] h-[80%]"
             : null
         }`}
       >
@@ -201,7 +191,7 @@ const Transactions = () => {
             variant="outlined"
             margin="normal"
             select
-            valaue={newTransaction?.idReactivo}
+            value={newTransaction?.idReactivo}
             onChange={(e) => {
               setNewTransaction({
                 ...newTransaction,
@@ -230,41 +220,7 @@ const Transactions = () => {
               );
             })}
           </TextField>
-          <TextField
-            id="outlined-basic"
-            label="Marca"
-            variant="outlined"
-            margin="normal"
-            select
-            sx={{
-              width: "75%",
-              marginTop: "1rem",
-            }}
-            SelectProps={{
-              MenuProps: {
-                PaperProps: {
-                  style: {
-                    maxHeight: 200,
-                  },
-                },
-              },
-            }}
-            value={newTransaction?.idMarca}
-            onChange={(e) => {
-              setNewTransaction({
-                ...newTransaction,
-                idMarca: e.target.value,
-              });
-            }}
-          >
-            {marcas?.map((marca) => {
-              return (
-                <MenuItem key={marca?._id} value={marca?._id}>
-                  {marca?.nombre}
-                </MenuItem>
-              );
-            })}
-          </TextField>
+
           <TextField
             id="outlined-basic"
             label="Cantidad"
@@ -279,7 +235,7 @@ const Transactions = () => {
               const onlyNumbers = e.target.value.replace(/[^0-9]/g, "");
               setNewTransaction({
                 ...newTransaction,
-                cantidad: onlyNumbers,
+                cantidad: parseInt(onlyNumbers),
               });
             }}
           />
