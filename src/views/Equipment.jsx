@@ -373,12 +373,12 @@ const Equipment = () => {
                       setSelectedEquipment(device);
                       setActiveModal(true);
                     }}
-                    className="absolute top-2 right-2 cursor-pointer"
+                    className="absolute top-3 right-3 cursor-pointer"
                     src="/svgs/trash-red.svg"
-                    width={25}
+                    width={33}
                     alt="arrow svg"
                   />
-                  <span className=" absolute top-2 left-[44%] font-bold -translate-x-[2rem]">
+                  <span className=" absolute top-3 left-[44%] font-bold -translate-x-[2rem]">
                     {device?.nombre}
                   </span>
                   <span
@@ -390,36 +390,38 @@ const Equipment = () => {
                   >
                     {device?.status}
                   </span>
-                  <img
-                    src="/svgs/edit-black.svg"
-                    width={25}
-                    alt="edit"
-                    className="right-23 bottom-4 absolute cursor-pointer"
-                    onClick={() => {
-                      setSelectedEquipment(device);
-                      setActiveTab(TAB_TYPE.EDITAR);
-                    }}
-                  />
-                  <img
-                    src="/svgs/calendar-black.svg"
-                    width={30}
-                    alt="calendar"
-                    className="right-12 bottom-4 absolute cursor-pointer"
-                    onClick={() => {
-                      setSelectedEquipment(device);
-                      setActiveTab(TAB_TYPE.CALENDARIZADO);
-                    }}
-                  />
-                  <img
-                    src="/svgs/information.svg"
-                    width={24}
-                    alt="info"
-                    className="right-2 bottom-4 absolute cursor-pointer"
-                    onClick={() => {
-                      setSelectedEquipment(device);
-                      setActiveTab(TAB_TYPE.DETALLES);
-                    }}
-                  />
+                  <div className="absolute bottom-4 right-3 flex gap-x-4">
+                    <img
+                        src="/svgs/edit-black.svg"
+                        width={34}
+                        alt="edit"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedEquipment(device);
+                          setActiveTab(TAB_TYPE.EDITAR);
+                        }}
+                    />
+                    <img
+                        src="/svgs/calendar-black.svg"
+                        width={34}
+                        alt="calendar"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedEquipment(device);
+                          setActiveTab(TAB_TYPE.CALENDARIZADO);
+                        }}
+                    />
+                    <img
+                        src="/svgs/information.svg"
+                        width={34}
+                        alt="info"
+                        className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedEquipment(device);
+                          setActiveTab(TAB_TYPE.DETALLES);
+                        }}
+                    />
+                  </div>
                 </div>
               ))}
             </div>
