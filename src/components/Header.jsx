@@ -42,9 +42,7 @@ const Header = ({ label }) => {
   const [activeFilter, setActiveFilter] = useState("Todo");
   const queryClient = useQueryClient();
 
-  const {
-    data: notifications = []
-  } = useQuery({
+  const { data: notifications = [] } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
   });
@@ -52,15 +50,16 @@ const Header = ({ label }) => {
   const formatCount = (count) => (count > 9 ? "9+" : count);
   const counts = {
     Todo: formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre !== "Eliminado")
-        .length
+      notifications.filter(
+        (n) => n.idEstadoNotificacion?.nombre !== "Eliminado"
+      ).length
     ),
     Leido: formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre === "Leido")
+      notifications.filter((n) => n.idEstadoNotificacion?.nombre === "Leido")
         .length
     ),
     "Sin leer": formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre === "Sin leer")
+      notifications.filter((n) => n.idEstadoNotificacion?.nombre === "Sin leer")
         .length
     ),
   };
@@ -92,13 +91,11 @@ const Header = ({ label }) => {
   }, []);
 
   const filteredNotifications = notifications
-    .filter((notif) => notif.idEstadoNotificacion.nombre !== "Eliminado")
+    .filter((notif) => notif.idEstadoNotificacion?.nombre !== "Eliminado")
     .filter((notif) => {
       if (activeFilter === "Todo") return true;
-      return notif.idEstadoNotificacion.nombre === activeFilter;
+      return notif.idEstadoNotificacion?.nombre === activeFilter;
     });
-
-
 
   return (
     <>
@@ -265,7 +262,7 @@ const Header = ({ label }) => {
                 }}
               >
                 <img
-                  src={`svgs/${notif.idTipoNotificacion.nombre
+                  src={`svgs/${notif.idTipoNotificacion?.nombre
                     .toLowerCase()
                     .replace(/ /g, "_")}.svg`}
                   alt="Icono de notificación"
@@ -293,7 +290,7 @@ const Header = ({ label }) => {
                   }}
                 >
                   <div style={{ fontWeight: "bold", fontSize: "15px" }}>
-                    {notif.idTipoNotificacion.nombre}
+                    {notif.idTipoNotificacion?.nombre}
                   </div>
                   <div
                     style={{
@@ -303,7 +300,7 @@ const Header = ({ label }) => {
                       color: "#888888",
                     }}
                   >
-                    {getTimeElapsed(notif.fechaGeneracion)}
+                    {getTimeElapsed(notif?.fechaGeneracion)}
                   </div>
                 </div>
                 <div
@@ -314,7 +311,7 @@ const Header = ({ label }) => {
                     marginTop: "5px",
                   }}
                 >
-                {/*icono de borrar notificaciones*/ }
+                  {/*icono de borrar notificaciones*/}
                   <div style={{ fontSize: "14px", color: "#555555" }}>
                     {notif.descripcion}
                   </div>
@@ -322,7 +319,7 @@ const Header = ({ label }) => {
                     src="/svgs/trash-red2.svg"
                     alt="Borrar"
                     onClick={async () => {
-                      await fetchDeleteNotificacion(notif._id);
+                      await fetchDeleteNotificacion(notif?._id);
                       queryClient.invalidateQueries(["notifications"]);
                     }}
                     style={{

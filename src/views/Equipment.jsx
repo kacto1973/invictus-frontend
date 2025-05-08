@@ -72,6 +72,7 @@ const Equipment = () => {
   const [maintenances, setMaintenances] = useState([]);
   const [selectedRange, setSelectedRange] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [search, setSearch] = useState("");
 
   /* use effect */
 
@@ -335,7 +336,11 @@ const Equipment = () => {
       >
         {/* this is pushing everything else below the header */}
         <div className="flex flex-row w-[40%] h-[12%]">
-          <SearchBox classNames="w-[280px] h-[3rem] mb-5" />
+          <SearchBox
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            classNames="w-[280px] h-[3rem] mb-5"
+          />
           <Button
             label="Add Equipment"
             onClick={() => {
@@ -354,44 +359,48 @@ const Equipment = () => {
 
             <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col bg-white   items-center overflow-y-auto">
               {/* individual cards para cada equipo */}
-              {equipment?.map((device, index) => (
-                <div
-                  key={index}
-                  className="w-[95%] h-[8rem] min-h-[8rem] max-h-[8rem]  bg-gray-200 shadow-sm rounded-md relative mt-4 mb-2 "
-                >
-                  <div className="flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden border-4 border-dotted border-gray-300">
-                    <img
-                      className="w-full h-full object-contain"
-                      src={device?.urlImagen}
-                      alt="device image"
-                    />
-                  </div>
-
-                  <img
-                    onClick={() => {
-                      console.log("Execute Task...");
-                      setSelectedEquipment(device);
-                      setActiveModal(true);
-                    }}
-                    className="absolute top-3 right-3 cursor-pointer"
-                    src="/svgs/trash-red.svg"
-                    width={33}
-                    alt="arrow svg"
-                  />
-                  <span className=" absolute top-3 left-[44%] font-bold -translate-x-[2rem]">
-                    {device?.nombre}
-                  </span>
-                  <span
-                    className={`absolute bottom-4 left-[37%] rounded-full py-1 px-4 ${
-                      device?.status === "Liberado"
-                        ? "bg-green-400 text-white"
-                        : "bg-black text-white"
-                    }`}
+              {equipment
+                ?.filter((device) =>
+                  device?.nombre.toLowerCase().includes(search.toLowerCase())
+                )
+                .map((device, index) => (
+                  <div
+                    key={index}
+                    className="w-[95%] h-[8rem] min-h-[8rem] max-h-[8rem]  bg-gray-200 shadow-sm rounded-md relative mt-4 mb-2 "
                   >
-                    {device?.status}
-                  </span>
-                  <div className="absolute bottom-4 right-3 flex gap-x-4">
+                    <div className="flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden border-4 border-dotted border-gray-300">
+                      <img
+                        className="w-full h-full object-contain"
+                        src={device?.urlImagen}
+                        alt="device image"
+                      />
+                    </div>
+
                     <img
+                      onClick={() => {
+                        console.log("Execute Task...");
+                        setSelectedEquipment(device);
+                        setActiveModal(true);
+                      }}
+                      className="absolute top-3 right-3 cursor-pointer"
+                      src="/svgs/trash-red.svg"
+                      width={33}
+                      alt="arrow svg"
+                    />
+                    <span className=" absolute top-3 left-[44%] font-bold -translate-x-[2rem]">
+                      {device?.nombre}
+                    </span>
+                    <span
+                      className={`absolute bottom-4 left-[37%] rounded-full py-1 px-4 ${
+                        device?.status === "Liberado"
+                          ? "bg-green-400 text-white"
+                          : "bg-black text-white"
+                      }`}
+                    >
+                      {device?.status}
+                    </span>
+                    <div className="absolute bottom-4 right-3 flex gap-x-4">
+                      <img
                         src="/svgs/edit-black.svg"
                         width={34}
                         alt="edit"
@@ -400,8 +409,8 @@ const Equipment = () => {
                           setSelectedEquipment(device);
                           setActiveTab(TAB_TYPE.EDITAR);
                         }}
-                    />
-                    <img
+                      />
+                      <img
                         src="/svgs/calendar-black.svg"
                         width={34}
                         alt="calendar"
@@ -410,8 +419,8 @@ const Equipment = () => {
                           setSelectedEquipment(device);
                           setActiveTab(TAB_TYPE.CALENDARIZADO);
                         }}
-                    />
-                    <img
+                      />
+                      <img
                         src="/svgs/information.svg"
                         width={34}
                         alt="info"
@@ -420,10 +429,10 @@ const Equipment = () => {
                           setSelectedEquipment(device);
                           setActiveTab(TAB_TYPE.DETALLES);
                         }}
-                    />
+                      />
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
