@@ -97,24 +97,31 @@ const Configuration = () => {
                     icon="svgs/gear.svg"
                     classNames="w-[40%] h-[700px] flex flex-col justify-between p-5"
                 >
-                    <div className="flex items-center justify-between mt-5">
-                        <label className="text-green-600 font-semibold">Crear Respaldo de la Base de Datos</label>
-                        <Button
-                            label="Crear"
-                            onClick={() => setIsModalOpen(true)}
-                            classNames="hover:bg-[#4CAF50] bg-[#66BB6A] w-[30%] h-[3rem] text-white font-normal cursor-pointer"
-                        />
-                    </div>
+                  <div className="flex items-center justify-between mt-5">
+                <div className="flex items-center gap-3 text-black font-semibold">
+                    <img src="/svgs/save-green.svg" alt="save icon" className="w-9 h-9" />
+                    <span>Crear Respaldo de la Base de Datos</span>
+                </div>
+                <Button
+                    label="Crear"
+                    onClick={() => setIsModalOpen(true)}
+                    classNames="hover:bg-[#4CAF50] bg-[#66BB6A] w-[30%] h-[3rem] text-white font-normal cursor-pointer"
+                />
+            </div>
 
-                    <div className="flex items-center justify-between mt-5 ">
-                        <label className="text-red-600 font-semibold">Subir Respaldo de la Base de Datos</label>
-                        <Button
-                            label="Restablecer"
-                            onClick={() => setIsRestoreModalOpen(true)}
-                            classNames="hover:bg-[#CA5E5E] bg-[#E96D6D] w-[30%] h-[3rem] text-white font-normal cursor-pointer"
-                        />
-                    </div>
-                </Card>
+            <div className="flex items-center justify-between mt-5">
+                <div className="flex items-center gap-3 text-black font-semibold">
+                    <img src="/svgs/upload-restore.svg" alt="upload icon" className="w-9 h-9" />
+                    <span>Subir Respaldo de la Base de Datos</span>
+                </div>
+                <Button
+                    label="Restablecer"
+                    onClick={() => setIsRestoreModalOpen(true)}
+                    classNames="hover:bg-[#CA5E5E] bg-[#E96D6D] w-[30%] h-[3rem] text-white font-normal cursor-pointer"
+                />
+            </div>
+
+            </Card>
             </div>
 
             {/* Modal */}
