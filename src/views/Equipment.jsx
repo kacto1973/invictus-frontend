@@ -117,9 +117,7 @@ const Equipment = () => {
   /* functions */
 
   const deleteRangeDates = async (date) => {
-    console.log("hola desde delete range dates");
-
-    const reservationId = reservations.find((reservation) => {
+    const reservationObj = reservations.find((reservation) => {
       const startDate = DateTime.fromISO(reservation.fechaInicio, {
         zone: "America/Hermosillo",
       }).toJSDate();
@@ -128,14 +126,12 @@ const Equipment = () => {
         zone: "America/Hermosillo",
       }).toJSDate();
 
-      if (startDate <= date && date <= endDate) {
-        return reservation._id;
-      }
-
-      return null;
+      return startDate <= date && date <= endDate;
     });
 
-    const maintenanceId = maintenances.find((maintenance) => {
+    const reservationId = reservationObj?._id;
+
+    const maintenanceObj = maintenances.find((maintenance) => {
       const startDate = DateTime.fromISO(maintenance.fechaInicio, {
         zone: "America/Hermosillo",
       }).toJSDate();
@@ -144,15 +140,13 @@ const Equipment = () => {
         zone: "America/Hermosillo",
       }).toJSDate();
 
-      if (startDate <= date && date <= endDate) {
-        return maintenance._id;
-      }
-
-      return null;
+      return startDate <= date && date <= endDate;
     });
 
+    const maintenanceId = maintenanceObj?._id;
+
     if (reservationId) {
-      console.log("borrando reserva :) con id de: ", reservationId);
+      console.log("borrando reserva :) con id de: " + reservationId);
       const res = await fetchDeleteReservation(reservationId);
       if (res.ok) {
         toast.success("Reserva eliminada correctamente");
@@ -163,10 +157,8 @@ const Equipment = () => {
         toast.error("Error al eliminar reserva");
         throw new Error("Error al eliminar reserva");
       }
-    }
-
-    if (maintenanceId) {
-      console.log("borrando mantenimiento  :)");
+    } else if (maintenanceId) {
+      console.log("borrando mantenimiento  :) con id de: " + maintenanceId);
       const res = await fetchDeleteMaintenance(maintenanceId);
       if (res.ok) {
         toast.success("Mantenimiento eliminado correctamente");
@@ -500,8 +492,8 @@ const Equipment = () => {
             <h1 className="text-lg font-bold mt-2">
               {selectedEquipment?.nombre}
             </h1>
-            <p className="text-base font-bold my-2">
-              Elegir días para calendarizar
+            <p className="text-base font-base my-2">
+              Haga click para alternar entre mantenimiento y uso
             </p>
             <p
               onClick={() => {
