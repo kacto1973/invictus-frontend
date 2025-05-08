@@ -7,6 +7,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import { DateTime } from "luxon";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -117,7 +118,7 @@ const reactants = [
   },
 ];
 
-export default function CustomizedTables({ onReactantClick }) {
+export default function CustomizedTables({ transactions }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 300 }} aria-label="customized table">
@@ -127,17 +128,27 @@ export default function CustomizedTables({ onReactantClick }) {
             <StyledTableCell>Movimiento</StyledTableCell>
             <StyledTableCell>Cantidad</StyledTableCell>
             <StyledTableCell>Fecha</StyledTableCell>
+            <StyledTableCell>Descripción</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {reactants.map((reactant) => (
-            <StyledTableRow key={reactant.nombre}>
-              <StyledTableCell>{reactant.nombre}</StyledTableCell>
-              <StyledTableCell>{reactant.movimiento}</StyledTableCell>
-              <StyledTableCell>{reactant.cantidad}</StyledTableCell>
-              <StyledTableCell>{reactant.fecha}</StyledTableCell>
-            </StyledTableRow>
-          ))}
+          {transactions?.map((transaction) => {
+            const formattedDate = DateTime.fromISO(transaction?.fecha)
+              .setZone("America/Hermosillo")
+              .toFormat("yyyy-MM-dd");
+
+            return (
+              <StyledTableRow key={transaction?._id}>
+                <StyledTableCell>
+                  {transaction?.reactivo?.nombre}
+                </StyledTableCell>
+                <StyledTableCell>{transaction?.tipoMovimiento}</StyledTableCell>
+                <StyledTableCell>{transaction?.cantidad}</StyledTableCell>
+                <StyledTableCell>{formattedDate}</StyledTableCell>
+                <StyledTableCell>{transaction?.descripcion}</StyledTableCell>
+              </StyledTableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </TableContainer>

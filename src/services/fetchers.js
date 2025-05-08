@@ -212,3 +212,8 @@ export const fetchAddTransaction = async (transaction) => {
     body: JSON.stringify(newObject),
   });
 };
+
+export const fetchTransactions = async () => {
+  const res = await fetch(`${BASE_URL}/movimientos`);
+  return res.json();
+};

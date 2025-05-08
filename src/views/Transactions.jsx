@@ -14,12 +14,26 @@ import {
   fetchInventory,
   fetchBrands,
   fetchAddTransaction,
+  fetchTransactions,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const Transactions = () => {
+  /*tanstack */
+
+  const { data: transactions } = useQuery({
+    queryKey: ["transactions"],
+    queryFn: fetchTransactions,
+  });
+
+  const { data } = useQuery({
+    queryKey: ["data"],
+    queryFn: fetchInventory,
+  });
+
   /*states */
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
   const [newTransaction, setNewTransaction] = useState({
     movimiento: "",
@@ -38,18 +52,30 @@ const Transactions = () => {
     console.log("newTransaction", newTransaction);
   }, [newTransaction]);
 
+  useEffect(() => {
+    console.log("transactions", transactions);
+
+    const filteredTransactions = transactions?.filter((transaction) => {
+      const searchFilter = transaction?.reactivo?.nombre
+        .toLowerCase()
+        .includes(filter?.search.toLowerCase() || "");
+
+      const tipoFilter =
+        filter?.tipo.toLowerCase() === "todo" ||
+        transaction?.tipoMovimiento.toLowerCase() ===
+          filter?.tipo.toLowerCase();
+
+      return searchFilter && tipoFilter;
+    });
+
+    setFilteredTransactions(filteredTransactions);
+  }, [transactions, filter]);
+
   /*constants */
 
   const TAB_TYPE = {
     AGREGAR: "AGREGAR",
   };
-
-  /*tanstack */
-
-  const { data } = useQuery({
-    queryKey: ["data"],
-    queryFn: fetchInventory,
-  });
 
   /* functions */
 
@@ -87,7 +113,8 @@ const Transactions = () => {
       });
       setActiveModal(null);
     } else {
-      toast.error("Error al agregar movimiento");
+      const errorMessage = await response.json();
+      toast.error(errorMessage);
       throw new Error("Error al agregar movimiento");
     }
   };
@@ -131,6 +158,16 @@ const Transactions = () => {
             </TextField>
 
             <Button
+              classNames="hover:bg-[#1a94c7] bg-[#1ba2db] text-white w-[10rem] h-[3rem] ml-5"
+              label="Limpiar Filtros"
+              onClick={() => {
+                setFilter({
+                  search: "",
+                  tipo: "todo",
+                });
+              }}
+            ></Button>
+            <Button
               classNames="bg-[#6DBA43] text-white w-[10rem] h-[3rem] ml-5"
               label="Añadir"
               onClick={() => {
@@ -140,7 +177,9 @@ const Transactions = () => {
             ></Button>
           </div>
           <div className="w-full overflow-y-auto">
-            <CustomizedTables></CustomizedTables>
+            {filteredTransactions && filteredTransactions.length > 0 && (
+              <CustomizedTables transactions={filteredTransactions} />
+            )}
           </div>
         </div>
       </div>
