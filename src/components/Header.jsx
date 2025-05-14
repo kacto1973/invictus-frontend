@@ -346,11 +346,9 @@ const Header = ({ label }) => {
             paddingLeft: "16px",
             fontWeight: "bold",
             fontSize: "16px",
-            cursor: "pointer",
             flexShrink: 0,
           }}
         >
-          Ver todas las notificaciones
         </div>
       </div>
     </>
