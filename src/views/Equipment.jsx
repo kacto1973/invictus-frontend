@@ -325,14 +325,14 @@ const Equipment = () => {
   };
 
   return (
-    <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+    <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
       <TemporaryDrawer></TemporaryDrawer>
       <Header label="Equipment"></Header>
       <ToastContainer position="bottom-right" autoClose={2500} />
 
       <div
         className={`ml-[250px] mt-[5rem] w-[calc(100vw-250px)]
-           h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden p-5 relative`}
+           h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden p-5 relative`}
       >
         {/* this is pushing everything else below the header */}
         <div className="flex flex-row w-[40%] h-[12%]">
@@ -353,8 +353,8 @@ const Equipment = () => {
         {/*panel equipos de laboratorio  */}
         <div className="w-[40%] h-[80%] flex flex-col absolute ">
           <div className="relative w-full h-full  bg-white shadow-md rounded-md overflow-hidden">
-            <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center ">
-              <p className="ml-5 *:">Equipo de Laboratorio</p>
+            <div className="absolute bg-[#0E2C5B] w-full h-[3rem] flex items-center ">
+              <p className="ml-5 text-white font-bold">Equipo de Laboratorio</p>
             </div>
 
             <div className="w-full mt-[3rem] h-[calc(100%-5rem)] flex flex-col bg-white   items-center overflow-y-auto">

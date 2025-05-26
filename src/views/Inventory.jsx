@@ -317,14 +317,14 @@ const Inventory = () => {
 
   return (
     <>
-      <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+      <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
         <TemporaryDrawer></TemporaryDrawer>
         <Header label="Reactivos"></Header>
         <ToastContainer position="bottom-right" autoClose={2500} />
 
         {/*div padre de todo lo demas */}
         <div
-          className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
+          className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex `}
         >
           <p className=" absolute top-[37%] text-gray-600 right-[20%] text-regular w-[15rem] text-center font-bold">
             Haga click sobre un reactivo para ver su información

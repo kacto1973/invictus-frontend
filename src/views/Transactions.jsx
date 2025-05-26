@@ -120,14 +120,14 @@ const Transactions = () => {
   };
 
   return (
-    <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+    <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
       <TemporaryDrawer></TemporaryDrawer>
       <Header label="Movimientos"></Header>
       <ToastContainer position="bottom-right" autoClose={2500} />
 
       {/*div padre de todo lo demas */}
       <div
-        className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
+        className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex `}
       >
         <div className="w-1/2 h-full flex flex-col p-5">
           <div className="w-full flex flex-row">

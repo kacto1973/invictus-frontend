@@ -132,11 +132,11 @@ const Reports = () => {
   // if (error) return <div>Error al cargar reportes</div>;
 
   return (
-    <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+    <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
       <TemporaryDrawer />
       <Header label="Reportes" />
 
-      <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex">
+      <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex">
         <div className="w-[50%] h-full flex flex-col p-5 pr-0 flex-shrink-0">
             <UnifiedSearchBox
                 classNames="mb-5"

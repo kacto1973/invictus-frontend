@@ -87,11 +87,11 @@ const Configuration = () => {
     };
 
     return (
-        <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+        <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
             <TemporaryDrawer />
             <Header label="Configuración" />
 
-            <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] flex items-start">
+            <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] flex items-start">
                 <Card
                     label="Configuración"
                     icon="svgs/gear.svg"

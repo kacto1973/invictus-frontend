@@ -42,7 +42,7 @@ export default function TemporaryDrawer({ isOpen }) {
       sx={{
         width: 250,
         height: "100%",
-        backgroundColor: "#333333",
+        backgroundColor: "#262625",
         color: "white",
       }}
       role="presentation"

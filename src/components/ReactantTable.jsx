@@ -14,7 +14,7 @@ import Stack from "@mui/material/Stack";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#C796EB",
+    backgroundColor: "#0E2C5B",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {

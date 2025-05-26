@@ -103,7 +103,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
+      <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
         <TemporaryDrawer isOpen={true}></TemporaryDrawer>
         <Header label="Menú Principal"></Header>
 

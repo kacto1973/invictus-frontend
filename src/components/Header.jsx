@@ -100,8 +100,8 @@ const Header = ({ label }) => {
   return (
     <>
       {/* HEADER */}
-      <div className="w-full h-[5rem] bg-[#E2BDFD] mb-5 absolute top-0 left-0 flex items-center z-50">
-        <span className="ml-[280px] font-bold text-xl">{label}</span>
+      <div className="w-full h-[5rem] bg-[#0E2C5B] mb-5 absolute top-0 left-0 flex items-center z-50">
+        <span className="ml-[280px] font-bold text-xl text-white">{label}</span>
         <div className="mr-[5rem] flex flex-row absolute right-0">
           <div className="bg-white flex flex-row p-[5px] rounded-md px-[10px] items-center">
             <img
