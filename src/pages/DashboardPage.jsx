@@ -1,14 +1,13 @@
-import React from "react";
 import { useState, useEffect } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
-import Card from "../components/Card";
-import BarChart from "../components/BarChart.jsx";
-import PieChart from "../components/PieChart.jsx";
+import SideBar from "../components/sidebar/SideBar.jsx";
+import Header from "../components/common/Header.jsx";
+import Card from "../components/dashboard/Card.jsx";
+import BarChart from "../components/dashboard/BarChart.jsx";
+import PieChart from "../components/dashboard/PieChart.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDashboard } from "../services/fetchers.js";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
 
   useEffect(() => {
@@ -104,7 +103,7 @@ const Dashboard = () => {
   return (
     <>
       <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-        <TemporaryDrawer isOpen={true}></TemporaryDrawer>
+        <SideBar isOpen={true}></SideBar>
         <Header label="Menú Principal"></Header>
 
         {/* aqui vamos a meter todos los demas componentes q no son el header ni el drawer */}
@@ -172,4 +171,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

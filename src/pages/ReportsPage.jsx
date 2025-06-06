@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
-import UnifiedSearchBox from "../components/UnifiedSearchBox";
-import ReportTable from "../components/ReportTable";
-import CardReport from "../components/CardReport";
-import Button from "../components/Button";
+import { useState } from "react";
+import SideBar from "../components/sidebar/SideBar";
+import Header from "../components/common/Header";
+import UnifiedSearchBox from "../components/reports/UnifiedSearchBox";
+import ReportTable from "../components/reports/ReportTable";
+import CardReport from "../components/reports/CardReport";
+import Button from "../components/common/Button"
 import {fetchReports} from "../services/fetchers";
 import {useQuery} from "@tanstack/react-query";
 import { matchSorter } from "match-sorter";
@@ -60,7 +60,7 @@ const getReporteMasReciente = (reports) => {
   return fechasOrdenadas[0];
 };
 
-const Reports = () => {
+const ReportsPage = () => {
   const [editingReportId, setEditingReportId] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [firstTime, setfirstTime] = useState(true);
@@ -133,7 +133,7 @@ const Reports = () => {
 
   return (
     <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer />
+      <SideBar />
       <Header label="Reportes" />
 
       <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex">
@@ -244,4 +244,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default ReportsPage;

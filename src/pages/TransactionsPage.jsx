@@ -1,25 +1,22 @@
-import React from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
-import CustomizedTables from "../components/TransactionsTable";
-import SearchBox from "../components/SearchBox";
-import Button from "../components/Button";
-import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useEffect } from "react";
-import MenuItem from "@mui/material/MenuItem";
-import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Header from "../components/common/Header.jsx";
+import Button from "../components/common/Button.jsx";
+import SearchBox from "../components/common/SearchBox.jsx";
+import SideBar from "../components/sidebar/SideBar.jsx";;
+import CustomizedTables from "../components/transactions/TransactionsTable.jsx";
 import {
   fetchInventory,
-  fetchBrands,
   fetchAddTransaction,
   fetchTransactions,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Transactions = () => {
+const TransactionsPage = () => {
   /*tanstack */
 
   const { data: transactions } = useQuery({
@@ -121,7 +118,7 @@ const Transactions = () => {
 
   return (
     <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer></TemporaryDrawer>
+      <SideBar></SideBar>
       <Header label="Movimientos"></Header>
       <ToastContainer position="bottom-right" autoClose={2500} />
 
@@ -326,4 +323,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default TransactionsPage;

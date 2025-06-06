@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
-import SearchBox from "../components/SearchBox";
-import ReactantTable from "../components/ReactantTable";
-import Button from "../components/Button";
+import SideBar from "../components/sidebar/SideBar";
+import Header from "../components/common/Header";
+import SearchBox from "../components/common/SearchBox";
+import ReactantTable from "../components/reactant/ReactantTable";
+import Button from "../components/common/Button";
 import TextField from "@mui/material/TextField";
 import {
   fetchCategories,
@@ -24,7 +24,7 @@ import { fetchInventory } from "../services/fetchers";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Inventory = () => {
+const InventoryPage = () => {
   /* tanstack */
 
   const queryClient = useQueryClient();
@@ -318,7 +318,7 @@ const Inventory = () => {
   return (
     <>
       <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-        <TemporaryDrawer></TemporaryDrawer>
+        <SideBar></SideBar>
         <Header label="Reactivos"></Header>
         <ToastContainer position="bottom-right" autoClose={2500} />
 
@@ -1278,4 +1278,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default InventoryPage;

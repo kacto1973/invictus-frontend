@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import Header from "../components/Header";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Card from "../components/Card";
-import Button from "../components/Button";
+import { useState } from "react";
+import Header from "../components/common/Header";
+import SideBar from "../components/sidebar/SideBar";
+import Card from "../components/dashboard/Card";
+import Button from "../components/common/Button";
 import { toast, ToastContainer } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const Configuration = () => {
+const ConfigurationPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -88,7 +88,7 @@ const Configuration = () => {
 
     return (
         <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-            <TemporaryDrawer />
+            <SideBar />
             <Header label="Configuración" />
 
             <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] flex items-start">
@@ -203,4 +203,4 @@ const Configuration = () => {
     );
 };
 
-export default Configuration;
+export default ConfigurationPage;

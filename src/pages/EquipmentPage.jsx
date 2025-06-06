@@ -1,12 +1,9 @@
-import React from "react";
 import { useEffect } from "react";
-import Header from "../components/Header";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Card from "../components/Card";
-import SearchBox from "../components/SearchBox.jsx";
-import Button from "../components/Button";
-import CalendarComponent from "../components/CalendarComponent";
-import Box from "@mui/material/Box";
+import Header from "../components/common/Header.jsx";
+import SideBar from "../components/sidebar/SideBar.jsx";
+import SearchBox from "../components/common/SearchBox.jsx";
+import Button from "../components/common/Button.jsx";
+import CalendarComponent from "../components/equipment/CalendarComponent.jsx";
 import TextField from "@mui/material/TextField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
@@ -25,7 +22,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 import { DateTime } from "luxon";
 
-const Equipment = () => {
+const EquipmentPage = () => {
   /* tanstack */
 
   const queryClient = useQueryClient();
@@ -326,7 +323,7 @@ const Equipment = () => {
 
   return (
     <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer></TemporaryDrawer>
+      <SideBar></SideBar>
       <Header label="Equipment"></Header>
       <ToastContainer position="bottom-right" autoClose={2500} />
 
@@ -792,4 +789,4 @@ const Equipment = () => {
   );
 };
 //chino el pro estuvo aqui
-export default Equipment;
+export default EquipmentPage;

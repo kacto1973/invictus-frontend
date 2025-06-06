@@ -1,31 +1,27 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
+  Route
 } from "react-router-dom";
-import Dashboard from "./views/Dashboard";
-import Equipment from "./views/Equipment";
-import Inventory from "./views/Inventory";
-import Configuration from "./views/Configuration";
-import Reports from "./views/Reports";
-import Transactions from "./views/Transactions";
+import DashboardPage from "./pages/DashboardPage";
+import EquipmentPage from "./pages/EquipmentPage";
+import InventoryPage from "./pages/InventoryPage";
+import ConfigurationPage from "./pages/ConfigurationPage";
+import ReportsPage from "./pages/ReportsPage";
+import TransactionsPage from "./pages/TransactionsPage";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/equipment" element={<Equipment />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Configuration />} />
+          <Route path="/" element={<DashboardPage />} />
+          <Route path="/inventory" element={<InventoryPage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
+          <Route path="/equipment" element={<EquipmentPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
+          <Route path="/settings" element={<ConfigurationPage />} />
         </Routes>
       </Router>
     </>
