@@ -414,7 +414,7 @@ const Inventory = () => {
               </TextField>
 
               <Button
-                classNames="hover:bg-[#1a94c7] bg-[#1ba2db] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="hover:bg-clean-blue-hover bg-clean-blue w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
                 label="Limpiar Filtros"
                 onClick={() => {
                   setFilter({
@@ -426,7 +426,7 @@ const Inventory = () => {
               ></Button>
 
               <Button
-                classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="hover:bg-add-green-hover bg-add-green w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
                 icon="svgs/plus-sign.svg"
                 label="Añadir"
                 onClick={() => {
@@ -880,7 +880,7 @@ const Inventory = () => {
               </div>
             </div>
           </div>
-          <div className="absolute right-25 bottom-15">
+          <div className="absolute right-25 bottom-10">
             <Checkbox
               checked={editReactant?.esPeligroso}
               onChange={(e) =>
@@ -921,8 +921,8 @@ const Inventory = () => {
 
       {activeModal === MODAL_TYPE.AGREGAR_REACTIVO && (
         <div className="w-[45%] h-[75%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10  z-50 flex justify-center">
-          <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
-            <p className="text-xl font-bold flex-start ml-5">
+          <div className="h-[4rem] bg-primary w-full absolute top-0 left-0 flex items-center ">
+            <p className="text-xl font-bold flex-start ml-5 text-white">
               Agregar Reactivo
             </p>
             <div
@@ -1268,8 +1268,7 @@ const Inventory = () => {
                 console.log("Error al agregar reactivo, detalles: ", error);
               }
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
-            icon="svgs/plus-sign.svg"
+            classNames="cursor-pointer !absolute bottom-8 left-13 bg-add-green hover:bg-add-green-hover w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
             label="Añadir"
           ></Button>
         </div>

@@ -11,7 +11,7 @@ import { DateTime } from "luxon";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#C796EB",
+    backgroundColor: "#0E2C5B",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -120,8 +120,12 @@ const reactants = [
 
 export default function CustomizedTables({ transactions }) {
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 300 }} aria-label="customized table">
+    <TableContainer component={Paper} sx={{ maxHeight: 500 }}>
+      <Table
+        stickyHeader={true}
+        sx={{ minWidth: 300 }}
+        aria-label="customized table"
+      >
         <TableHead>
           <TableRow>
             <StyledTableCell>Nombre</StyledTableCell>

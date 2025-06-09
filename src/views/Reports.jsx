@@ -163,7 +163,7 @@ const Reports = () => {
           <div className="w-[50%] h-[400px] flex flex-col p-10 pr-0 flex-shrink-0">
           <CardReport
               icon="svgs/information-green.svg"
-              label="Reporte más reciente"
+              label="  reciente"
           >
             <p className="text-[#7D7D7D] text-sm mb-3 text-center">
               <span className="font-normal">{fechaMasReciente}</span>

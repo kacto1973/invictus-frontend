@@ -129,8 +129,8 @@ const Transactions = () => {
       <div
         className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex `}
       >
-        <div className="w-1/2 h-full flex flex-col p-5">
-          <div className="w-full flex flex-row">
+        <div className="w-[60%] h-full flex flex-col p-5">
+          <div className="w-full h-[3.5rem] flex flex-row mb-2">
             <SearchBox
               value={filter?.search}
               onChange={(e) => {
@@ -148,7 +148,7 @@ const Transactions = () => {
                 setFilter({ ...filter, tipo: e.target.value });
               }}
               sx={{
-                width: "16rem",
+                width: "15rem",
                 backgroundColor: "white",
               }}
             >
@@ -158,7 +158,7 @@ const Transactions = () => {
             </TextField>
 
             <Button
-              classNames="hover:bg-[#1a94c7] bg-[#1ba2db] text-white w-[10rem] h-[3rem] ml-5"
+              classNames="hover:bg-clean-blue-hover bg-clean-blue text-white w-[10rem] h-[3rem] ml-5"
               label="Limpiar Filtros"
               onClick={() => {
                 setFilter({
@@ -168,7 +168,7 @@ const Transactions = () => {
               }}
             ></Button>
             <Button
-              classNames="bg-[#6DBA43] text-white w-[10rem] h-[3rem] ml-5"
+              classNames="bg-add-green hover:bg-add-green-hover text-white w-[10rem] h-[3rem] ml-5"
               label="Añadir"
               onClick={() => {
                 console.log("click");
@@ -176,7 +176,7 @@ const Transactions = () => {
               }}
             ></Button>
           </div>
-          <div className="w-full overflow-y-auto">
+          <div className="w-full overflow-hidden">
             {filteredTransactions && filteredTransactions.length > 0 && (
               <CustomizedTables transactions={filteredTransactions} />
             )}
@@ -198,8 +198,8 @@ const Transactions = () => {
             : null
         }`}
       >
-        <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-          <p className="ml-5 *:">Agregar Movimiento</p>
+        <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
+          <p className="ml-5 text-white font-bold">Agregar Movimiento</p>
         </div>
         <div className="flex flex-col items-center  w-full h-[100%-3rem] mt-[3rem]">
           <TextField

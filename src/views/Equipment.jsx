@@ -342,18 +342,18 @@ const Equipment = () => {
             classNames="w-[280px] h-[3rem] mb-5"
           />
           <Button
-            label="Add Equipment"
+            label="Añadir Equipo"
             onClick={() => {
               setActiveTab(TAB_TYPE.AGREGAR);
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] ml-4 w-[12rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+            classNames="cursor-pointer hover:bg-add-green-hover bg-add-green ml-4 w-[12rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
           />
         </div>
 
         {/*panel equipos de laboratorio  */}
         <div className="w-[40%] h-[80%] flex flex-col absolute ">
           <div className="relative w-full h-full  bg-white shadow-md rounded-md overflow-hidden">
-            <div className="absolute bg-[#0E2C5B] w-full h-[3rem] flex items-center ">
+            <div className="absolute bg-primary w-full h-[3rem] flex items-center ">
               <p className="ml-5 text-white font-bold">Equipo de Laboratorio</p>
             </div>
 
@@ -445,17 +445,19 @@ const Equipment = () => {
               : "hidden"
           } `}
         >
-          <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 *:">Eliminar reservas/mantenimientos</p>
+          <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
+            <p className="ml-5 font-bold text-white">
+              Eliminar reservas/mantenimientos
+            </p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
             <h1 className="text-lg font-bold mt-2">
               {selectedEquipment?.nombre}
             </h1>
-            <p className="text-sm text-center w-[95%] my-4">
+            {/*<p className="text-sm text-center w-[95%] my-4">
               {selectedEquipment?.descripcion}
-            </p>
-            <div className=" flex flex-row justify-around w-[70%] items-center">
+            </p> */}
+            <div className=" flex flex-row justify-around mt-4 w-[70%] items-center">
               <span className="text-sm font-bold">Días Calendarizados:</span>
             </div>
             <p className="mt-2">
@@ -466,7 +468,7 @@ const Equipment = () => {
                 En Mantenimiento
               </span>
             </p>
-            <div className="scale-[0.85] absolute top-[27%]  flex flex-col items-center justify-center">
+            <div className="scale-[0.80]  flex flex-col items-center justify-center">
               <CalendarComponent
                 reservations={reservations}
                 maintenances={maintenances}
@@ -475,17 +477,15 @@ const Equipment = () => {
                 applyRange={false}
               ></CalendarComponent>
             </div>
-            <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
-              <Button
-                label="Limpiar"
-                onClick={async () => {
-                  if (!selectedDate) return;
-                  await deleteRangeDates(selectedDate);
-                }}
-                classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
-              />
-            </div>
           </div>
+          <Button
+            label="Limpiar"
+            onClick={async () => {
+              if (!selectedDate) return;
+              await deleteRangeDates(selectedDate);
+            }}
+            classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-xl mx-auto bottom-8"
+          />
         </div>
 
         {/* panel calendarización de equipo */}
@@ -496,8 +496,10 @@ const Equipment = () => {
               : "hidden"
           }`}
         >
-          <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 *:">Calendarizar uso del Equipo</p>
+          <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
+            <p className="ml-5 text-white font-bold">
+              Calendarizar uso del Equipo
+            </p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center  mt-[3rem] relative">
             <h1 className="text-lg font-bold mt-2">
@@ -523,7 +525,7 @@ const Equipment = () => {
               {scheduleType}
             </p>
 
-            <div className="scale-[0.85] absolute top-[20%]  flex flex-col items-center justify-center">
+            <div className="scale-[0.80] absolute top-26  flex flex-col items-center justify-center">
               <CalendarComponent
                 reservations={reservations}
                 maintenances={maintenances}
@@ -532,16 +534,14 @@ const Equipment = () => {
                 applyRange={true}
               ></CalendarComponent>
             </div>
-            <div className="absolute bottom-10 w-[80%] flex flex-row justify-around">
-              <Button
-                label="Guardar"
-                onClick={async () => {
-                  await handleSaveSchedule();
-                }}
-                classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
-              />
-            </div>
           </div>
+          <Button
+            label="Guardar"
+            onClick={async () => {
+              await handleSaveSchedule();
+            }}
+            classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md absolute bottom-2 mx-auto rounded-md text-bold text-white text-xl"
+          />
         </div>
 
         {/* panel de agregar equipo nuevo */}
@@ -659,8 +659,8 @@ const Equipment = () => {
               : "hidden"
           } `}
         >
-          <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 *:">Editar Equipo</p>
+          <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
+            <p className="ml-5 text-white font-bold">Editar Equipo</p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem]">
             <div className="mt-6 w-full flex justify-center">
@@ -711,7 +711,7 @@ const Equipment = () => {
                   fileInputRefEdit.current.click();
                 }
               }}
-              className="bg-[#F0E6F7] mt-4 w-[90%] h-[4rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer"
+              className="bg-[#F0E6F7] mt-3 w-[90%] h-[3rem] flex flex-row items-center justify-center border-dotted border-4 border-[#AFAFAF] rounded-md cursor-pointer"
             >
               <img src="/svgs/upload-purple.svg" alt="upload icon" width={40} />
               <span className="text-lg ml-4">Subir Imagen</span>
@@ -729,13 +729,13 @@ const Equipment = () => {
               />
             </div>
 
-            <div className="mt-4 w-[80%] flex flex-row justify-around">
+            <div className="mt-0 w-[80%] flex flex-row justify-around">
               <Button
                 label="Cancelar"
                 onClick={() => {
                   console.log("Cancelar equipo...");
                 }}
-                classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-xl"
+                classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-xl"
               />
               <Button
                 label="Confirmar"
@@ -746,7 +746,7 @@ const Equipment = () => {
 
                   await updateEquipment(editDevice);
                 }}
-                classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[2.5rem] shadow-md rounded-md text-bold text-white text-xl"
+                classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
               />
             </div>
           </div>
