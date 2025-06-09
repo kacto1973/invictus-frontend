@@ -449,7 +449,7 @@ const Inventory = () => {
               </div>
               <Button
                 label="Editar"
-                classNames="!absolute cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[5rem] h-[2.5rem] left-10 top-5 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="!absolute cursor-pointer hover:bg-add-green-hover bg-add-green w-[5rem] h-[2.5rem] left-10 top-5 shadow-md rounded-md text-bold text-white text-lg"
                 onClick={() => setActiveModal(MODAL_TYPE.EDITAR_REACTIVO)}
               ></Button>
               <img
@@ -465,7 +465,7 @@ const Inventory = () => {
                 {/*una mitad la de arriba */}
                 <div className="w-full h-[50%] flex">
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Marca
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -473,7 +473,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Presentación
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -481,7 +481,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Cantidad
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -493,7 +493,7 @@ const Inventory = () => {
                 {/*una mitad la de arriba */}
                 <div className="w-full h-[50%]  flex relative">
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Código/ID
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -501,7 +501,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Estado Físico
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -509,7 +509,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB] py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Categoría
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg w-[12rem] font-bold text-center">
@@ -577,8 +577,8 @@ const Inventory = () => {
 
       {activeModal === MODAL_TYPE.EDITAR_REACTIVO && (
         <div className="w-[45%] h-[75%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10  z-50 flex justify-center">
-          <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
-            <p className="text-xl font-bold flex-start ml-5">
+          <div className="h-[4rem] bg-primary w-full absolute top-0 left-0 flex items-center ">
+            <p className="text-xl font-bold flex-start ml-5 text-white">
               Editar {selectedReactant?.nombre}
             </p>
             <div
@@ -588,7 +588,7 @@ const Inventory = () => {
                 );
                 setActiveModal(null);
               }}
-              className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              className="font-black text-2xl absolute top-4 right-4 cursor-pointer text-white"
             >
               X
             </div>
@@ -880,7 +880,7 @@ const Inventory = () => {
               </div>
             </div>
           </div>
-          <div className="absolute right-25 bottom-10">
+          <div className="absolute right-25 bottom-8">
             <Checkbox
               checked={editReactant?.esPeligroso}
               onChange={(e) =>
@@ -913,7 +913,7 @@ const Inventory = () => {
                 console.log("Error al editar reactivo, detalles: ", error);
               }
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+            classNames="cursor-pointer hover:bg-add-green-hover !absolute bottom-8 left-13 bg-add-green w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
             label="Confirmar"
           ></Button>
         </div>
@@ -932,7 +932,7 @@ const Inventory = () => {
                 );
                 setActiveModal(null);
               }}
-              className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              className="font-black text-2xl absolute top-4 right-4 cursor-pointer text-white"
             >
               X
             </div>
@@ -1218,7 +1218,7 @@ const Inventory = () => {
               </div>
             </div>
           </div>
-          <div className="absolute right-25 bottom-15">
+          <div className="absolute right-25 bottom-8">
             <Checkbox
               checked={newReactant?.esPeligroso}
               onChange={(e) =>

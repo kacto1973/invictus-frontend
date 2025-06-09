@@ -552,8 +552,8 @@ const Equipment = () => {
               : "hidden"
           } `}
         >
-          <div className="absolute bg-[#E0C8F2] w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 *:">Agregar un equipo</p>
+          <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
+            <p className="ml-5 font-bold text-white">Agregar un equipo</p>
           </div>
           <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
             <div className="mt-6 w-full flex justify-center">

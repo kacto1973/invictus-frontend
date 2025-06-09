@@ -302,7 +302,7 @@ const Transactions = () => {
               onClick={() => {
                 setActiveModal(null);
               }}
-              classNames="cursor-pointer hover:bg-[#3a2dcc] bg-[#4334eb] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+              classNames="cursor-pointer hover:bg-[#3a2dcc] bg-[#4334eb] w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
               label="Cancelar"
             ></Button>
             <Button
@@ -316,7 +316,7 @@ const Transactions = () => {
                 console.log("lanzando peticion al back, filtros pasados");
                 await addTransaction(newTransaction);
               }}
-              classNames="cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+              classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
               label="Confirmar"
             ></Button>
           </div>
