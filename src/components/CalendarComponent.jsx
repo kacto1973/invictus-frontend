@@ -21,6 +21,13 @@ const CalendarComponent = ({
 
     const zonaHermosillo = "America/Hermosillo";
 
+    const dateTile = DateTime.fromJSDate(date, { zone: zonaHermosillo });
+    const currentDate = DateTime.now({ zone: zonaHermosillo });
+
+    if (dateTile < currentDate) {
+      return "!pointer-events-none !cursor-not-allowed !bg-gray-300 !text-black";
+    }
+
     if (Array.isArray(reservations) || reservations?.length > 0) {
       //comparamos si el día se encuentra en el rango de una reserva
 
@@ -31,7 +38,6 @@ const CalendarComponent = ({
         const endDate = DateTime.fromISO(reservation.fechaFin, {
           zone: zonaHermosillo,
         }).plus({ days: 1 }); //mexicanada pa q jale porque no incluye el último día;
-        const dateTile = DateTime.fromJSDate(date, { zone: zonaHermosillo });
 
         //si cae en el rango aplicamos el color de la reservación
         if (startDate <= dateTile && dateTile <= endDate) {
@@ -47,7 +53,6 @@ const CalendarComponent = ({
         const endDate = DateTime.fromISO(maintenance.fechaFin, {
           zone: zonaHermosillo,
         }).plus({ days: 1 }); //mexicanada pa q jale porque no incluye el último día;
-        const dateTile = DateTime.fromJSDate(date, { zone: zonaHermosillo });
 
         //si cae en el rango aplicamos el color del mantenimeinto
         if (startDate <= dateTile && dateTile <= endDate) {

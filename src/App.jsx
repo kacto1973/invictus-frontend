@@ -14,11 +14,15 @@ import Inventory from "./views/Inventory";
 import Configuration from "./views/Configuration";
 import Reports from "./views/Reports";
 import Transactions from "./views/Transactions";
+import TemporaryDrawer from "./components/TemporaryDrawer";
+import Header from "./components/Header";
 
 function App() {
   return (
     <>
       <Router>
+        <TemporaryDrawer isOpen={true}></TemporaryDrawer>
+        <Header></Header>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/inventory" element={<Inventory />} />

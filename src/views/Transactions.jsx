@@ -1,6 +1,4 @@
 import React from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
 import CustomizedTables from "../components/TransactionsTable";
 import SearchBox from "../components/SearchBox";
 import Button from "../components/Button";
@@ -121,8 +119,6 @@ const Transactions = () => {
 
   return (
     <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer></TemporaryDrawer>
-      <Header label="Movimientos"></Header>
       <ToastContainer position="bottom-right" autoClose={2500} />
 
       {/*div padre de todo lo demas */}

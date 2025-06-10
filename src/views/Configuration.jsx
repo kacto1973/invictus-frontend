@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Header from "../components/Header";
-import TemporaryDrawer from "../components/TemporaryDrawer";
 import Card from "../components/Card";
 import Button from "../components/Button";
 import { toast, ToastContainer } from "react-toastify";
@@ -88,9 +86,6 @@ const Configuration = () => {
 
   return (
     <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer />
-      <Header label="Configuración" />
-
       <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] flex items-start">
         <Card
           label="Configuración"

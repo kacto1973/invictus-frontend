@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
 import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
 import Button from "../components/Button";
@@ -318,8 +316,6 @@ const Inventory = () => {
   return (
     <>
       <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-        <TemporaryDrawer></TemporaryDrawer>
-        <Header label="Reactivos"></Header>
         <ToastContainer position="bottom-right" autoClose={2500} />
 
         {/*div padre de todo lo demas */}
@@ -442,10 +438,14 @@ const Inventory = () => {
               }`}
             >
               <div
-                className="w-[45%] bg-[#FFBB00] h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
+                className=" bg-clean-blue px-4 h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
             text-2xl font-bold rounded-md text-center items-center flex justify-center"
               >
-                {selectedReactant?.nombre}
+                <span className="text-white"> {selectedReactant?.nombre}</span>
+
+                {selectedReactant?.esPeligroso ? (
+                  <span className="text-[24px]">⚠️</span>
+                ) : null}
               </div>
               <Button
                 label="Editar"
@@ -521,7 +521,7 @@ const Inventory = () => {
 
               <div
                 className="w-[60%] h-[10rem] bg-[#DBE1DA] 
-              rounded-4xl flex flex-col absolute bottom-5 left-1/2 -translate-x-1/2
+              rounded-4xl flex flex-col absolute bottom-3 left-1/2 -translate-x-1/2
              justify-around  "
               >
                 <img

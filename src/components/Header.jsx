@@ -7,6 +7,7 @@ import {
   fetchDeleteNotificacion,
 } from "../services/fetchers.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useLocation } from "react-router-dom";
 
 const getTimeElapsed = (fecha) => {
   const now = DateTime.now();
@@ -36,11 +37,12 @@ const getTimeElapsed = (fecha) => {
   }
 };
 
-const Header = ({ label }) => {
+const Header = () => {
   const [currentTime, setCurrentTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Todo");
   const queryClient = useQueryClient();
+  const location = useLocation();
 
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications"],
@@ -62,6 +64,25 @@ const Header = ({ label }) => {
       notifications.filter((n) => n.idEstadoNotificacion?.nombre === "Sin leer")
         .length
     ),
+  };
+
+  const getTitle = (pathname) => {
+    switch (pathname) {
+      case "/":
+        return "Menú Principal";
+      case "/inventory":
+        return "Inventario";
+      case "/transactions":
+        return "Movimientos";
+      case "/equipment":
+        return "Equipo";
+      case "/reports":
+        return "Reportes";
+      case "/settings":
+        return "Configuración";
+      default:
+        return "";
+    }
   };
 
   const handleBellClick = () => {
@@ -101,7 +122,9 @@ const Header = ({ label }) => {
     <>
       {/* HEADER */}
       <div className="w-full h-[5rem] bg-primary mb-5 absolute top-0 left-0 flex items-center z-50">
-        <span className="ml-[280px] font-bold text-xl text-white">{label}</span>
+        <span className="ml-[280px] font-bold text-xl text-white">
+          {getTitle(location.pathname)}
+        </span>
         <div className="mr-[5rem] flex flex-row absolute right-0">
           <div className="bg-white flex flex-row p-[5px] rounded-md px-[10px] items-center">
             <img

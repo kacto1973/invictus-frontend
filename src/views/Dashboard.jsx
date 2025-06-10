@@ -1,7 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
 import Card from "../components/Card";
 import BarChart from "../components/BarChart.jsx";
 import PieChart from "../components/PieChart.jsx";
@@ -15,7 +13,11 @@ const Dashboard = () => {
     console.log(drawerOpened);
   }, [drawerOpened]);
 
-  const { data: dataW, isLoading, error } = useQuery({
+  const {
+    data: dataW,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["dataW"],
     queryFn: fetchDashboard,
   });
@@ -104,9 +106,6 @@ const Dashboard = () => {
   return (
     <>
       <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
-        <TemporaryDrawer isOpen={true}></TemporaryDrawer>
-        <Header label="Menú Principal"></Header>
-
         {/* aqui vamos a meter todos los demas componentes q no son el header ni el drawer */}
         <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)]">
           <div className="flex flex-row w-full justify-around h-[35%]">
