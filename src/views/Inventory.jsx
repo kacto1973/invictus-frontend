@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
 import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
 import Button from "../components/Button";
@@ -317,14 +315,12 @@ const Inventory = () => {
 
   return (
     <>
-      <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
-        <TemporaryDrawer></TemporaryDrawer>
-        <Header label="Reactivos"></Header>
+      <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
         <ToastContainer position="bottom-right" autoClose={2500} />
 
         {/*div padre de todo lo demas */}
         <div
-          className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex `}
+          className={`relative ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex `}
         >
           <p className=" absolute top-[37%] text-gray-600 right-[20%] text-regular w-[15rem] text-center font-bold">
             Haga click sobre un reactivo para ver su información
@@ -414,7 +410,7 @@ const Inventory = () => {
               </TextField>
 
               <Button
-                classNames="hover:bg-[#1a94c7] bg-[#1ba2db] w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="hover:bg-clean-blue-hover bg-clean-blue w-[10rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
                 label="Limpiar Filtros"
                 onClick={() => {
                   setFilter({
@@ -426,7 +422,7 @@ const Inventory = () => {
               ></Button>
 
               <Button
-                classNames="hover:bg-[#6DBA43] bg-[#79CB4C] w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="hover:bg-add-green-hover bg-add-green w-[9rem] h-[3rem] ml-4 shadow-md rounded-md text-bold text-white text-lg"
                 icon="svgs/plus-sign.svg"
                 label="Añadir"
                 onClick={() => {
@@ -442,14 +438,18 @@ const Inventory = () => {
               }`}
             >
               <div
-                className="w-[45%] bg-[#FFBB00] h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
+                className=" bg-clean-blue px-4 h-[2.5rem] absolute left-1/2 -translate-1/2 top-10 
             text-2xl font-bold rounded-md text-center items-center flex justify-center"
               >
-                {selectedReactant?.nombre}
+                <span className="text-white"> {selectedReactant?.nombre}</span>
+
+                {selectedReactant?.esPeligroso ? (
+                  <span className="text-[24px]">⚠️</span>
+                ) : null}
               </div>
               <Button
                 label="Editar"
-                classNames="!absolute cursor-pointer hover:bg-[#6DBA43] bg-[#79CB4C] w-[5rem] h-[2.5rem] left-10 top-5 shadow-md rounded-md text-bold text-white text-lg"
+                classNames="!absolute cursor-pointer hover:bg-add-green-hover bg-add-green w-[5rem] h-[2.5rem] left-10 top-5 shadow-md rounded-md text-bold text-white text-lg"
                 onClick={() => setActiveModal(MODAL_TYPE.EDITAR_REACTIVO)}
               ></Button>
               <img
@@ -465,7 +465,7 @@ const Inventory = () => {
                 {/*una mitad la de arriba */}
                 <div className="w-full h-[50%] flex">
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[8rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Marca
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -473,7 +473,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Presentación
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -481,7 +481,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Cantidad
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -493,7 +493,7 @@ const Inventory = () => {
                 {/*una mitad la de arriba */}
                 <div className="w-full h-[50%]  flex relative">
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Código/ID
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -501,7 +501,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB]  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary  py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Estado Físico
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg font-bold text-center">
@@ -509,7 +509,7 @@ const Inventory = () => {
                     </span>
                   </div>
                   <div className="relative h-full w-[33%] border-b-2 border-gray-300">
-                    <p className="bg-[#C796EB] py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
+                    <p className="bg-primary py-1 text-center px-4 rounded-full w-[10rem] absolute left-1/2 -translate-x-1/2 top-5 text-white font-bold text-xl">
                       Categoría
                     </p>
                     <span className="absolute bottom-3 left-1/2 -translate-x-1/2 text-lg w-[12rem] font-bold text-center">
@@ -521,7 +521,7 @@ const Inventory = () => {
 
               <div
                 className="w-[60%] h-[10rem] bg-[#DBE1DA] 
-              rounded-4xl flex flex-col absolute bottom-5 left-1/2 -translate-x-1/2
+              rounded-4xl flex flex-col absolute bottom-3 left-1/2 -translate-x-1/2
              justify-around  "
               >
                 <img
@@ -577,8 +577,8 @@ const Inventory = () => {
 
       {activeModal === MODAL_TYPE.EDITAR_REACTIVO && (
         <div className="w-[45%] h-[75%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10  z-50 flex justify-center">
-          <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
-            <p className="text-xl font-bold flex-start ml-5">
+          <div className="h-[4rem] bg-primary w-full absolute top-0 left-0 flex items-center ">
+            <p className="text-xl font-bold flex-start ml-5 text-white">
               Editar {selectedReactant?.nombre}
             </p>
             <div
@@ -588,7 +588,7 @@ const Inventory = () => {
                 );
                 setActiveModal(null);
               }}
-              className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              className="font-black text-2xl absolute top-4 right-4 cursor-pointer text-white"
             >
               X
             </div>
@@ -880,7 +880,7 @@ const Inventory = () => {
               </div>
             </div>
           </div>
-          <div className="absolute right-25 bottom-15">
+          <div className="absolute right-25 bottom-8">
             <Checkbox
               checked={editReactant?.esPeligroso}
               onChange={(e) =>
@@ -913,7 +913,7 @@ const Inventory = () => {
                 console.log("Error al editar reactivo, detalles: ", error);
               }
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
+            classNames="cursor-pointer hover:bg-add-green-hover !absolute bottom-8 left-13 bg-add-green w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
             label="Confirmar"
           ></Button>
         </div>
@@ -921,8 +921,8 @@ const Inventory = () => {
 
       {activeModal === MODAL_TYPE.AGREGAR_REACTIVO && (
         <div className="w-[45%] h-[75%] bg-white shadow-md rounded-md absolute left-1/2 -translate-x-1/2 top-10  z-50 flex justify-center">
-          <div className="h-[4rem] bg-[#C49DE0] w-full absolute top-0 left-0 flex items-center ">
-            <p className="text-xl font-bold flex-start ml-5">
+          <div className="h-[4rem] bg-primary w-full absolute top-0 left-0 flex items-center ">
+            <p className="text-xl font-bold flex-start ml-5 text-white">
               Agregar Reactivo
             </p>
             <div
@@ -932,7 +932,7 @@ const Inventory = () => {
                 );
                 setActiveModal(null);
               }}
-              className="font-black text-2xl absolute top-4 right-4 cursor-pointer"
+              className="font-black text-2xl absolute top-4 right-4 cursor-pointer text-white"
             >
               X
             </div>
@@ -1218,7 +1218,7 @@ const Inventory = () => {
               </div>
             </div>
           </div>
-          <div className="absolute right-25 bottom-15">
+          <div className="absolute right-25 bottom-8">
             <Checkbox
               checked={newReactant?.esPeligroso}
               onChange={(e) =>
@@ -1268,8 +1268,7 @@ const Inventory = () => {
                 console.log("Error al agregar reactivo, detalles: ", error);
               }
             }}
-            classNames="cursor-pointer hover:bg-[#6DBA43] !absolute bottom-15 left-13 bg-[#79CB4C] w-[10rem] h-[3rem] shadow-md rounded-md text-bold text-white text-xl"
-            icon="svgs/plus-sign.svg"
+            classNames="cursor-pointer !absolute bottom-8 left-13 bg-add-green hover:bg-add-green-hover w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl"
             label="Añadir"
           ></Button>
         </div>

@@ -7,6 +7,7 @@ import {
   fetchDeleteNotificacion,
 } from "../services/fetchers.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useParams, useLocation } from "react-router-dom";
 
 const getTimeElapsed = (fecha) => {
   const now = DateTime.now();
@@ -36,15 +37,14 @@ const getTimeElapsed = (fecha) => {
   }
 };
 
-const Header = ({ label }) => {
+const Header = () => {
   const [currentTime, setCurrentTime] = useState("");
   const [showNotifications, setShowNotifications] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Todo");
   const queryClient = useQueryClient();
+  const location = useLocation();
 
-  const {
-    data: notifications = []
-  } = useQuery({
+  const { data: notifications = [] } = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchNotifications,
   });
@@ -52,17 +52,37 @@ const Header = ({ label }) => {
   const formatCount = (count) => (count > 9 ? "9+" : count);
   const counts = {
     Todo: formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre !== "Eliminado")
-        .length
+      notifications.filter(
+        (n) => n.idEstadoNotificacion?.nombre !== "Eliminado"
+      ).length
     ),
     Leido: formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre === "Leido")
+      notifications.filter((n) => n.idEstadoNotificacion?.nombre === "Leido")
         .length
     ),
     "Sin leer": formatCount(
-      notifications.filter((n) => n.idEstadoNotificacion.nombre === "Sin leer")
+      notifications.filter((n) => n.idEstadoNotificacion?.nombre === "Sin leer")
         .length
     ),
+  };
+
+  const getTitle = (pathname) => {
+    switch (pathname) {
+      case "/":
+        return "Menú Principal";
+      case "/inventory":
+        return "Inventario";
+      case "/transactions":
+        return "Movimientos";
+      case "/equipment":
+        return "Equipo";
+      case "/reports":
+        return "Reportes";
+      case "/settings":
+        return "Configuración";
+      default:
+        return "";
+    }
   };
 
   const handleBellClick = () => {
@@ -92,19 +112,19 @@ const Header = ({ label }) => {
   }, []);
 
   const filteredNotifications = notifications
-    .filter((notif) => notif.idEstadoNotificacion.nombre !== "Eliminado")
+    .filter((notif) => notif.idEstadoNotificacion?.nombre !== "Eliminado")
     .filter((notif) => {
       if (activeFilter === "Todo") return true;
-      return notif.idEstadoNotificacion.nombre === activeFilter;
+      return notif.idEstadoNotificacion?.nombre === activeFilter;
     });
-
-
 
   return (
     <>
       {/* HEADER */}
-      <div className="w-full h-[5rem] bg-[#E2BDFD] mb-5 absolute top-0 left-0 flex items-center z-50">
-        <span className="ml-[280px] font-bold text-xl">{label}</span>
+      <div className="w-full h-[5rem] bg-primary mb-5 absolute top-0 left-0 flex items-center z-50">
+        <span className="ml-[280px] font-bold text-xl text-white">
+          {getTitle(location.pathname)}
+        </span>
         <div className="mr-[5rem] flex flex-row absolute right-0">
           <div className="bg-white flex flex-row p-[5px] rounded-md px-[10px] items-center">
             <img
@@ -265,7 +285,7 @@ const Header = ({ label }) => {
                 }}
               >
                 <img
-                  src={`svgs/${notif.idTipoNotificacion.nombre
+                  src={`svgs/${notif.idTipoNotificacion?.nombre
                     .toLowerCase()
                     .replace(/ /g, "_")}.svg`}
                   alt="Icono de notificación"
@@ -293,7 +313,7 @@ const Header = ({ label }) => {
                   }}
                 >
                   <div style={{ fontWeight: "bold", fontSize: "15px" }}>
-                    {notif.idTipoNotificacion.nombre}
+                    {notif.idTipoNotificacion?.nombre}
                   </div>
                   <div
                     style={{
@@ -303,7 +323,7 @@ const Header = ({ label }) => {
                       color: "#888888",
                     }}
                   >
-                    {getTimeElapsed(notif.fechaGeneracion)}
+                    {getTimeElapsed(notif?.fechaGeneracion)}
                   </div>
                 </div>
                 <div
@@ -314,7 +334,7 @@ const Header = ({ label }) => {
                     marginTop: "5px",
                   }}
                 >
-                {/*icono de borrar notificaciones*/ }
+                  {/*icono de borrar notificaciones*/}
                   <div style={{ fontSize: "14px", color: "#555555" }}>
                     {notif.descripcion}
                   </div>
@@ -322,7 +342,7 @@ const Header = ({ label }) => {
                     src="/svgs/trash-red2.svg"
                     alt="Borrar"
                     onClick={async () => {
-                      await fetchDeleteNotificacion(notif._id);
+                      await fetchDeleteNotificacion(notif?._id);
                       queryClient.invalidateQueries(["notifications"]);
                     }}
                     style={{
@@ -349,12 +369,9 @@ const Header = ({ label }) => {
             paddingLeft: "16px",
             fontWeight: "bold",
             fontSize: "16px",
-            cursor: "pointer",
             flexShrink: 0,
           }}
-        >
-          Ver todas las notificaciones
-        </div>
+        ></div>
       </div>
     </>
   );

@@ -1,16 +1,13 @@
 import React, { useState } from "react";
-import TemporaryDrawer from "../components/TemporaryDrawer";
-import Header from "../components/Header";
 import UnifiedSearchBox from "../components/UnifiedSearchBox";
 import ReportTable from "../components/ReportTable";
 import CardReport from "../components/CardReport";
 import Button from "../components/Button";
-import {fetchReports} from "../services/fetchers";
-import {useQuery} from "@tanstack/react-query";
+import { fetchReports } from "../services/fetchers";
+import { useQuery } from "@tanstack/react-query";
 import { matchSorter } from "match-sorter";
 
 async function descargarConFetch(pdfUrl, nombre) {
-
   try {
     const response = await fetch(pdfUrl);
     const blob = await response.blob();
@@ -18,10 +15,10 @@ async function descargarConFetch(pdfUrl, nombre) {
     const blobUrl = window.URL.createObjectURL(blob);
 
     // Crear el enlace invisible
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = blobUrl;
     link.download = nombre;
-    link.style.display = 'none';
+    link.style.display = "none";
     document.body.appendChild(link);
 
     link.click();
@@ -29,12 +26,11 @@ async function descargarConFetch(pdfUrl, nombre) {
     document.body.removeChild(link);
     window.URL.revokeObjectURL(blobUrl);
   } catch (error) {
-    console.error('Error descargando el PDF:', error);
+    console.error("Error descargando el PDF:", error);
   }
 }
 
 const getFechaMasReciente = (report) => {
-
   const fechaReciente = report?.fechaGeneracion;
 
   if (!fechaReciente) return "No hay reportes disponibles";
@@ -48,7 +44,7 @@ const getFechaMasReciente = (report) => {
   const anio = fecha.getFullYear();
 
   return `Fecha: ${dia}/${mes}/${anio}`;
-}
+};
 
 const getReporteMasReciente = (reports) => {
   const fechasOrdenadas = [...reports].sort((a, b) => {
@@ -65,7 +61,11 @@ const Reports = () => {
   const [reportToDelete, setReportToDelete] = useState(null);
   const [firstTime, setfirstTime] = useState(true);
 
-  const { data: reports = [], isLoading, error } = useQuery({
+  const {
+    data: reports = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["reports"],
     queryFn: fetchReports,
   });
@@ -75,115 +75,111 @@ const Reports = () => {
   const reporteMasReciente = getReporteMasReciente(reports);
   const fechaMasReciente = getFechaMasReciente(reporteMasReciente);
 
-    const handleKeyDown = (e) => {
-        if (e.key === "Enter") {
-            setfirstTime(false);
-            const texto = e.target?.value.trim() ?? "";
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      setfirstTime(false);
+      const texto = e.target?.value.trim() ?? "";
 
-            if (texto.includes("$")) {
-                // Buscar por rango de fechas
-                const [inicioStr, finStr] = texto.split("$");
+      if (texto.includes("$")) {
+        // Buscar por rango de fechas
+        const [inicioStr, finStr] = texto.split("$");
 
-                const parseFecha = (str) => {
-                    const [dia, mes, anio] = str.split("/");
-                    return new Date(`${anio}-${mes}-${dia}T00:00:00`);
-                };
+        const parseFecha = (str) => {
+          const [dia, mes, anio] = str.split("/");
+          return new Date(`${anio}-${mes}-${dia}T00:00:00`);
+        };
 
-                const fechaInicio = parseFecha(inicioStr);
-                const fechaFin = new Date(parseFecha(finStr));
-                fechaFin.setHours(23, 59, 59, 999); // Asegura hasta el final del día
+        const fechaInicio = parseFecha(inicioStr);
+        const fechaFin = new Date(parseFecha(finStr));
+        fechaFin.setHours(23, 59, 59, 999); // Asegura hasta el final del día
 
-                const resultados = reports.filter((report) => {
-                    const fechaReporte = new Date(report.fechaGeneracion);
-                    return fechaReporte >= fechaInicio && fechaReporte <= fechaFin;
-                });
+        const resultados = reports.filter((report) => {
+          const fechaReporte = new Date(report.fechaGeneracion);
+          return fechaReporte >= fechaInicio && fechaReporte <= fechaFin;
+        });
 
-                const resultadosOrdenados = resultados.sort((a, b) => {
-                    const fechaA = new Date(a.fechaGeneracion);
-                    const fechaB = new Date(b.fechaGeneracion);
-                    return fechaB - fechaA; // Más nuevo primero
-                });
+        const resultadosOrdenados = resultados.sort((a, b) => {
+          const fechaA = new Date(a.fechaGeneracion);
+          const fechaB = new Date(b.fechaGeneracion);
+          return fechaB - fechaA; // Más nuevo primero
+        });
 
-                setFilteredReports(resultadosOrdenados);
-            } else {
-                // Buscar por nombre
-                if (texto === "") {
-                    setFilteredReports(reports);
-                    return;
-                }
-
-                const resultados = matchSorter(reports, texto.toLowerCase(), {
-                    keys: [item => item.nombre.toLowerCase()],
-                });
-
-                const resultadosOrdenados = resultados.sort((a, b) => {
-                    const fechaA = new Date(a.fechaGeneracion);
-                    const fechaB = new Date(b.fechaGeneracion);
-                    return fechaB - fechaA; // Más nuevo primero
-                });
-
-                if (resultadosOrdenados.length === 0) setFilteredReports([]);
-                else setFilteredReports(resultadosOrdenados);
-            }
+        setFilteredReports(resultadosOrdenados);
+      } else {
+        // Buscar por nombre
+        if (texto === "") {
+          setFilteredReports(reports);
+          return;
         }
-    };
+
+        const resultados = matchSorter(reports, texto.toLowerCase(), {
+          keys: [(item) => item.nombre.toLowerCase()],
+        });
+
+        const resultadosOrdenados = resultados.sort((a, b) => {
+          const fechaA = new Date(a.fechaGeneracion);
+          const fechaB = new Date(b.fechaGeneracion);
+          return fechaB - fechaA; // Más nuevo primero
+        });
+
+        if (resultadosOrdenados.length === 0) setFilteredReports([]);
+        else setFilteredReports(resultadosOrdenados);
+      }
+    }
+  };
 
   // if (isLoading) return <div>Cargando reportes...</div>;
   // if (error) return <div>Error al cargar reportes</div>;
 
   return (
-    <div className="bg-[#EDEDED] w-screen h-screen relative m-0 overflow-hidden">
-      <TemporaryDrawer />
-      <Header label="Reportes" />
-
-      <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#EDEDED] overflow-hidden flex">
+    <div className="bg-[#CAC9C9] w-screen h-screen relative m-0 overflow-hidden">
+      <div className="ml-[250px] mt-[5rem] w-[calc(100vw-250px)] h-[calc(100vh-5rem)] bg-[#CAC9C9] overflow-hidden flex">
         <div className="w-[50%] h-full flex flex-col p-5 pr-0 flex-shrink-0">
-            <UnifiedSearchBox
-                classNames="mb-5"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                endIcon={null}
-                onKeyDown={handleKeyDown}
-                onDateRangeSelected={(newValue) => setSearchValue(newValue)}
-            />
+          <UnifiedSearchBox
+            classNames="mb-5"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            endIcon={null}
+            onKeyDown={handleKeyDown}
+            onDateRangeSelected={(newValue) => setSearchValue(newValue)}
+          />
 
-            <div className="overflow-auto shadow-md rounded-lg">
-          <ReportTable
+          <div className="overflow-auto shadow-md rounded-lg">
+            <ReportTable
               onReportsClick={() => {}}
               reports={firstTime ? reports : filteredReports} // filteredReports.length > 0 ? filteredReports : reports
               editingReportId={editingReportId}
               setEditingReportId={setEditingReportId}
               reportToDelete={reportToDelete}
               setReportToDelete={setReportToDelete}
-          />
+            />
           </div>
         </div>
 
-
-          <div className="w-[50%] h-[400px] flex flex-col p-10 pr-0 flex-shrink-0">
-          <CardReport
-              icon="svgs/information-green.svg"
-              label="Reporte más reciente"
-          >
+        <div className="w-[50%] h-[400px] flex flex-col p-10 pr-0 flex-shrink-0">
+          <CardReport icon="svgs/information-green.svg" label="  reciente">
             <p className="text-[#7D7D7D] text-sm mb-3 text-center">
               <span className="font-normal">{fechaMasReciente}</span>
             </p>
 
             <div className="flex items-center justify-center mb-5">
               <Button
-                  icon="svgs/download.svg"
-                  label={<span className="pl-6">Descargar ahora</span>}
-                  onClick={async () => {
-                    if (reporteMasReciente) {
-                      await descargarConFetch(reporteMasReciente.urlReporte, reporteMasReciente.nombre);
-                    }
-                  }}
-                  classNames={`w-[80%] h-[3rem] flex items-center justify-center gap-7 text-white font-normal ${
-                      reporteMasReciente
-                          ? "hover:bg-[#6FB847] bg-[#79CB4C] cursor-pointer"
-                          : "bg-gray-400 cursor-not-allowed"
-                  }`}
-                  disabled={!reporteMasReciente}
+                icon="svgs/download.svg"
+                label={<span className="pl-6">Descargar ahora</span>}
+                onClick={async () => {
+                  if (reporteMasReciente) {
+                    await descargarConFetch(
+                      reporteMasReciente.urlReporte,
+                      reporteMasReciente.nombre
+                    );
+                  }
+                }}
+                classNames={`w-[80%] h-[3rem] flex items-center justify-center gap-7 text-white font-normal ${
+                  reporteMasReciente
+                    ? "hover:bg-[#6FB847] bg-[#79CB4C] cursor-pointer"
+                    : "bg-gray-400 cursor-not-allowed"
+                }`}
+                disabled={!reporteMasReciente}
               />
             </div>
 
@@ -194,49 +190,66 @@ const Reports = () => {
               {/* Botones encima */}
               <div className="flex justify-center items-center gap-6 w-full py-2 z-10">
                 <button
-                    onClick={() => {
-                      if (reporteMasReciente) {
-                        window.open(reporteMasReciente.urlReporte, "_blank");
-                      }
-                    }}
-                    disabled={!reporteMasReciente}
-                    className={`hover:scale-110 transition-transform ${
-                        reporteMasReciente ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-                    }`}
+                  onClick={() => {
+                    if (reporteMasReciente) {
+                      window.open(reporteMasReciente.urlReporte, "_blank");
+                    }
+                  }}
+                  disabled={!reporteMasReciente}
+                  className={`hover:scale-110 transition-transform ${
+                    reporteMasReciente
+                      ? "cursor-pointer"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                 >
-                  <img src="svgs/eye-yellowbox.svg" alt="Vista previa" className="w-8 h-8" />
+                  <img
+                    src="svgs/eye-yellowbox.svg"
+                    alt="Vista previa"
+                    className="w-8 h-8"
+                  />
                 </button>
 
                 <button
-                    onClick={() => {
-                      if (reporteMasReciente) {
-                        setReportToDelete(reporteMasReciente);
-                      }
-                    }}
-                    disabled={!reporteMasReciente}
-                    className={`hover:scale-110 transition-transform ${
-                        reporteMasReciente ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-                    }`}
+                  onClick={() => {
+                    if (reporteMasReciente) {
+                      setReportToDelete(reporteMasReciente);
+                    }
+                  }}
+                  disabled={!reporteMasReciente}
+                  className={`hover:scale-110 transition-transform ${
+                    reporteMasReciente
+                      ? "cursor-pointer"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                 >
-                  <img src="svgs/trash-redbox.svg" alt="Eliminar reporte" className="w-8 h-8" />
+                  <img
+                    src="svgs/trash-redbox.svg"
+                    alt="Eliminar reporte"
+                    className="w-8 h-8"
+                  />
                 </button>
 
                 <button
-                    onClick={() => {
-                      if (reporteMasReciente) {
-                        setEditingReportId(reporteMasReciente._id);
-                      }
-                    }}
-                    disabled={!reporteMasReciente}
-                    className={`hover:scale-110 transition-transform ${
-                        reporteMasReciente ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-                    }`}
+                  onClick={() => {
+                    if (reporteMasReciente) {
+                      setEditingReportId(reporteMasReciente._id);
+                    }
+                  }}
+                  disabled={!reporteMasReciente}
+                  className={`hover:scale-110 transition-transform ${
+                    reporteMasReciente
+                      ? "cursor-pointer"
+                      : "opacity-50 cursor-not-allowed"
+                  }`}
                 >
-                  <img src="svgs/rename-blue.svg" alt="Renombrar reporte" className="w-8 h-8" />
+                  <img
+                    src="svgs/rename-blue.svg"
+                    alt="Renombrar reporte"
+                    className="w-8 h-8"
+                  />
                 </button>
               </div>
             </div>
-
           </CardReport>
         </div>
       </div>

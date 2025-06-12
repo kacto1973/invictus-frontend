@@ -14,7 +14,7 @@ import Stack from "@mui/material/Stack";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#C796EB",
+    backgroundColor: "#0E2C5B",
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -80,7 +80,10 @@ export default function CustomizedTables({ onReactantClick, filter, data }) {
         <TableBody>
           {newData?.map((reactant) => (
             <StyledTableRow key={reactant?._id}>
-              <StyledTableCell>{reactant?.nombre}</StyledTableCell>
+              <StyledTableCell>
+                {reactant?.nombre}
+                {reactant?.esPeligroso === true ? "⚠️" : null}
+              </StyledTableCell>
               <StyledTableCell>{reactant?.idGabinete?.nombre}</StyledTableCell>
               <StyledTableCell>
                 <img

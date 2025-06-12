@@ -1,6 +1,8 @@
 /* Aquí estarán acumulandose todos los fetchers que tendrá nuestr app, para cada distinta vista */
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+import { DateTime } from "luxon";
+
 export const fetchDashboard = async () => {
   const res = await fetch(`${BASE_URL}/inicio`);
   return res.json();
@@ -192,4 +194,26 @@ export const fetchDeleteMaintenance = async (id) => {
   return await fetch(`${BASE_URL}/equipos/mantenimiento?id=${id}`, {
     method: "DELETE",
   });
+};
+
+export const fetchAddTransaction = async (transaction) => {
+  const today = DateTime.now()
+    .setZone("America/Hermosillo")
+    .toFormat("yyyy-MM-dd");
+  const newObject = { ...transaction, fecha: today };
+
+  console.log("finally sendig this: ", newObject);
+
+  return await fetch(`${BASE_URL}/movimientos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(newObject),
+  });
+};
+
+export const fetchTransactions = async () => {
+  const res = await fetch(`${BASE_URL}/movimientos`);
+  return res.json();
 };
