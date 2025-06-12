@@ -24,7 +24,7 @@ import { useState, useRef } from "react";
 import { DateTime } from "luxon";
 
 // url base para las imagenes
- const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
+const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Equipment = () => {
   /* tanstack */
@@ -184,7 +184,8 @@ const Equipment = () => {
       console.log("Calendarizando uso del equipo...");
 
       const body = {
-        persona: "Usuario del Laboratorio",
+        descripcion: "descripcion de ejemplo",
+        usuario: "Usuario del Laboratorio",
         fechaInicio: formatDate(selectedRange[0]),
         fechaFin: formatDate(selectedRange[1]),
       };
@@ -215,6 +216,7 @@ const Equipment = () => {
         fechaInicio: formatDate(selectedRange[0]),
         fechaFin: formatDate(selectedRange[1]),
         descripcion: "Mantenimiento programado",
+        usuario: "Persona de ejemplo",
       };
 
       const res = await fetchAddMaintenance(body, selectedEquipment?._id);
@@ -390,7 +392,7 @@ const Equipment = () => {
                       {device?.nombre}
                     </span>
                     <span
-                      className={`absolute bottom-4 left-[37%] rounded-full py-1 px-4 ${
+                      className={`absolute top-10 left-[35%] rounded-full py-1 px-4 ${
                         device?.status === "Liberado"
                           ? "bg-green-400 text-white"
                           : "bg-black text-white"
@@ -398,7 +400,7 @@ const Equipment = () => {
                     >
                       {device?.status}
                     </span>
-                    <div className="absolute bottom-4 right-3 flex gap-x-4">
+                    <div className="absolute bottom-2 left-[35%] flex gap-x-4">
                       <img
                         src="/svgs/edit-black.svg"
                         width={34}

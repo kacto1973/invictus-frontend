@@ -15,6 +15,7 @@ const CalendarComponent = ({
   //  const [selectedRange, setSelectedRange] = useState([]);
 
   /* functions */
+
   const getTileClassName = ({ date, view }) => {
     //si la vista es distina a los 30 días del mes, no aplicamos clases
     if (view !== "month") return null;
