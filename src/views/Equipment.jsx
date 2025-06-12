@@ -370,7 +370,7 @@ const Equipment = () => {
                     <div className="flex justify-center items-center h-[8rem] min-h-[8rem] max-h-[8rem] w-[10rem] bg-white overflow-hidden border-4 border-dotted border-gray-300">
                       <img
                         className="w-full h-full object-contain"
-                        src={device?.urlImagen}
+                        src={`${backendBaseUrl}${device?.urlImagen}`}
                         alt="device image"
                       />
                     </div>
