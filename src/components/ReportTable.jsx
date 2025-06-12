@@ -14,6 +14,9 @@ import {fetchRemoveReport, fetchChangeReportName, fetchCreateReport} from "../se
 import { useQueryClient } from "@tanstack/react-query";
 import {toast, ToastContainer} from "react-toastify";
 
+// url base para los reportes en pdf
+ const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
+console.log(backendBaseUrl);
 function formatearFecha(fechaObj) {
   const fecha = new Date(fechaObj);
   const dia = String(fecha.getDate()).padStart(2, '0');
@@ -24,9 +27,9 @@ function formatearFecha(fechaObj) {
 }
 
 async function descargarConFetch(pdfUrl, nombre) {
-
+  const backendUrl = `${backendBaseUrl}${pdfUrl}`;
   try {
-    const response = await fetch(pdfUrl);
+    const response = await fetch(backendUrl);
     const blob = await response.blob();
 
     const blobUrl = window.URL.createObjectURL(blob);
@@ -367,7 +370,7 @@ export default function CustomizedTables({ reports, editingReportId, setEditingR
                     >
                       Descargar
                     </Button>
-                    <a href={report.urlReporte} target="_blank" rel="noopener noreferrer">
+                    <a href={`${backendBaseUrl}${report.urlReporte}`} target="_blank" rel="noopener noreferrer">
                     <Button
                       startIcon={<img src="/svgs/eye-gray.svg" alt="Vista previa" width={16} />}
                       sx={buttonStyle}
