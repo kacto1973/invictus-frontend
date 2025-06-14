@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useState } from "react";
 import SearchBox from "../components/SearchBox";
 import ReactantTable from "../components/ReactantTable";
@@ -22,7 +22,7 @@ import { fetchInventory } from "../services/fetchers";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Inventory = () => {
+const InventoryPage = () => {
   /* tanstack */
 
   const queryClient = useQueryClient();
@@ -1277,4 +1277,4 @@ const Inventory = () => {
   );
 };
 
-export default Inventory;
+export default InventoryPage;

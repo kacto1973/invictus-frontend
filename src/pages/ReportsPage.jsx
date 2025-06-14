@@ -56,7 +56,7 @@ const getReporteMasReciente = (reports) => {
   return fechasOrdenadas[0];
 };
 
-const Reports = () => {
+const ReportsPage = () => {
   const [editingReportId, setEditingReportId] = useState(null);
   const [reportToDelete, setReportToDelete] = useState(null);
   const [firstTime, setfirstTime] = useState(true);
@@ -257,4 +257,4 @@ const Reports = () => {
   );
 };
 
-export default Reports;
+export default ReportsPage;

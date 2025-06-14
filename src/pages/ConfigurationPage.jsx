@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import Card from "../components/Card";
-import Button from "../components/Button";
+import { useState } from "react";
+import Card from "../components/dashboard/Card";
+import Button from "../components/common/Button";
 import { toast, ToastContainer } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const Configuration = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
-  const [restorePassword, setRestorePassword] = useState("");
-  const [restoreError, setRestoreError] = useState("");
-  const [file, setFile] = useState(null);
+const ConfigurationPage = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
+    const [restorePassword, setRestorePassword] = useState("");
+    const [restoreError, setRestoreError] = useState("");
+    const [file, setFile] = useState(null);
 
   const handleBackupDownload = async () => {
     try {
@@ -209,4 +209,4 @@ const Configuration = () => {
   );
 };
 
-export default Configuration;
+export default ConfigurationPage;

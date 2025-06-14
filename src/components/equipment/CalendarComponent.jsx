@@ -1,5 +1,3 @@
-import { DATE_VIEWS } from "@mui/x-date-pickers/internals";
-import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Importa los estilos por defecto
 import { DateTime } from "luxon";
@@ -74,11 +72,7 @@ const CalendarComponent = ({
         value={selectedRange}
       />
 
-      {/*<p className="mt-4">
-        Rango seleccionado:
-        {selectedRange && selectedRange[0]?.toDateString()} -{" "}
-        {selectedRange && selectedRange[1]?.toDateString()}
-      </p> */}
+      {}
     </div>
   );
 };

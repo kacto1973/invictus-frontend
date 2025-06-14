@@ -10,7 +10,7 @@ import Paper from "@mui/material/Paper";
 import Popover from "@mui/material/Popover";
 import Button from "@mui/material/Button";
 import { useState } from "react";
-import {fetchRemoveReport, fetchChangeReportName, fetchCreateReport} from "../services/fetchers";
+import {fetchRemoveReport, fetchChangeReportName, fetchCreateReport} from "../../services/fetchers";
 import { useQueryClient } from "@tanstack/react-query";
 import {toast, ToastContainer} from "react-toastify";
 

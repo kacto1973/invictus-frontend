@@ -1,4 +1,3 @@
-import React from "react";
 import { useEffect } from "react";
 import Card from "../components/Card";
 import SearchBox from "../components/SearchBox.jsx";
@@ -23,10 +22,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 import { DateTime } from "luxon";
 
-// url base para las imagenes
-const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
+const EquipmentPage = () => {
 
-const Equipment = () => {
+  const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
+
   /* tanstack */
 
   const queryClient = useQueryClient();
@@ -791,4 +790,4 @@ const Equipment = () => {
   );
 };
 //chino el pro estuvo aqui
-export default Equipment;
+export default EquipmentPage;

@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import Card from "../components/Card";
 import BarChart from "../components/BarChart.jsx";
@@ -6,7 +5,7 @@ import PieChart from "../components/PieChart.jsx";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDashboard } from "../services/fetchers.js";
 
-const Dashboard = () => {
+const DashboardPage = () => {
   const [drawerOpened, setDrawerOpened] = useState(false);
 
   useEffect(() => {
@@ -171,4 +170,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

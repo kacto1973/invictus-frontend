@@ -1,5 +1,4 @@
-import * as React from "react";
-import { rgbToHex, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell, { tableCellClasses } from "@mui/material/TableCell";
@@ -61,10 +60,6 @@ const reactants = [
     cantidad: 600,
   },
 ];
-
-function openDetails(reactant) {
-  console.log(reactant);
-}
 
 export default function CustomizedTables({ onReactantClick }) {
   return (

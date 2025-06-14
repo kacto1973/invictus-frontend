@@ -1,29 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
-import Button from "@mui/material/Button";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import DrawerButton from "./DrawerButton";
+import SidebarBtn from "./SidebarBtn";
 import { useNavigate } from "react-router-dom";
-
-{
-  /*<ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-            
-          </ListItem> */
-}
 
 export default function TemporaryDrawer({ isOpen }) {
   const [open, setOpen] = React.useState(isOpen);
@@ -48,12 +28,7 @@ export default function TemporaryDrawer({ isOpen }) {
       role="presentation"
       onClick={toggleDrawer(false)}
     >
-      {/*<img
-        src="svgs/arrow-left.svg"
-        alt=""
-        width={30}
-        className="absolute right-2 top-2"
-      /> */}
+      {}
       <div className="w-full h-[10rem] mt-5 flex items-center justify-center">
         <img src="images/ESCUDO-COLOR.png" width={120} alt="logo UNISON" />
       </div>
@@ -79,7 +54,7 @@ export default function TemporaryDrawer({ isOpen }) {
             route: "settings",
           },
         ].map((object, id) => (
-          <DrawerButton
+          <SidebarBtn
             key={id}
             buttonIcon={object.img}
             buttonText={object.text}
@@ -87,7 +62,7 @@ export default function TemporaryDrawer({ isOpen }) {
             onClick={() => {
               navigator("/" + object.route);
             }}
-          ></DrawerButton>
+          ></SidebarBtn>
         ))}
       </List>
     </Box>

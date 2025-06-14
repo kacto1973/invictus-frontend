@@ -1,6 +1,5 @@
-import React from "react";
 
-const DrawerButton = ({ classNames, buttonText, buttonIcon, onClick }) => {
+const SidebarBtn = ({ classNames, buttonText, buttonIcon, onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -12,4 +11,4 @@ const DrawerButton = ({ classNames, buttonText, buttonIcon, onClick }) => {
   );
 };
 
-export default DrawerButton;
+export default SidebarBtn;

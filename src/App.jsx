@@ -2,8 +2,7 @@ import "./App.css";
 import {
   BrowserRouter as Router,
   Routes,
-  Route,
-  Navigate,
+  Route
 } from "react-router-dom";
 import TemporaryDrawer from "./components/TemporaryDrawer";
 import Header from "./components/Header";

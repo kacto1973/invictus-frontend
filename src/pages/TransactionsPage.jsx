@@ -5,19 +5,23 @@ import Button from "../components/Button";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { useEffect } from "react";
-import MenuItem from "@mui/material/MenuItem";
-import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
+import Header from "../components/common/Header.jsx";
+import Button from "../components/common/Button.jsx";
+import SearchBox from "../components/common/SearchBox.jsx";
+import SideBar from "../components/sidebar/SideBar.jsx";;
+import CustomizedTables from "../components/transactions/TransactionsTable.jsx";
 import {
   fetchInventory,
-  fetchBrands,
   fetchAddTransaction,
   fetchTransactions,
 } from "../services/fetchers.js";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Transactions = () => {
+const TransactionsPage = () => {
   /*tanstack */
 
   const { data: transactions } = useQuery({
@@ -322,4 +326,4 @@ const Transactions = () => {
   );
 };
 
-export default Transactions;
+export default TransactionsPage;
