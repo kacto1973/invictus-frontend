@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import UnifiedSearchBox from "../components/UnifiedSearchBox";
-import ReportTable from "../components/ReportTable";
-import CardReport from "../components/CardReport";
-import Button from "../components/Button";
+import { useState } from "react";
+import UnifiedSearchBox from "../components/reports/UnifiedSearchBox";
+import ReportTable from "../components/reports/ReportTable";
+import CardReport from "../components/reports/CardReport";
+import Button from "../components/common/Button";
 import { fetchReports } from "../services/fetchers";
 import { useQuery } from "@tanstack/react-query";
 import { matchSorter } from "match-sorter";

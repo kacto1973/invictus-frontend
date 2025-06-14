@@ -4,15 +4,15 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import TemporaryDrawer from "./components/TemporaryDrawer";
-import Header from "./components/Header";
+import SideBar from "./components/sidebar/SideBar";
+import Header from "./components/common/Header";
 import routes from "./routes/routes";
 
 function App() {
   return (
     <>
       <Router>
-        <TemporaryDrawer isOpen={true}></TemporaryDrawer>
+        <SideBar isOpen={true}></SideBar>
         <Header></Header>
         <Routes>
           {routes.map((route, index) => (

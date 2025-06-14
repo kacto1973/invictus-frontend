@@ -1,5 +1,5 @@
 
-const SidebarBtn = ({ classNames, buttonText, buttonIcon, onClick }) => {
+const SideBarBtn = ({ classNames, buttonText, buttonIcon, onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -11,4 +11,4 @@ const SidebarBtn = ({ classNames, buttonText, buttonIcon, onClick }) => {
   );
 };
 
-export default SidebarBtn;
+export default SideBarBtn;

@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { useState } from "react";
-import SearchBox from "../components/SearchBox";
-import ReactantTable from "../components/ReactantTable";
-import Button from "../components/Button";
+import SearchBox from "../components/common/SearchBox";
+import ReactantTable from "../components/reactant/ReactantTable";
+import Button from "../components/common/Button";
 import TextField from "@mui/material/TextField";
 import {
   fetchCategories,

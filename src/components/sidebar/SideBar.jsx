@@ -2,10 +2,10 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
-import SidebarBtn from "./SidebarBtn";
+import SideBarBtn from "./SideBarBtn";
 import { useNavigate } from "react-router-dom";
 
-export default function TemporaryDrawer({ isOpen }) {
+export default function SideBar({ isOpen }) {
   const [open, setOpen] = React.useState(isOpen);
   const navigator = useNavigate();
 
@@ -54,7 +54,7 @@ export default function TemporaryDrawer({ isOpen }) {
             route: "settings",
           },
         ].map((object, id) => (
-          <SidebarBtn
+          <SideBarBtn
             key={id}
             buttonIcon={object.img}
             buttonText={object.text}
@@ -62,7 +62,7 @@ export default function TemporaryDrawer({ isOpen }) {
             onClick={() => {
               navigator("/" + object.route);
             }}
-          ></SidebarBtn>
+          ></SideBarBtn>
         ))}
       </List>
     </Box>

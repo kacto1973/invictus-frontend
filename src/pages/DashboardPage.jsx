@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import Card from "../components/Card";
-import BarChart from "../components/BarChart.jsx";
-import PieChart from "../components/PieChart.jsx";
+import Card from "../components/dashboard/Card";
+import BarChart from "../components/dashboard/BarChart";
+import PieChart from "../components/dashboard/PieChart";
 import { useQuery } from "@tanstack/react-query";
 import { fetchDashboard } from "../services/fetchers.js";
 

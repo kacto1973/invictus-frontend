@@ -1,4 +1,3 @@
-import React from "react";
 
 const CardReport = ({ icon, label, children, classNames = "" }) => {
   return (

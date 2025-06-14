@@ -7,7 +7,7 @@ import {
   fetchDeleteNotificacion,
 } from "../../services/fetchers.js";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useParams, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const getTimeElapsed = (fecha) => {
   const now = DateTime.now();

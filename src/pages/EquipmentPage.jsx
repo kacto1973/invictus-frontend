@@ -1,9 +1,7 @@
 import { useEffect } from "react";
-import Card from "../components/Card";
-import SearchBox from "../components/SearchBox.jsx";
-import Button from "../components/Button";
-import CalendarComponent from "../components/CalendarComponent";
-import Box from "@mui/material/Box";
+import SearchBox from "../components/common/SearchBox.jsx";
+import Button from "../components/common/Button";
+import CalendarComponent from "../components/equipment/CalendarComponent";
 import TextField from "@mui/material/TextField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";

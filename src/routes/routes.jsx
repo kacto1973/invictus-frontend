@@ -1,18 +1,18 @@
 // routes.js
-import Dashboard from "../views/Dashboard";
-import Inventory from "../views/Inventory";
-import Transactions from "../views/Transactions";
-import Equipment from "../views/Equipment";
-import Reports from "../views/Reports";
-import Configuration from "../views/Configuration";
+import DashboardPage from "../pages/DashboardPage";
+import InventoryPage from "../pages/InventoryPage";
+import TransactionsPage from "../pages/TransactionsPage";
+import EquipmentPage from "../pages/EquipmentPage";
+import ReportsPage from "../pages/ReportsPage";
+import ConfigurationPage from "../pages/ConfigurationPage";
 
 const routes = [
-  { path: "/", element: <Dashboard /> },
-  { path: "/inventory", element: <Inventory /> },
-  { path: "/equipment", element: <Equipment /> },
-  { path: "/reports", element: <Reports /> },
-  { path: "/settings", element: <Configuration /> },
-  { path: "/transactions", element: <Transactions /> },
+  { path: "/", element: <DashboardPage /> },
+  { path: "/inventory", element: <InventoryPage /> },
+  { path: "/equipment", element: <EquipmentPage /> },
+  { path: "/reports", element: <ReportsPage /> },
+  { path: "/settings", element: <ConfigurationPage /> },
+  { path: "/transactions", element: <TransactionsPage /> },
 ];
 
 export default routes;
