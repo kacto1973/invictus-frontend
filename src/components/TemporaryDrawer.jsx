@@ -55,11 +55,7 @@ export default function TemporaryDrawer({ isOpen }) {
         className="absolute right-2 top-2"
       /> */}
       <div className="w-full h-[10rem] mt-5 flex items-center justify-center">
-        <img
-          src="images/DICTUS-logo.png"
-          width={120}
-          alt="logo de departamento"
-        />
+        <img src="images/ESCUDO-COLOR.png" width={120} alt="logo UNISON" />
       </div>
       <List className="w-full flex flex-col items-center ">
         {[

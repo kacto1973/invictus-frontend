@@ -1,6 +1,3 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -8,14 +5,9 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Dashboard from "./views/Dashboard";
-import Equipment from "./views/Equipment";
-import Inventory from "./views/Inventory";
-import Configuration from "./views/Configuration";
-import Reports from "./views/Reports";
-import Transactions from "./views/Transactions";
 import TemporaryDrawer from "./components/TemporaryDrawer";
 import Header from "./components/Header";
+import routes from "./routes/routes";
 
 function App() {
   return (
@@ -24,12 +16,9 @@ function App() {
         <TemporaryDrawer isOpen={true}></TemporaryDrawer>
         <Header></Header>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/inventory" element={<Inventory />} />
-          <Route path="/transactions" element={<Transactions />} />
-          <Route path="/equipment" element={<Equipment />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/settings" element={<Configuration />} />
+          {routes.map((route, index) => (
+            <Route key={index} path={route.path} element={route.element} />
+          ))}
         </Routes>
       </Router>
     </>

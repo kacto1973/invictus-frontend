@@ -515,10 +515,10 @@ const Equipment = () => {
                   setScheduleType(SCHEDULE_TYPE.USO);
                 }
               }}
-              className={`cursor-pointer w-[12rem] text-center my-2 font-bold text-base rounded-full mx-2 px-4 py-2 ${
+              className={`cursor-pointer w-[12rem] text-center my-2 font-bold text-base rounded-full mx-2 px-4 py-2 hover:scale-105  transition-transform  ${
                 scheduleType === SCHEDULE_TYPE.USO
-                  ? "bg-red-400"
-                  : "bg-orange-400"
+                  ? "shadow-[0_0_20px_rgba(242,70,54,0.5)] bg-red-400 hover:bg-red-500"
+                  : "shadow-[0_0_20px_rgba(244,104,39,0.5)] bg-orange-400 hover:bg-orange-500"
               } `}
             >
               {scheduleType}
