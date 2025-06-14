@@ -24,7 +24,7 @@ import { useState, useRef } from "react";
 import { DateTime } from "luxon";
 
 // url base para las imagenes
- const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
+const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
 
 const Equipment = () => {
   /* tanstack */
