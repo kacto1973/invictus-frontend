@@ -19,9 +19,9 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useState, useRef } from "react";
 import { DateTime } from "luxon";
+import { id } from "date-fns/locale";
 
 const EquipmentPage = () => {
-
   const backendBaseUrl = import.meta.env.VITE_BACKEND_URL;
 
   /* tanstack */
@@ -69,10 +69,14 @@ const EquipmentPage = () => {
   const [reservations, setReservations] = useState([]);
   const [maintenances, setMaintenances] = useState([]);
   const [selectedRange, setSelectedRange] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(null);
+  //  const [selectedDate, setSelectedDate] = useState(null);
   const [search, setSearch] = useState("");
 
   /* use effect */
+
+  useEffect(() => {
+    console.log(selectedRange);
+  }, [selectedRange]);
 
   useEffect(() => {
     setSelectedRange([]);
@@ -115,8 +119,11 @@ const EquipmentPage = () => {
 
   /* functions */
 
-  const deleteRangeDates = async (date) => {
-    const reservationObj = reservations.find((reservation) => {
+  const deleteRangeDates = async (dateRange) => {
+    const allReservationsEncounters = [];
+    const allMaintenancesEncounters = [];
+
+    for (const reservation of reservations) {
       const startDate = DateTime.fromISO(reservation.fechaInicio, {
         zone: "America/Hermosillo",
       }).toJSDate();
@@ -124,13 +131,12 @@ const EquipmentPage = () => {
       const endDate = DateTime.fromISO(reservation.fechaFin, {
         zone: "America/Hermosillo",
       }).toJSDate();
+      if (endDate >= dateRange[0] && startDate <= dateRange[1]) {
+        allReservationsEncounters.push(reservation);
+      }
+    }
 
-      return startDate <= date && date <= endDate;
-    });
-
-    const reservationId = reservationObj?._id;
-
-    const maintenanceObj = maintenances.find((maintenance) => {
+    for (const maintenance of maintenances) {
       const startDate = DateTime.fromISO(maintenance.fechaInicio, {
         zone: "America/Hermosillo",
       }).toJSDate();
@@ -138,11 +144,35 @@ const EquipmentPage = () => {
       const endDate = DateTime.fromISO(maintenance.fechaFin, {
         zone: "America/Hermosillo",
       }).toJSDate();
+      if (endDate >= dateRange[0] && startDate <= dateRange[1]) {
+        allMaintenancesEncounters.push(maintenance);
+      }
+    }
 
-      return startDate <= date && date <= endDate;
-    });
+    const total =
+      allMaintenancesEncounters.length + allReservationsEncounters.length;
 
-    const maintenanceId = maintenanceObj?._id;
+    console.log("maintenances selected: ", allMaintenancesEncounters);
+    console.log("reservations: ", allReservationsEncounters);
+
+    if (total === 0) {
+      toast.info("Seleccione al menos una reserva o mantenimiento");
+      return;
+    }
+    if (total > 1) {
+      toast.info("Seleccione solo una reserva o mantenimiento");
+      return;
+    }
+
+    let reservationId;
+    let maintenanceId;
+
+    if (allReservationsEncounters.length === 1) {
+      reservationId = allReservationsEncounters[0]?._id;
+    }
+    if (allMaintenancesEncounters.length === 1) {
+      maintenanceId = allMaintenancesEncounters[0]?._id;
+    }
 
     if (reservationId) {
       console.log("borrando reserva :) con id de: " + reservationId);
@@ -181,7 +211,8 @@ const EquipmentPage = () => {
       console.log("Calendarizando uso del equipo...");
 
       const body = {
-        persona: "Usuario del Laboratorio",
+        usuario: "Usuario del Laboratorio",
+        descripcion: "Descripción placeholder",
         fechaInicio: formatDate(selectedRange[0]),
         fechaFin: formatDate(selectedRange[1]),
       };
@@ -209,9 +240,10 @@ const EquipmentPage = () => {
       console.log("Calendarizando mantenimiento del equipo...");
 
       const body = {
+        usuario: "Persona de mantenimiento",
         fechaInicio: formatDate(selectedRange[0]),
         fechaFin: formatDate(selectedRange[1]),
-        descripcion: "Mantenimiento programado",
+        descripcion: "Descripción placeholder",
       };
 
       const res = await fetchAddMaintenance(body, selectedEquipment?._id);
@@ -416,7 +448,7 @@ const EquipmentPage = () => {
                           setActiveTab(TAB_TYPE.CALENDARIZADO);
                         }}
                       />
-                      <img
+                      {/*<img
                         src="/svgs/information.svg"
                         width={34}
                         alt="info"
@@ -425,7 +457,7 @@ const EquipmentPage = () => {
                           setSelectedEquipment(device);
                           setActiveTab(TAB_TYPE.DETALLES);
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
                 ))}
@@ -433,7 +465,7 @@ const EquipmentPage = () => {
           </div>
         </div>
 
-        {/* panel de detalles del equipo */}
+        {/* panel de detalles del equipo 
         <div
           className={` ${
             activeTab === TAB_TYPE.DETALLES
@@ -450,9 +482,7 @@ const EquipmentPage = () => {
             <h1 className="text-lg font-bold mt-2">
               {selectedEquipment?.nombre}
             </h1>
-            {/*<p className="text-sm text-center w-[95%] my-4">
-              {selectedEquipment?.descripcion}
-            </p> */}
+            
             <div className=" flex flex-row justify-around mt-4 w-[70%] items-center">
               <span className="text-sm font-bold">Días Calendarizados:</span>
             </div>
@@ -483,6 +513,7 @@ const EquipmentPage = () => {
             classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-xl mx-auto bottom-8"
           />
         </div>
+        */}
 
         {/* panel calendarización de equipo */}
         <div
@@ -531,13 +562,22 @@ const EquipmentPage = () => {
               ></CalendarComponent>
             </div>
           </div>
-          <Button
-            label="Guardar"
-            onClick={async () => {
-              await handleSaveSchedule();
-            }}
-            classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md absolute bottom-2 mx-auto rounded-md text-bold text-white text-xl"
-          />
+          <div className="flex w-[70%] justify-between mx-auto">
+            <Button
+              label="Guardar"
+              onClick={async () => {
+                await handleSaveSchedule();
+              }}
+              classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md absolute bottom-2 mx-auto rounded-md text-bold text-white text-xl"
+            />
+            <Button
+              label="Eliminar"
+              onClick={async () => {
+                await deleteRangeDates(selectedRange);
+              }}
+              classNames="cursor-pointer hover:bg-clean-blue-hover bg-clean-blue w-[8rem] h-[2rem] shadow-md absolute bottom-2  rounded-md text-bold text-white text-xl"
+            />
+          </div>
         </div>
 
         {/* panel de agregar equipo nuevo */}
