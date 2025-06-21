@@ -71,8 +71,13 @@ const EquipmentPage = () => {
   const [selectedRange, setSelectedRange] = useState([]);
   //  const [selectedDate, setSelectedDate] = useState(null);
   const [search, setSearch] = useState("");
+  const [deleteMode, setDeleteMode] = useState(false);
 
   /* use effect */
+
+  useEffect(() => {
+    setSelectedRange([]);
+  }, [deleteMode]);
 
   useEffect(() => {
     console.log(selectedRange);
@@ -119,86 +124,46 @@ const EquipmentPage = () => {
 
   /* functions */
 
-  const deleteRangeDates = async (dateRange) => {
-    const allReservationsEncounters = [];
-    const allMaintenancesEncounters = [];
-
+  const deleteSchedule = async (date) => {
     for (const reservation of reservations) {
-      const startDate = DateTime.fromISO(reservation.fechaInicio, {
-        zone: "America/Hermosillo",
-      }).toJSDate();
+      const startDate = DateTime.fromISO(reservation.fechaInicio);
+      const endDate = DateTime.fromISO(reservation.fechaFin);
 
-      const endDate = DateTime.fromISO(reservation.fechaFin, {
-        zone: "America/Hermosillo",
-      }).toJSDate();
-      if (endDate >= dateRange[0] && startDate <= dateRange[1]) {
-        allReservationsEncounters.push(reservation);
+      if (startDate <= date && date <= endDate) {
+        //borramos la reserva
+        const res = await fetchDeleteReservation(reservation._id);
+        if (res.ok) {
+          toast.success("Reserva eliminada correctamente");
+          queryClient.invalidateQueries(["equipment"]);
+        } else {
+          toast.error("Error al eliminar reserva");
+          throw new Error("Error al eliminar reserva");
+        }
       }
     }
 
     for (const maintenance of maintenances) {
-      const startDate = DateTime.fromISO(maintenance.fechaInicio, {
-        zone: "America/Hermosillo",
-      }).toJSDate();
+      const startDate = DateTime.fromISO(maintenance.fechaInicio);
+      const endDate = DateTime.fromISO(maintenance.fechaFin);
 
-      const endDate = DateTime.fromISO(maintenance.fechaFin, {
-        zone: "America/Hermosillo",
-      }).toJSDate();
-      if (endDate >= dateRange[0] && startDate <= dateRange[1]) {
-        allMaintenancesEncounters.push(maintenance);
+      if (startDate <= date && date <= endDate) {
+        //borramos el mantenimiento
+        const res = await fetchDeleteMaintenance(maintenance._id);
+        if (res.ok) {
+          toast.success("Mantenimiento eliminado correctamente");
+          queryClient.invalidateQueries(["equipment"]);
+        } else {
+          toast.error("Error al eliminar mantenimiento");
+          throw new Error("Error al eliminar mantenimiento");
+        }
       }
     }
 
-    const total =
-      allMaintenancesEncounters.length + allReservationsEncounters.length;
-
-    console.log("maintenances selected: ", allMaintenancesEncounters);
-    console.log("reservations: ", allReservationsEncounters);
-
-    if (total === 0) {
-      toast.info("Seleccione al menos una reserva o mantenimiento");
-      return;
-    }
-    if (total > 1) {
-      toast.info("Seleccione solo una reserva o mantenimiento");
-      return;
-    }
-
-    let reservationId;
-    let maintenanceId;
-
-    if (allReservationsEncounters.length === 1) {
-      reservationId = allReservationsEncounters[0]?._id;
-    }
-    if (allMaintenancesEncounters.length === 1) {
-      maintenanceId = allMaintenancesEncounters[0]?._id;
-    }
-
-    if (reservationId) {
-      console.log("borrando reserva :) con id de: " + reservationId);
-      const res = await fetchDeleteReservation(reservationId);
-      if (res.ok) {
-        toast.success("Reserva eliminada correctamente");
-        queryClient.invalidateQueries(["equipment"]);
-        setSelectedEquipment(null);
-        setActiveTab(null);
-      } else {
-        toast.error("Error al eliminar reserva");
-        throw new Error("Error al eliminar reserva");
-      }
-    } else if (maintenanceId) {
-      console.log("borrando mantenimiento  :) con id de: " + maintenanceId);
-      const res = await fetchDeleteMaintenance(maintenanceId);
-      if (res.ok) {
-        toast.success("Mantenimiento eliminado correctamente");
-        queryClient.invalidateQueries(["equipment"]);
-        setSelectedEquipment(null);
-        setActiveTab(null);
-      } else {
-        toast.error("Error al eliminar mantenimiento");
-        throw new Error("Error al eliminar mantenimiento");
-      }
-    }
+    setSelectedRange([]);
+    setDeleteMode(false);
+    setActiveTab(null);
+    setSelectedEquipment(null);
+    toast.success("Schedule deleted successfully");
   };
 
   const formatDate = (date) => {
@@ -465,56 +430,6 @@ const EquipmentPage = () => {
           </div>
         </div>
 
-        {/* panel de detalles del equipo 
-        <div
-          className={` ${
-            activeTab === TAB_TYPE.DETALLES
-              ? "absolute w-[40%] h-[90%]  left-[45%] top-[5%] flex flex-col bg-white rounded-md shadow-md"
-              : "hidden"
-          } `}
-        >
-          <div className="absolute bg-primary w-full h-[3rem] flex items-center rounded-t-md ">
-            <p className="ml-5 font-bold text-white">
-              Eliminar reservas/mantenimientos
-            </p>
-          </div>
-          <div className="w-full h-[calc(100%-3rem)] flex flex-col items-center mt-[3rem] relative">
-            <h1 className="text-lg font-bold mt-2">
-              {selectedEquipment?.nombre}
-            </h1>
-            
-            <div className=" flex flex-row justify-around mt-4 w-[70%] items-center">
-              <span className="text-sm font-bold">Días Calendarizados:</span>
-            </div>
-            <p className="mt-2">
-              <span className="mr-4 px-4 py-1 bg-red-400 text-sm font-medium rounded-full">
-                En Uso
-              </span>
-              <span className="px-4 py-1 bg-orange-400 text-sm font-medium rounded-full">
-                En Mantenimiento
-              </span>
-            </p>
-            <div className="scale-[0.80]  flex flex-col items-center justify-center">
-              <CalendarComponent
-                reservations={reservations}
-                maintenances={maintenances}
-                selectedRange={selectedDate}
-                onChangeRange={setSelectedDate}
-                applyRange={false}
-              ></CalendarComponent>
-            </div>
-          </div>
-          <Button
-            label="Limpiar"
-            onClick={async () => {
-              if (!selectedDate) return;
-              await deleteRangeDates(selectedDate);
-            }}
-            classNames="cursor-pointer  bg-[#EDEDED] border-1 text-black w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-xl mx-auto bottom-8"
-          />
-        </div>
-        */}
-
         {/* panel calendarización de equipo */}
         <div
           className={` ${
@@ -558,24 +473,39 @@ const EquipmentPage = () => {
                 maintenances={maintenances}
                 selectedRange={selectedRange}
                 onChangeRange={setSelectedRange}
-                applyRange={true}
+                applyRange={!deleteMode}
               ></CalendarComponent>
             </div>
           </div>
-          <div className="flex w-[70%] justify-between mx-auto">
+          <div
+            className={`flex w-[70%] justify-evenly mx-auto my-3 ${
+              deleteMode ? "w-[90%]" : ""
+            }`}
+          >
             <Button
               label="Guardar"
               onClick={async () => {
                 await handleSaveSchedule();
               }}
-              classNames="cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md absolute bottom-2 mx-auto rounded-md text-bold text-white text-xl"
+              classNames={`cursor-pointer hover:bg-add-green-hover bg-add-green w-[8rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl ${
+                deleteMode ? "hidden" : ""
+              }`}
             />
             <Button
-              label="Eliminar"
-              onClick={async () => {
-                await deleteRangeDates(selectedRange);
+              label={deleteMode ? "Borrando..." : "Modo Borrar"}
+              onClick={() => {
+                setDeleteMode((prev) => !prev);
               }}
-              classNames="cursor-pointer hover:bg-clean-blue-hover bg-clean-blue w-[8rem] h-[2rem] shadow-md absolute bottom-2  rounded-md text-bold text-white text-xl"
+              classNames="cursor-pointer hover:bg-clean-blue-hover bg-clean-blue w-[10rem] h-[2rem] shadow-md  rounded-md text-bold text-white text-xl"
+            />
+            <Button
+              label="Listo"
+              onClick={async () => {
+                await deleteSchedule(selectedRange);
+              }}
+              classNames={`cursor-pointer hover:bg-yellow-500 bg-yellow-400 w-[3.5rem] h-[2rem] shadow-md rounded-md text-bold text-white text-xl ${
+                !deleteMode ? "hidden" : ""
+              }`}
             />
           </div>
         </div>
